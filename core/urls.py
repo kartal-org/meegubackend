@@ -33,12 +33,12 @@ urlpatterns = [
     path("institution/", include("institutions.urls")),
     path("subcription/", include("subscriptions.urls")),
     path("api/user/", include("users.urls", namespace="users")),
-    # YASG
-    path("docs/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
-    path("api/api.json/", schema_view.without_ui(cache_timeout=0), name="schema-swagger-ui"),
-    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     # OAuth
     path("auth/", include("drf_social_oauth2.urls", namespace="drf")),
+    # YASG
+    path("api/api.json/", schema_view.without_ui(cache_timeout=0), name="schema-swagger-ui"),
+    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    path("", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
