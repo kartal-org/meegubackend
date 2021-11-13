@@ -29,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -105,15 +105,22 @@ WSGI_APPLICATION = "core.wsgi.application"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
+    "dev": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    },
+    "production": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "d25emkckuh6b0b",
         "USER": "lqrgdmdmrwzwtp",
         "PASSWORD": "2a84ddfd0dcbc474ac10b9496f274bd55790986e82716ae551a7831d2af172f6",
         "HOST": "ec2-99-81-177-233.eu-west-1.compute.amazonaws.com",
         "PORT": "5432",
-    }
+    },
 }
+DATABASES["default"] = DATABASES["dev" if DEBUG else "production"]
+
+
 import dj_database_url
 
 db_from_env = dj_database_url.config(conn_max_age=600)
