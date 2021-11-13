@@ -18,7 +18,6 @@ class ModifiedInstitutionSerializer(serializers.ModelSerializer):
     description = serializers.CharField(source="institution.description")
     id = serializers.CharField(source="institution.id")
     cover = serializers.FileField(source="institution.cover")
-    print(cover, "cover")
 
     class Meta:
         model = InstitutionVerification

@@ -4,7 +4,8 @@ from django.db.models.deletion import CASCADE, DO_NOTHING
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from subscriptions.models import Plan
-from files.models import Package
+from files.models import Resource
+from classrooms.models import Classroom
 
 
 def upload_to(instance, filename):
@@ -95,7 +96,7 @@ class Staff(models.Model):
     type = models.ForeignKey(StaffType, on_delete=models.SET_NULL, null=True, blank=True)
 
 
-class InstitutionResource(Package):
+class InstitutionResource(Resource):
     institution = models.ForeignKey(Institution, on_delete=CASCADE)
 
     class Meta:
