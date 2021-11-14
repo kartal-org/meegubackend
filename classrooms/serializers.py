@@ -37,13 +37,13 @@ class MemberApplicationSerializer(serializers.ModelSerializer):
     classroom = serializers.StringRelatedField(many=True)
 
     class Meta:
-        model = Member
+        model = Student
         fields = ("id", "student", "classroom", "status")
 
 
 class ResourcesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Resource
+        model = ClassroomResource
         fields = "__all__"
 
 
@@ -58,13 +58,13 @@ class MemberSerializers(serializers.ModelSerializer):
     student_last_name = serializers.CharField(source="student.last_name")
 
     class Meta:
-        model = Member
+        model = Student
         fields = ["classroom", "student_first_name", "student_last_name", "id", "status"]
 
 
 class JoinClassroomSerializers(serializers.ModelSerializer):
     class Meta:
-        model = Member
+        model = Student
         fields = "__all__"
 
 
@@ -77,7 +77,7 @@ class ClassroomListingField(serializers.RelatedField):
 #     classroom = ClassroomSerializer(many=False, read_only=True)
 
 #     class Meta:
-#         model = Member
+#         model = Student
 #         fields = ["classroom"]
 
 
@@ -86,7 +86,7 @@ class StudentSerializer(serializers.ModelSerializer):
     student_last_name = serializers.CharField(source="student.last_name")
 
     class Meta:
-        model = Member
+        model = Student
         fields = ["student_first_name", "student_last_name", "student"]
 
 
@@ -104,7 +104,7 @@ class ClassroomMembersSerializerModify(serializers.ModelSerializer):
     # classroom_code = serializers.CharField(source="classroom.code")
 
     class Meta:
-        model = Member
+        model = Student
         fields = "__all__"
 
 
@@ -112,7 +112,7 @@ class JoinClassroomSerializer(serializers.ModelSerializer):
     classroom = serializers.SlugRelatedField(slug_field="code", queryset=Classroom.objects.all())
 
     class Meta:
-        model = Member
+        model = Student
         fields = ["id", "student", "status", "classroom"]
 
 
@@ -143,7 +143,7 @@ class GetStudentsClassroomsSerializer(serializers.ModelSerializer):
     classroom_adviser_l = serializers.CharField(source="classroom.owner.last_name")
 
     class Meta:
-        model = Member
+        model = Student
         fields = [
             "id",
             "name",

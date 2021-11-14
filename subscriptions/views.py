@@ -1,5 +1,7 @@
 from django.views import generic
 from rest_framework import generics, response, status
+
+from .permissions import IsNotFirstClassroom
 from .models import *
 from .serializers import *
 from rest_framework.permissions import IsAuthenticated
@@ -18,3 +20,8 @@ class ClassroomPlanListView(generics.ListAPIView):
 class InstitutionPlanListView(generics.ListAPIView):
     serializer_class = PlanSerializer
     queryset = Plan.institutionPlans.all()
+
+
+class ClassroomSubscribeCreateView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated, IsNotFirstClassroom]
+    serializer_class = BuySubscriptionSerializer

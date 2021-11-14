@@ -7,8 +7,6 @@ class ClassroomConfig(admin.ModelAdmin):
 
 
 admin.site.register(Classroom, ClassroomConfig)
-admin.site.register(Resource, ClassroomConfig)
-admin.site.register(ClassroomResourceFolder, ClassroomConfig)
-admin.site.register(ClassroomResourceQuillFile, ClassroomConfig)
-admin.site.register(ClassroomResourceUploadedFile, ClassroomConfig)
-admin.site.register(Member, ClassroomConfig)
+admin.site.register(Student, ClassroomConfig)
+admin.site.register(StudentType, ClassroomConfig)
+# admin.site.register(ClassroomSubscription, ClassroomConfig)

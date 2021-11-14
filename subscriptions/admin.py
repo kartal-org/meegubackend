@@ -7,3 +7,4 @@ class Config(admin.ModelAdmin):
 
 
 admin.site.register(Plan, Config)
+admin.site.register(ClassroomSubscription, Config)

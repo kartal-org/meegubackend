@@ -4,31 +4,12 @@ from django.conf import settings
 
 
 # Create your models here.
-class Folder(models.Model):
-    name = models.CharField(max_length=50)
-    institution = models.ForeignKey(
-        "institutions.Institution",
-        on_delete=CASCADE,
-        related_name="%(app_label)s_%(class)s_related",
-        related_query_name="%(app_label)s_%(class)ss",
-        null=True,
-        blank=True,
-    )
-
-    class Meta:
-        ordering = ("name",)
-        unique_together = ["name", "resource"]
-        abstract = True
-
-    def __str__(self):
-        return self.name
-
-
 class File(models.Model):
     options = (("published", "Published"), ("draft", "Draft"))
     name = models.CharField(max_length=255)
     status = models.CharField(max_length=10, choices=options, default="draft")
     tags = models.CharField(max_length=10, blank=True, null=True)
+    assignee = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateUpdated = models.DateTimeField(auto_now=True)
 
@@ -39,11 +20,37 @@ class File(models.Model):
         return self.name
 
 
+def upload_to(instance, filename):
+    return "uploadedFiles/{filename}".format(filename=filename)
+
+
 class UploadedFile(File):
-    size = models.PositiveIntegerField()
+    size = models.PositiveIntegerField(default=0)
+    file = models.FileField(upload_to=upload_to)
+
+    class Meta:
+        abstract = True
 
 
-class Resource(models.Model):
+class QuillFile(File):
+    content = models.TextField(null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class Folder(models.Model):
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        ordering = ("name",)
+        abstract = True
+
+    def __str__(self):
+        return self.name
+
+
+class Package(models.Model):
     options = (("published", "published"), ("draft", "draft"))
 
     name = models.CharField(max_length=255)
