@@ -24,14 +24,15 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("classroom/", include("classrooms.urls")),
+    path("classroom/", include("classrooms.urls_copy")),
     path("workspace/", include("workspaces.urls")),
     path("note/", include("notes.urls")),
     path("chat/", include("chats.urls")),
     path("article/", include("articles.urls")),
     path("library/", include("libraries.urls")),
     path("institution/", include("institutions.urls")),
-    path("subcription/", include("subscriptions.urls")),
+    path("subscription/", include("subscriptions.urls")),
+    path("resource/", include("resources.urls")),
     path("api/user/", include("users.urls", namespace="users")),
     # OAuth
     path("auth/", include("drf_social_oauth2.urls", namespace="drf")),

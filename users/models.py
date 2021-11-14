@@ -63,7 +63,9 @@ class NewUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
-    def getFullName(self):
+    @property
+    def full_name(self):
+        "Returns the person's full name."
         return "%s %s" % (self.first_name, self.last_name)
 
 

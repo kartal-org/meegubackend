@@ -51,12 +51,12 @@ class ClassroomList(generics.ListAPIView):
     """This view will let student retrieve classrooms that his in. Note: need the NewUser.id in the request even though this is get"""
 
     permission_classes = [permissions.IsAuthenticated]  # IsAMemberPermission
-    # queryset = Member.objects.all()
+    # queryset = Student.objects.all()
     serializer_class = GetStudentsClassroomsSerializer
 
     def get_queryset(self):  # this will filter resources according to classroom
         student = self.request.user
-        return Member.objects.filter(student=student)
+        return Student.objects.filter(student=student)
 
     # lookup_field = "student"
 
@@ -65,11 +65,11 @@ class ClassroomMemberList(generics.ListAPIView):
     """This view display list of members the classroom have"""
 
     serializer_class = MemberSerializers
-    # queryset = Member.objects.all()
+    # queryset = Student.objects.all()
 
     def get_queryset(self):  # this will filter resources according to classroom
         classroom = self.kwargs["pk"]
-        return Member.objects.filter(classroom=classroom)
+        return Student.objects.filter(classroom=classroom)
 
 
 # What if I want to remove or something a student from classroom
@@ -77,7 +77,7 @@ class ClassroomMemberModify(generics.RetrieveUpdateDestroyAPIView):
     """This view will allow advisers to modify student membership in his classroom"""
 
     serializer_class = ClassroomMembersSerializerModify
-    queryset = Member.objects.all()
+    queryset = Student.objects.all()
     lookup_field = "pk"
 
 
@@ -105,7 +105,7 @@ class ReturnClassroomByCodeView(generics.ListAPIView):
 
 # Step to join the classroom
 class ClassroomMembers(generics.CreateAPIView):
-    queryset = Member.objects.all()
+    queryset = Student.objects.all()
     serializer_class = JoinClassroomSerializers
 
 
@@ -114,7 +114,7 @@ class ResourceCreateAPIView(generics.CreateAPIView):
 
     permission_classes = [permissions.IsAuthenticated]  # also add CustomIsowner
     serializer_class = ResourcesSerializer
-    queryset = Resource.objects.all()
+    queryset = ClassroomResource.objects.all()
 
 
 class ResourceListAPIView(generics.ListAPIView):
@@ -125,14 +125,14 @@ class ResourceListAPIView(generics.ListAPIView):
 
     def get_queryset(self):  # this will filter resources according to classroom
         classroom = self.kwargs["pk"]
-        return Resource.objects.filter(classroom=classroom)
+        return ClassroomResource.objects.filter(classroom=classroom)
 
 
 class ResourceModifyView(generics.RetrieveUpdateDestroyAPIView):
     """This view will allow Adviser to modify resource he created in his classroom"""
 
     # permission_classes = [permissions.IsAuthenticated] #add custom Permission Later
-    queryset = Resource.objects.all()
+    queryset = ClassroomResource.objects.all()
     serializer_class = ResourcesSerializer
     lookup_field = "pk"
 

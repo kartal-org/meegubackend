@@ -4,33 +4,38 @@ from django.db.models.deletion import CASCADE, DO_NOTHING
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from subscriptions.models import Plan
-from files.models import Resource
-from classrooms.models import Classroom
+from files.models import Package
+from products.models import Product
+from members.models import BaseMember
 
 
 def upload_to(instance, filename):
-    return "institutions/{filename}".format(filename=filename)
+    return "products/image/{filename}".format(filename=filename)
 
 
-class Institution(models.Model):
-
-    name = models.CharField(max_length=255)
+class Institution(Product):
     image = models.ImageField(_("Profile"), upload_to=upload_to, default="userProfile/default_egry2i.jpg")
-    cover = models.ImageField(_("Cover"), upload_to=upload_to, default="userProfile/coverDefault_pdrisr.jpg")
-    description = models.TextField(null=True, blank=True)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    dateCreated = models.DateTimeField(default=timezone.now)
-    dateUpdated = models.DateTimeField(default=timezone.now)
+    address = models.TextField()
+    contact = models.CharField(max_length=11)
+    email = models.EmailField()
+    website = models.URLField(null=True, blank=True)
 
-    objects = models.Manager()  # default manager
 
-    class Meta:
-        ordering = ("-dateUpdated",)
+class StaffType(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    custom_Type_For = models.ForeignKey(Institution, on_delete=CASCADE)
 
     def __str__(self):
         return self.name
 
 
+class Staff(BaseMember):
+    institution = models.ForeignKey(Institution, on_delete=CASCADE)
+    type = models.ForeignKey(StaffType, on_delete=models.SET_NULL, null=True, blank=True)
+
+
+# old
 class InstitutionSubscription(models.Model):
     institution = models.ForeignKey(Institution, on_delete=DO_NOTHING)
     plan = models.ForeignKey(Plan, on_delete=DO_NOTHING)
@@ -71,32 +76,7 @@ class InstitutionVerification(models.Model):
         ordering = ("-institution__dateUpdated",)
 
 
-class StaffType(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-    permissions = models.JSONField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-
-
-class CustomStaffType(StaffType):
-    institution = models.ForeignKey(Institution, on_delete=CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
-
-
-class Staff(models.Model):
-    options = (
-        ("co-owner", "Co-Owner"),
-        ("department-manager", "Department Manager"),
-        ("adviser", "adviser"),
-    )
-    institution = models.ForeignKey(Institution, on_delete=CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
-    type = models.ForeignKey(StaffType, on_delete=models.SET_NULL, null=True, blank=True)
-
-
-class InstitutionResource(Resource):
+class InstitutionResource(Package):
     institution = models.ForeignKey(Institution, on_delete=CASCADE)
 
     class Meta:

@@ -64,6 +64,10 @@ INSTALLED_APPS = [
     "articles",
     "libraries",
     "files",
+    "products",
+    "members",
+    "resources",
+    "submissions",
 ]
 
 MIDDLEWARE = [
@@ -185,13 +189,9 @@ REST_FRAMEWORK = {
         "drf_social_oauth2.authentication.SocialAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 }
 
-# Permissions:
-# AllowAny
-# IsAuthenticated
-# IsAdminUser
-# IsAuthenticatedOrReadOnly
 
 AUTH_USER_MODEL = "users.NewUser"
 
@@ -252,3 +252,5 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
 django_heroku.settings(locals())
+
+SWAGGER_SETTINGS = {"SECURITY_DEFINITIONS": {"Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}}}
