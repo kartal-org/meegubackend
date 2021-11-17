@@ -12,7 +12,7 @@ def upload_to(instance, filename):
 
 
 class Workspace(Package):
-    classroom = models.ForeignKey(Classroom, on_delete=CASCADE, null=True, blank=True)
+    classroom = models.ForeignKey(Classroom, on_delete=CASCADE)
     code = models.CharField(unique=True, max_length=8)
 
     class Meta:
@@ -24,7 +24,7 @@ class MemberType(BaseMemberType):
 
 
 class Member(BaseMember):
-    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, null=True, blank=True)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
     role = models.ForeignKey(MemberType, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
