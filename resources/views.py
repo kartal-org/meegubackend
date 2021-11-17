@@ -83,9 +83,7 @@ class ResourceUploadFileList(generics.ListCreateAPIView):
     serializer_class = ClassroomResourceUploadedFileSerializer
 
     def get_queryset(self):
-        return ClassroomResourceUploadedFile.objects.filter(
-            folder=ClassroomResourceFolder.objects.get(pk=self.kwargs["folder"])
-        )
+        return ClassroomResourceUploadedFile.objects.filter(folder=self.kwargs["folder"])
 
     def perform_create(self, serializer):
         serializer.save(folder=ClassroomResourceFolder.objects.get(pk=self.kwargs["folder"]))

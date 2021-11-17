@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "members",
     "resources",
     "projects",
+    "posts",
 ]
 
 MIDDLEWARE = [
@@ -123,7 +124,7 @@ DATABASES = {
     },
 }
 DATABASES["default"] = DATABASES["dev" if DEBUG else "production"]
-print(DATABASES["default"])
+
 
 # import dj_database_url
 
