@@ -7,6 +7,11 @@ def upload_to(instance, filename):
     return "products/cover/{filename}".format(filename=filename)
 
 
+class PublicProductManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(privacy="public")
+
+
 # This is the base model of the Classroom and Institution
 class Product(models.Model):
     options = (("public", "Public"), ("private", "Private"))
@@ -19,6 +24,7 @@ class Product(models.Model):
     dateUpdated = models.DateTimeField(auto_now=True)
 
     objects = models.Manager()  # default manager
+    publicProduct = PublicProductManager()
 
     class Meta:
         ordering = ("-dateUpdated",)

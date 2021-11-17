@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
 from .permissions import IsOwner
 
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 
 from .models import NewUser, Profile
 from .utils import Util
@@ -25,6 +25,9 @@ import jwt
 from django.conf import settings
 from django.http import HttpResponsePermanentRedirect
 import os
+
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 
 class CustomRedirect(HttpResponsePermanentRedirect):
@@ -184,11 +187,17 @@ class UpdateUserProfileView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # def post(self, request, format=None):
-    #     print(request.data)
-    #     serializer = UserProfileSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_200_OK)
-    #     else:
-    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+    max_page_size = 10
+
+
+class SearchPeople(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = SearchUserSerializer
+    queryset = NewUser.objects.all()
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ["first_name", "last_name", "username"]

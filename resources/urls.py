@@ -5,7 +5,7 @@ from .views import *
 
 urlpatterns = [
     # classroom
-    path("classroom/<int:pk>", ResourceListCreateView.as_view(), name="classroom_resource_list"),
+    path("classroom/<int:classroom>", ResourceListCreateView.as_view(), name="classroom_resource_list"),
     path("classroom/change/<int:pk>", ResourceDetailView.as_view(), name="classroom_resource_detail"),
     path("classroom/folder/change/<int:pk>", ResourceFolderDetail.as_view(), name="classroom_folder_detail"),
     path("classroom/folder/<int:resource>", ResourceFolderList.as_view(), name="classroom_folder_list"),

@@ -15,10 +15,10 @@ class ResourceListCreateView(generics.ListCreateAPIView):
     serializer_class = ClasssroomResourceSerializer
 
     def get_queryset(self):
-        return ClassroomResource.objects.filter(classroom=self.kwargs["pk"])
+        return ClassroomResource.objects.filter(classroom=self.kwargs["classroom"])
 
     def perform_create(self, serializer):
-        serializer.save(classroom=Classroom.objects.get(pk=self.kwargs["pk"]))
+        serializer.save(classroom=Classroom.objects.get(pk=self.kwargs["classroom"]))
 
 
 class ResourceDetailView(generics.RetrieveUpdateDestroyAPIView):

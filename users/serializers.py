@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import fields
 from rest_framework import serializers
 from users.models import NewUser, Profile
 from rest_framework.exceptions import AuthenticationFailed
@@ -182,3 +183,9 @@ class SetNewPasswordSerializer(serializers.Serializer):
         except Exception as e:
             raise AuthenticationFailed("The reset link is invalid", 401)
         return super().validate(attrs)
+
+
+class SearchUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewUser
+        fields = ["username", "full_name", "image"]

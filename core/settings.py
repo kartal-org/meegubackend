@@ -123,7 +123,7 @@ DATABASES = {
     },
 }
 DATABASES["default"] = DATABASES["dev" if DEBUG else "production"]
-
+print(DATABASES["default"])
 
 # import dj_database_url
 
@@ -187,7 +187,6 @@ REST_FRAMEWORK = {
         "drf_social_oauth2.authentication.SocialAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 }
 
 

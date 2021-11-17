@@ -15,4 +15,6 @@ urlpatterns = [
     path("staff/<int:institution>", StaffList.as_view(), name="staff_list"),
     path("staff-type/change/<int:pk>", StaffTypeDetail.as_view(), name="staff_type_detail"),
     path("staff-type/<int:institution>", StaffTypeList.as_view(), name="staff_type_list"),
+    # Search and Filtering
+    path("search", InstitutionSearchList.as_view(), name="institution_search_list"),
 ]
