@@ -18,8 +18,8 @@ class SubscriptionConfig(admin.ModelAdmin):
 
 
 admin.site.register(Institution, InstitutionConfig)
-admin.site.register(InstitutionSubscription, SubscriptionConfig)
+
 admin.site.register(InstitutionVerification, InstitutionConfig)
 admin.site.register(StaffType, InstitutionConfig)
+admin.site.register(Department, InstitutionConfig)
 admin.site.register(Staff, InstitutionConfig)
-admin.site.register(InstitutionResource, InstitutionConfig)

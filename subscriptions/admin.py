@@ -8,3 +8,4 @@ class Config(admin.ModelAdmin):
 
 admin.site.register(Plan, Config)
 admin.site.register(ClassroomSubscription, Config)
+admin.site.register(InstitutionSubscription, Config)

@@ -67,7 +67,7 @@ INSTALLED_APPS = [
     "products",
     "members",
     "resources",
-    "submissions",
+    "projects",
 ]
 
 MIDDLEWARE = [
@@ -174,9 +174,7 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "https://meegufrontend.herokuapp.com"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [

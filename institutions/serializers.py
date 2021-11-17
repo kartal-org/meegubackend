@@ -1,56 +1,53 @@
-from rest_framework import serializers
-from .models import *
-from users.models import NewUser
+# from rest_framework import serializers
+# from .models import *
+# from users.models import NewUser
 
 
-class ListInstitutionSerializer(serializers.ModelSerializer):
-
-    firstname = serializers.CharField(source="owner.first_name", read_only=True)
-    lastname = serializers.CharField(source="owner.last_name", read_only=True)
-
-    class Meta:
-        model = Institution
-        fields = "__all__"
+# class InstitutionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Institution
+#         fields = "__all__"
+#         extra_kwargs = {"owner": {"read_only": True}}
 
 
-class ModifiedInstitutionSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source="institution.name")
-    description = serializers.CharField(source="institution.description")
-    id = serializers.CharField(source="institution.id")
-    cover = serializers.FileField(source="institution.cover")
+# class ModifiedInstitutionSerializer(serializers.ModelSerializer):
+#     name = serializers.CharField(source="institution.name")
+#     description = serializers.CharField(source="institution.description")
+#     id = serializers.CharField(source="institution.id")
+#     cover = serializers.FileField(source="institution.cover")
 
-    class Meta:
-        model = InstitutionVerification
-        fields = [
-            "name",
-            "description",
-            "id",
-            "cover",
-            "status",
-        ]
+#     class Meta:
+#         model = InstitutionVerification
+#         fields = [
+#             "name",
+#             "description",
+#             "id",
+#             "cover",
+#             "status",
+#         ]
 
-    pass
-
-
-class InstitutionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Institution
-        fields = "__all__"
+#     pass
 
 
-class CreateInstitutionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Institution
-        fields = ("id", "name", "description")
+# class InstitutionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Institution
+#         fields = "__all__"
 
 
-class InstitutionVerificationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InstitutionVerification
-        fields = "__all__"
+# class CreateInstitutionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Institution
+#         fields = ("id", "name", "description")
 
 
-class InstitutionSubscriptionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InstitutionSubscription
-        fields = "__all__"
+# class InstitutionVerificationSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = InstitutionVerification
+#         fields = "__all__"
+
+
+# class InstitutionSubscriptionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = InstitutionSubscription
+#         fields = "__all__"

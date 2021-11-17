@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.deletion import DO_NOTHING
 
+
 # Create your models here.
 
 
@@ -51,3 +52,10 @@ class ClassroomSubscription(Transaction):
 
     def __str__(self):
         return self.classroom.owner.full_name
+
+
+class InstitutionSubscription(Transaction):
+    institution = models.ForeignKey("institutions.Institution", on_delete=DO_NOTHING)
+
+    def __str__(self):
+        return self.institution.owner.full_name

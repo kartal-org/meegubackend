@@ -10,7 +10,7 @@ class UserAdminConfig(UserAdmin):
     model = NewUser
     search_fields = ("email", "username", "first_name", "last_name")
     list_filter = ("email", "username", "first_name", "last_name", "is_active", "is_staff")
-    ordering = ("-start_date",)
+    ordering = ("-dateUpdated",)
     list_display = ("id", "email", "username", "first_name", "last_name", "is_active", "is_staff")
     fieldsets = (
         (None, {"fields": ("email", "username", "first_name", "last_name")}),

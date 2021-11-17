@@ -4,7 +4,15 @@ from django.conf import settings
 
 
 def defaultPermission():
-    return {"canDeleteProduct": False, "canUpdateProduct": False, "canAddPeople": False}
+    return {
+        "canDeleteProduct": False,
+        "canUpdateProduct": False,
+        "canAddPeople": False,
+        "canRemovePeople": False,
+        "canCreateResources": False,
+        "canDeleteResources": False,
+        "canUpdateResources": False,
+    }
 
 
 # Base model for all members

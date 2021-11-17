@@ -41,6 +41,11 @@ class AdviserClassroomModifyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsClassroomAdviser, IsClassroomPaid]
     queryset = Classroom.objects.all()
 
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
+
 
 # Student's Classroom Views
 
@@ -73,7 +78,7 @@ class StudentTypeViewList(generics.ListCreateAPIView):
     serializer_class = StudentTypeSerializer
 
     def get_queryset(self):
-        classroom = self.kwargs["pk"]
+        classroom = self.kwargs["classroom"]
         return StudentType.objects.filter(Q(custom_Type_For__isnull=True) | Q(custom_Type_For=classroom))
 
 
@@ -81,6 +86,11 @@ class StudentTypeViewDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsStudentTypeCreator]
     serializer_class = StudentTypeSerializer
     queryset = StudentType.objects.all()
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ClassroomStudentList(generics.ListAPIView):
@@ -101,4 +111,8 @@ class ClassroomStudentModify(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]  # add is adviser permission
     serializer_class = ClassroomStudentSerializer
     queryset = Student.objects.all()
-    lookup_field = "pk"
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)

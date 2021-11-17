@@ -1,11 +1,15 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from classrooms.models import Classroom
 from django.shortcuts import get_object_or_404, get_list_or_404
-from .models import *
+
+# from .models import *
 from django.db.models.functions import Cast
 from django.db.models import Sum, IntegerField
 from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from subscriptions.models import ClassroomSubscription
+from .models import *
+from institutions.models import Institution, Staff
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class IsClassroomAdviser(BasePermission):
@@ -72,3 +76,39 @@ class IsNotSubscriptionLimit(BasePermission):
             return False
 
         return True
+
+
+def isStaff(institution, user):
+    try:
+        staff = Staff.objects.get(institution=institution, user=user).type.permissions["canCreateResources"]
+    except ObjectDoesNotExist:
+        return False
+    return staff
+
+
+def isOwner(institution, user):
+
+    return Institution.objects.get(pk=institution).owner == user
+
+
+class IsInstitutionStaff(BasePermission):
+    message = "Managing Resource of the institution is for designated staff only"
+
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            return True
+        if "InstitutionResourceListCreateView" in str(view):
+            user = request.user
+            institution = view.kwargs.get("institution")
+            if isStaff(institution, user) or isOwner(institution, user):
+                return True
+        if "InstitutionResourceDetailView" in str(view):
+            user = request.user
+            institution = get_object_or_404(InstitutionResource, pk=view.kwargs.get("pk")).institution
+            if isStaff(institution, user) or isOwner(view.kwargs.get("pk"), user):
+                return True
+        if "InstitutionResourceFolderList" in str(view):
+            # Institution Staff can only create resources' folders
+            pass
+
+        return False
