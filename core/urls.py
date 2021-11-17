@@ -32,6 +32,7 @@ urlpatterns = [
     path("library/", include("libraries.urls")),
     path("institution/", include("institutions.urls_copy")),
     path("subscription/", include("subscriptions.urls")),
+    path("post/", include("posts.urls")),
     path("resource/", include("resources.urls")),
     path("api/user/", include("users.urls", namespace="users")),
     # OAuth
