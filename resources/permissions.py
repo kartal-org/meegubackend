@@ -19,7 +19,7 @@ class IsClassroomAdviser(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         if "ResourceListCreateView" in str(view) or "ResourceDetailView" in str(view):
-            if get_object_or_404(Classroom, pk=view.kwargs.get("pk")).owner == request.user:
+            if get_object_or_404(Classroom, pk=view.kwargs.get("classroom")).owner == request.user:
                 return True
         if "ResourceFolderList" in str(view):
             if get_object_or_404(ClassroomResource, pk=view.kwargs.get("resource")).classroom.owner == request.user:

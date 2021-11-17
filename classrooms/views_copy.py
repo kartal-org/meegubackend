@@ -1,20 +1,27 @@
 from django.views import generic
 from rest_framework import generics, response, status
+from rest_framework import pagination
 from .models import *
 from .serializers_copy import *
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from .permissions import *
-from rest_framework.views import APIView
 from rest_framework import viewsets, filters, generics, permissions
 from django.shortcuts import get_list_or_404, get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 import shortuuid
 from django.db.models import Q
+from rest_framework.pagination import PageNumberPagination
 
 
 def get_classroom_code():
     codeID = shortuuid.ShortUUID().random(length=8)
     return codeID
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+    max_page_size = 10
 
 
 # Adviser's Classroom Views

@@ -1,17 +1,14 @@
-from django.views import generic
 from rest_framework import generics, response, status
+from rest_framework import pagination
 from .models import *
 from .serializers_copy import *
 from rest_framework.permissions import IsAuthenticated
 from .permissions import *
-from rest_framework.views import APIView
-from rest_framework import viewsets, filters, generics
+from rest_framework import generics
 from django.shortcuts import get_list_or_404, get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
-
-from django.db.models.functions import Cast
-from django.db.models import Sum, IntegerField, query
-from django.contrib.postgres.fields.jsonb import KeyTextTransform
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 
 class ModeratorInstitutionListCreate(generics.ListCreateAPIView):
@@ -128,3 +125,20 @@ class StaffTypeList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(custom_Type_For=Institution.objects.get(pk=self.kwargs["institution"]))
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+    max_page_size = 10
+
+
+class InstitutionSearchList(generics.ListAPIView):
+    """Generic List View for Institution that allows searching and has pagination"""
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = InstitutionSerializer
+    queryset = Institution.publicProduct.all()
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ["name", "address", "owner__username"]
