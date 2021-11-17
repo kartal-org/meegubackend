@@ -115,10 +115,10 @@ DATABASES = {
     },
     "production": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "d25emkckuh6b0b",
-        "USER": "lqrgdmdmrwzwtp",
-        "PASSWORD": "2a84ddfd0dcbc474ac10b9496f274bd55790986e82716ae551a7831d2af172f6",
-        "HOST": "ec2-99-81-177-233.eu-west-1.compute.amazonaws.com",
+        "NAME": "d82ti68pspu6v8",
+        "USER": "nqsrudlkdpsgao",
+        "PASSWORD": "741f652baf0c0c289c8d96300566cc68e0c2a9dc7145d0810c92804d549a9f7f",
+        "HOST": "ec2-54-74-35-87.eu-west-1.compute.amazonaws.com",
         "PORT": "5432",
     },
 }
