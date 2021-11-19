@@ -27,7 +27,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class SearchArticleList(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = ArticleSerializer
+    serializer_class = PostSerializer
     pagination_class = StandardResultsSetPagination
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = [
@@ -42,7 +42,7 @@ class SearchArticleList(generics.ListAPIView):
 
 class InstitutionArticleListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = ArticleSerializer
+    serializer_class = PostSerializer
 
     def get_queryset(self):
         return Article.objects.filter(publisher=self.kwargs["institution"])
@@ -53,7 +53,7 @@ class InstitutionArticleListCreate(generics.ListCreateAPIView):
 
 class InstitutionArticleDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, IsStaff]
-    serializer_class = ArticleSerializer
+    serializer_class = PostSerializer
     queryset = Article.objects.all()
 
 

@@ -69,6 +69,8 @@ INSTALLED_APPS = [
     "resources",
     "projects",
     "posts",
+    "submissions",
+    "notifications",
 ]
 
 MIDDLEWARE = [
