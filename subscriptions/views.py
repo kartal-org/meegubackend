@@ -8,20 +8,51 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, filters, generics, permissions
 from django.shortcuts import get_list_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
+from classrooms.models import Classroom
+from institutions.models import Institution
 
 # Create your views here.
 
 
 class ClassroomPlanListView(generics.ListAPIView):
     serializer_class = PlanSerializer
-    queryset = Plan.classroomPlans.all()
+    # queryset = Plan.classroomPlans.all()
+
+    def get_queryset(self):
+        subscriptionList = ClassroomSubscription.objects.filter(classroom__owner=self.request.user)
+        if subscriptionList:
+            if "Basic Classroom" in [o.plan.name for o in subscriptionList]:
+                return Plan.classroomPlans.exclude(name="Basic Classroom")
+        return Plan.classroomPlans.all()
 
 
 class InstitutionPlanListView(generics.ListAPIView):
     serializer_class = PlanSerializer
-    queryset = Plan.institutionPlans.all()
+
+    def get_queryset(self):
+        subscriptionList = get_list_or_404(InstitutionSubscription, institution__owner=self.request.user)
+        if "Basic Institution" in [o.plan.name for o in subscriptionList]:
+            return Plan.institutionPlans.exclude(name="Basic Institution")
+        return Plan.institutionPlans.all()
 
 
-class ClassroomSubscribeCreateView(generics.CreateAPIView):
+class ClassroomSubscriptionListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsNotFirstClassroom]
     serializer_class = BuySubscriptionSerializer
+
+    def get_queryset(self):
+        return ClassroomSubscription.objects.filter(classroom=self.kwargs.get("classroom"))
+
+    def perform_create(self, serializer):
+        serializer.save(classroom=Classroom.objects.get(pk=self.kwargs["classroom"]))
+
+
+class InstitutionSubscriptionListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = InstitutionSubscriptionSerializer
+
+    def get_queryset(self):
+        return InstitutionSubscription.objects.filter(institution=self.kwargs.get("institution"))
+
+    def perform_create(self, serializer):
+        serializer.save(institution=Institution.objects.get(pk=self.kwargs["institution"]))

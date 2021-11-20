@@ -1,5 +1,6 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from .models import Classroom
+from institutions.models import Staff
 from django.shortcuts import get_object_or_404
 from subscriptions.models import ClassroomSubscription
 
@@ -22,7 +23,6 @@ class IsClassroomAdviser(BasePermission):
 
         if request.method in SAFE_METHODS:
             return True
-
         return obj.owner == request.user
 
 
@@ -53,15 +53,18 @@ class IsClassroomPaid(BasePermission):
     message = "Making classroom public is for paid classrooms only."
 
     def has_object_permission(self, request, view, obj):
-
         if request.method in SAFE_METHODS:
             return True
-        if request.data["privacy"]:
-            print("Catch")
-            if ClassroomSubscription.objects.filter(classroom=obj.pk):
-                return True
 
-        return False
+        if "privacy" in request.data:
+            breakpoint()
+            if request.data["privacy"] == "public" and ClassroomSubscription.objects.filter(
+                classroom=request.kwargs.get("classroom")
+            ):
+                print("Catch")
+                return True
+            return False
+        return True
 
 
 class IsClassroomPublic(BasePermission):
@@ -84,4 +87,18 @@ class IsNotClassroomOwner(BasePermission):
         if ques.owner == request.user:
             return False
 
+        return True
+
+
+class IsInstitutionStaff(BasePermission):
+    message = "You are not part of this Institution"
+
+    def has_permission(self, request, view):
+        user = request.user
+
+        if "institution" in request.data:
+            # breakpoint()
+            if Staff.objects.filter(user=user, institution=request.data["institution"]):
+                return True
+            return False
         return True

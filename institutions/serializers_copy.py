@@ -10,6 +10,15 @@ class InstitutionSerializer(serializers.ModelSerializer):
         extra_kwargs = {"owner": {"read_only": True}}
 
 
+class StaffInstitutionSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="institution.id")
+    name = serializers.CharField(source="institution.name")
+
+    class Meta:
+        model = Staff
+        fields = ["id", "name"]
+
+
 class InstitutionVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstitutionVerification

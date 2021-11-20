@@ -25,7 +25,7 @@ class ModeratorInstitutionListCreate(generics.ListCreateAPIView):
 
 
 class ModeratorInstitutionDetail(generics.RetrieveUpdateDestroyAPIView):
-    """This view will let User create his classrooms"""
+    """This view will let User modify his institution"""
 
     permission_classes = [IsAuthenticated, IsInstitutionOwner, IsInstitutionPaid, IsInstitutionVerified]
     serializer_class = InstitutionSerializer
@@ -142,3 +142,14 @@ class InstitutionSearchList(generics.ListAPIView):
     pagination_class = StandardResultsSetPagination
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["name", "address", "owner__username"]
+
+
+# Institution Staff list view please
+class StaffInstitutionList(generics.ListAPIView):
+    """This view list all the staff's Institution"""
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = StaffInstitutionSerializer
+
+    def get_queryset(self):
+        return Staff.objects.filter(user=self.request.user)

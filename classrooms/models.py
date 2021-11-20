@@ -22,6 +22,3 @@ class Student(BaseMember):
 
     class Meta:
         unique_together = ["user", "classroom"]
-
-
-# Transaction Side

@@ -4,11 +4,11 @@ from .models import *
 
 class AdviserClassroomSerializer(serializers.ModelSerializer):
     owner = serializers.CharField(source="owner.full_name", read_only=True)
-    code = serializers.CharField(read_only=True)
 
     class Meta:
         model = Classroom
-        fields = ["id", "name", "description", "privacy", "code", "subject", "cover", "owner"]
+        fields = "__all__"
+        extra_kwargs = {"code": {"read_only": True}, "owner": {"read_only": True}}
 
 
 class JoinClassroomSerializer(serializers.ModelSerializer):

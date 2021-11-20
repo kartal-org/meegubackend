@@ -8,7 +8,10 @@ class IsNotFirstClassroom(BasePermission):
 
     def has_permission(self, request, view):
         user = request.user
-        subscriptionList = get_list_or_404(ClassroomSubscription, classroom__owner=user)
-        if 1 in [o.plan.id for o in subscriptionList]:
-            return False
+        # breakpoint()
+        subscriptionList = ClassroomSubscription.objects.filter(classroom__owner=user)
+        if subscriptionList:
+            if "Basic Classroom" in [o.plan.name for o in subscriptionList]:
+                return False
+            # return True
         return True

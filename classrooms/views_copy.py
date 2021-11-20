@@ -28,6 +28,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 class AdviserClassroomListCreateView(generics.ListCreateAPIView):
     """Create and List view of Adviser's Classroom"""
 
+    parser_classes = [MultiPartParser, FormParser]
     serializer_class = AdviserClassroomSerializer
     permission_classes = [IsAuthenticated]
 
@@ -44,8 +45,9 @@ class AdviserClassroomListCreateView(generics.ListCreateAPIView):
 class AdviserClassroomModifyView(generics.RetrieveUpdateDestroyAPIView):
     """Allows Adviser to retrieve update and destroy his own classroom. Also use this as to retrieve student classroom"""
 
+    parser_classes = [MultiPartParser, FormParser]
     serializer_class = AdviserClassroomSerializer
-    permission_classes = [IsAuthenticated, IsClassroomAdviser, IsClassroomPaid]
+    permission_classes = [IsAuthenticated, IsClassroomAdviser, IsClassroomPaid, IsInstitutionStaff]
     queryset = Classroom.objects.all()
 
     def destroy(self, *args, **kwargs):
@@ -103,7 +105,7 @@ class StudentTypeViewDetail(generics.RetrieveUpdateDestroyAPIView):
 class ClassroomStudentList(generics.ListAPIView):
     """This view display list of members the classroom have"""
 
-    serializer_class = ClassroomStudentSerializer
+    serializer_class = StudentClassroomSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):

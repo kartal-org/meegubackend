@@ -48,7 +48,7 @@ class Transaction(models.Model):
 
 
 class ClassroomSubscription(Transaction):
-    classroom = models.ForeignKey("classrooms.Classroom", on_delete=DO_NOTHING)
+    classroom = models.ForeignKey("classrooms.Classroom", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.classroom.owner.full_name
