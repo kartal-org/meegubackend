@@ -18,8 +18,11 @@ class IsClassroomAdviser(BasePermission):
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
             return True
-        if "ResourceListCreateView" in str(view) or "ResourceDetailView" in str(view):
-            if get_object_or_404(Classroom, pk=view.kwargs.get("classroom")).owner == request.user:
+        if "ResourceDetailView" in str(view):
+            if ClassroomResource.objects.get(pk=view.kwargs.get("pk")).classroom.owner == request.user:
+                return True
+        if "ResourceListCreateView" in str(view):
+            if Classroom.objects.get(pk=view.kwargs.get("classroom")).owner == request.user:
                 return True
         if "ResourceFolderList" in str(view):
             if get_object_or_404(ClassroomResource, pk=view.kwargs.get("resource")).classroom.owner == request.user:
@@ -37,6 +40,7 @@ class IsClassroomAdviser(BasePermission):
             ):
                 return True
         if "ResourceQuillFileDetail" in str(view):
+            # breakpoint()
             if (
                 get_object_or_404(ClassroomResourceQuillFile, pk=view.kwargs.get("pk")).folder.resource.classroom.owner
                 == request.user
@@ -103,6 +107,7 @@ class IsInstitutionStaff(BasePermission):
             if isStaff(institution, user) or isOwner(institution, user):
                 return True
         if "InstitutionResourceDetailView" in str(view):
+            print("catch")
             user = request.user
             institution = get_object_or_404(InstitutionResource, pk=view.kwargs.get("pk")).institution
             if isStaff(institution, user) or isOwner(view.kwargs.get("pk"), user):

@@ -4,10 +4,12 @@ from .models import *
 
 
 class ClasssroomResourceSerializer(serializers.ModelSerializer):
+    owner = serializers.CharField(source="classroom.owner.full_name")
+
     class Meta:
         model = ClassroomResource
         fields = "__all__"
-        extra_kwargs = {"classroom": {"read_only": True}}
+        extra_kwargs = {"classroom": {"read_only": True}, "owner": {"read_only": True}}
 
 
 class ClasssroomResourceFolderSerializer(serializers.ModelSerializer):
