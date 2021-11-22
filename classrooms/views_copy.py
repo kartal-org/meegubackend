@@ -105,7 +105,7 @@ class StudentTypeViewDetail(generics.RetrieveUpdateDestroyAPIView):
 class ClassroomStudentList(generics.ListAPIView):
     """This view display list of members the classroom have"""
 
-    serializer_class = StudentClassroomSerializer
+    serializer_class = ClassroomStudentSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -125,3 +125,11 @@ class ClassroomStudentModify(generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(self.get_object())
         super().destroy(*args, **kwargs)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class StudentList(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ClassroomStudentSerializer
+
+    def get_queryset(self):
+        return Student.objects.filter(classroom=self.kwargs.get("classroom"))

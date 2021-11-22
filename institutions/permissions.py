@@ -85,10 +85,10 @@ class IsInstitutionVerified(BasePermission):
 
         if request.method in SAFE_METHODS:
             return True
-        if request.data["privacy"]:
-
-            if InstitutionVerification.verified.filter(institution=view.kwargs.get("pk")):
-                return True
+        if request.data["privacy"] != "public":
+            return True
+        if InstitutionVerification.verified.filter(institution=view.kwargs.get("pk")):
+            return True
 
         return False
 

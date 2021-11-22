@@ -24,11 +24,11 @@ class MemberType(BaseMemberType):
 
 
 class Member(BaseMember):
-    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, null=True, blank=True)
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ForeignKey(MemberType, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
-        unique_together = ["user", "classroom"]
+        unique_together = ["user", "workspace"]
 
 
 class WorkspaceFolder(Folder):

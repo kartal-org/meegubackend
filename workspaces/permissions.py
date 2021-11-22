@@ -44,7 +44,7 @@ class IsAdviser(BasePermission):
 
 def checkStudent(classroom, user):
     try:
-        student = Member.objects.get(user=user, classroom=classroom)
+        student = Member.objects.get(user=user, workspace=classroom)
     except ObjectDoesNotExist:
 
         return False
@@ -52,15 +52,14 @@ def checkStudent(classroom, user):
 
 
 class IsStudent(BasePermission):
-    message = "Creating workspace folder is restricted to the student only."
+    message = "Creating workspace folder is restricted to the members only."
 
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
             return True
         user = request.user
         if "WorkspaceFolderList" in str(view):
-
-            workspaceClassroom = get_object_or_404(Workspace, pk=view.kwargs.get("workspace")).classroom.id
+            workspaceClassroom = get_object_or_404(Workspace, pk=view.kwargs.get("workspace")).id
             if checkStudent(workspaceClassroom, user):
                 return True
         if "WorkspaceFolderDetail" in str(view):
