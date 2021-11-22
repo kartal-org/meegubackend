@@ -27,7 +27,7 @@ class ModeratorInstitutionListCreate(generics.ListCreateAPIView):
 class ModeratorInstitutionDetail(generics.RetrieveUpdateDestroyAPIView):
     """This view will let User modify his institution"""
 
-    permission_classes = [IsAuthenticated, IsInstitutionOwner, IsInstitutionPaid, IsInstitutionVerified]
+    permission_classes = [IsAuthenticated, IsInstitutionPaid, IsInstitutionVerified]
     serializer_class = InstitutionSerializer
     queryset = Institution.objects.all()
 

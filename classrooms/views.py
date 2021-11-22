@@ -114,7 +114,7 @@ class ResourceCreateAPIView(generics.CreateAPIView):
 
     permission_classes = [permissions.IsAuthenticated]  # also add CustomIsowner
     serializer_class = ResourcesSerializer
-    queryset = ClassroomResource.objects.all()
+    # queryset = ClassroomResource.objects.all()
 
 
 class ResourceListAPIView(generics.ListAPIView):

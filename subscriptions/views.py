@@ -30,6 +30,7 @@ class InstitutionPlanListView(generics.ListAPIView):
     serializer_class = PlanSerializer
 
     def get_queryset(self):
+        print(Plan.institutionPlans.all())
         subscriptionList = get_list_or_404(InstitutionSubscription, institution__owner=self.request.user)
         if "Basic Institution" in [o.plan.name for o in subscriptionList]:
             return Plan.institutionPlans.exclude(name="Basic Institution")

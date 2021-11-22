@@ -40,13 +40,13 @@ class StudentClassroomSerializer(serializers.ModelSerializer):
 
 
 class ClassroomStudentSerializer(serializers.ModelSerializer):
-    role = serializers.CharField(source="role.name")
+    # role = serializers.CharField(source="role.name")
     image = serializers.FileField(source="user.image")
-    fullname = serializers.CharField(source="user.full_name")
+    name = serializers.CharField(source="user.full_name")
 
     class Meta:
         model = Student
-        fields = ["id", "status", "fullname", "image", "role"]
+        fields = ["id", "status", "name", "image"]
 
 
 class StudentTypeSerializer(serializers.ModelSerializer):

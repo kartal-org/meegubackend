@@ -6,7 +6,7 @@ app_name = "institutions"
 
 urlpatterns = [
     path("", ModeratorInstitutionListCreate.as_view(), name="institution_listcreate"),
-    path("<int:pk>", ModeratorInstitutionDetail.as_view(), name="institution_detail"),
+    path("change/<int:pk>", ModeratorInstitutionDetail.as_view(), name="institution_detail"),
     path("verify/<int:institution>", InstitutionVerificationView.as_view(), name="institution_verify"),
     path("verify/change/<int:pk>", InstitutionVerificationDetailView.as_view(), name="institution_verify_update"),
     path("department/<int:institution>", DepartmentListCreate.as_view(), name="department_list"),
