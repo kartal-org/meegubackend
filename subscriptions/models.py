@@ -40,7 +40,7 @@ class Plan(models.Model):
 class Transaction(models.Model):
     payer_Email = models.EmailField()
     payer_FullName = models.CharField(max_length=255)
-    plan = models.ForeignKey(Plan, on_delete=DO_NOTHING)
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
     dateCreated = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -55,7 +55,7 @@ class ClassroomSubscription(Transaction):
 
 
 class InstitutionSubscription(Transaction):
-    institution = models.ForeignKey("institutions.Institution", on_delete=DO_NOTHING)
+    institution = models.ForeignKey("institutions.Institution", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.institution.owner.full_name
