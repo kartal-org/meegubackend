@@ -4,6 +4,9 @@ from .models import *
 
 
 class ClassroomSubmissionSerializer(serializers.ModelSerializer):
+    workspace = serializers.CharField(source="workspace.name")
+    file = serializers.FileField(source="")
+
     class Meta:
         model = ClassroomSubmission
         fields = "__all__"
