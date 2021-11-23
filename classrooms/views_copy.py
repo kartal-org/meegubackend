@@ -47,7 +47,7 @@ class AdviserClassroomModifyView(generics.RetrieveUpdateDestroyAPIView):
 
     parser_classes = [MultiPartParser, FormParser]
     serializer_class = AdviserClassroomSerializer
-    permission_classes = [IsAuthenticated, IsClassroomAdviser, IsClassroomPaid, IsInstitutionStaff]
+    permission_classes = [IsAuthenticated, IsClassroomAdviser, IsInstitutionStaff]  # IsClassroomPaid
     queryset = Classroom.objects.all()
 
     def destroy(self, *args, **kwargs):

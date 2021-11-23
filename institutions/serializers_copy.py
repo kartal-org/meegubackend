@@ -4,7 +4,7 @@ from users.models import NewUser
 
 
 class InstitutionSerializer(serializers.ModelSerializer):
-    owner = serializers.CharField(source="owner.full_name")
+    owner = serializers.CharField(source="owner.full_name", read_only=True)
 
     class Meta:
         model = Institution
