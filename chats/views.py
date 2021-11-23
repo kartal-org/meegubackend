@@ -132,5 +132,5 @@ class GetMessagesView(generics.ListAPIView):
     serializer_class = PublicRoomChatMessageSerializer
 
     def get_queryset(self):
-        room = self.kwargs["pk"]
+        room = self.kwargs.get("pk")
         return PublicRoomChatMessage.objects.filter(room=room)
