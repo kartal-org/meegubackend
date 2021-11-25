@@ -21,7 +21,7 @@ def get_code():
 class WorkspaceList(generics.ListCreateAPIView):
     """List Create View of all workspace in the classroom (Adviser)"""
 
-    permission_classes = [IsAuthenticated, IsAdviser]
+    permission_classes = [IsAuthenticated]
     serializer_class = WorkspaceSerializer
 
     def get_queryset(self):
@@ -32,7 +32,7 @@ class WorkspaceList(generics.ListCreateAPIView):
 
 
 class WorkspaceDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsAdviser]
+    permission_classes = [IsAuthenticated]
     serializer_class = WorkspaceSerializer
     queryset = Workspace.objects.all()
 

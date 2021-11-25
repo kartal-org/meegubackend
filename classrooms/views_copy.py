@@ -11,6 +11,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 import shortuuid
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
+from users.models import NewUser
 
 
 def get_classroom_code():
@@ -102,7 +103,7 @@ class StudentTypeViewDetail(generics.RetrieveUpdateDestroyAPIView):
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ClassroomStudentList(generics.ListAPIView):
+class ClassroomStudentList(generics.ListCreateAPIView):
     """This view display list of members the classroom have"""
 
     serializer_class = ClassroomStudentSerializer
@@ -112,6 +113,12 @@ class ClassroomStudentList(generics.ListAPIView):
         classroom = self.kwargs["classroom"]
 
         return Student.objects.filter(classroom=classroom)
+
+    def perform_create(self, serializer):
+        serializer.save(
+            user=NewUser.objects.get(username=self.request.data.get("username")),
+            classroom=Classroom.objects.get(pk=self.kwargs["classroom"]),
+        )
 
 
 class ClassroomStudentModify(generics.RetrieveUpdateDestroyAPIView):
@@ -127,7 +134,7 @@ class ClassroomStudentModify(generics.RetrieveUpdateDestroyAPIView):
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class StudentList(generics.ListAPIView):
+class StudentList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ClassroomStudentSerializer
 

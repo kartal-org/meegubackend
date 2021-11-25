@@ -1,8 +1,14 @@
 from rest_framework import serializers
 from .models import *
 
-
+# class MemberSerializer(serializers.ModelSerializer):
+#     user = serializers.SlugRelatedField(many=True, read_only=True, slug_field="user__username")
+#     class Meta:
+#         model = Member
+#         fields = "__all__"
 class WorkspaceSerializer(serializers.ModelSerializer):
+    members = serializers.StringRelatedField(many=True, read_only=True)
+
     class Meta:
         model = Workspace
         fields = "__all__"
@@ -43,11 +49,10 @@ class SharedWorkspaceSerializer(serializers.ModelSerializer):
 
 
 class WorkspacMemberSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(source="user.id", read_only=True)
-    first_name = serializers.CharField(source="user.first_name", read_only=True)
-    last_name = serializers.CharField(source="user.last_name", read_only=True)
+    name = serializers.CharField(source="user.full_name", read_only=True)
+
     username = serializers.CharField(source="user.username", read_only=True)
-    cover = serializers.FileField(source="user.cover", read_only=True)
+    image = serializers.FileField(source="user.image", read_only=True)
 
     class Meta:
         model = Member

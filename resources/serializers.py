@@ -4,7 +4,7 @@ from .models import *
 
 
 class ClasssroomResourceSerializer(serializers.ModelSerializer):
-    owner = serializers.CharField(source="classroom.owner.full_name")
+    owner = serializers.CharField(source="classroom.owner.full_name", read_only=True)
 
     class Meta:
         model = ClassroomResource
