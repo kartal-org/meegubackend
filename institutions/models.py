@@ -29,8 +29,25 @@ class StaffType(BaseMemberType):
     custom_Type_For = models.ForeignKey(Institution, on_delete=CASCADE, null=True, blank=True)
 
 
+class Department(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
+    image = models.ImageField(_("Profile"), upload_to=upload_to_department, default="userProfile/default_egry2i.jpg")
+    institution = models.ForeignKey(Institution, on_delete=CASCADE)
+    dateCreated = models.DateTimeField(auto_now_add=True)
+    dateModified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("-dateModified",)
+        unique_together = ["name", "institution"]
+
+    def __str__(self):
+        return self.name
+
+
 class Staff(BaseMember):
     institution = models.ForeignKey(Institution, on_delete=CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     type = models.ForeignKey(StaffType, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
@@ -61,19 +78,3 @@ class InstitutionVerification(models.Model):
 
     class Meta:
         ordering = ("-dateModified",)
-
-
-class Department(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
-    image = models.ImageField(_("Profile"), upload_to=upload_to_department, default="userProfile/default_egry2i.jpg")
-    institution = models.ForeignKey(Institution, on_delete=CASCADE)
-    dateCreated = models.DateTimeField(auto_now_add=True)
-    dateModified = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ("-dateModified",)
-        unique_together = ["name", "institution"]
-
-    def __str__(self):
-        return self.name

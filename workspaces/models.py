@@ -24,7 +24,7 @@ class MemberType(BaseMemberType):
 
 
 class Member(BaseMember):
-    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, null=True, blank=True)
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, null=True, blank=True, related_name="members")
     role = models.ForeignKey(MemberType, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:

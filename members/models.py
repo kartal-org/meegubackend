@@ -25,7 +25,9 @@ class BaseMember(models.Model):
         related_name="%(app_label)s_%(class)s_related",
         related_query_name="%(app_label)s_%(class)ss",
     )
-
+    # @property
+    # def users(self):
+    #     return self.user.full_name
     def __str__(self):
         return self.user.full_name
 

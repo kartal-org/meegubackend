@@ -101,7 +101,7 @@ class StaffList(generics.ListCreateAPIView):
         return Staff.objects.filter(institution=self.kwargs["institution"])
 
     def perform_create(self, serializer):
-        serializer.save(institution=Institution.objects.get(pk=self.kwargs["institution"]))
+        serializer.save(institution=Institution.objects.get(pk=self.kwargs["institution"]), user=self.request.user)
 
 
 # Untested for other account
@@ -121,7 +121,10 @@ class StaffTypeList(generics.ListCreateAPIView):
     serializer_class = StaffTypeSerializer
 
     def get_queryset(self):
-        return StaffType.objects.filter(custom_Type_For=self.kwargs["institution"])
+        result = StaffType.objects.filter(custom_Type_For=self.kwargs["institution"]) | StaffType.objects.filter(
+            custom_Type_For__isnull=True
+        )
+        return result
 
     def perform_create(self, serializer):
         serializer.save(custom_Type_For=Institution.objects.get(pk=self.kwargs["institution"]))

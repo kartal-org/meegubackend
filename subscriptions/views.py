@@ -38,7 +38,7 @@ class InstitutionPlanListView(generics.ListAPIView):
 
 
 class ClassroomSubscriptionListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, IsNotFirstClassroom]
+    permission_classes = [IsAuthenticated]
     serializer_class = BuySubscriptionSerializer
 
     def get_queryset(self):

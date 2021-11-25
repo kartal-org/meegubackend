@@ -36,10 +36,14 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 
 class StaffSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source="user.full_name", read_only=True)
+    image = serializers.FileField(source="user.image", read_only=True)
+    username = serializers.CharField(source="user.username", read_only=True)
+
     class Meta:
         model = Staff
         fields = "__all__"
-        extra_kwargs = {"institution": {"read_only": True}}
+        extra_kwargs = {"institution": {"read_only": True}, "user": {"read_only": True}}
 
 
 class StaffTypeSerializer(serializers.ModelSerializer):

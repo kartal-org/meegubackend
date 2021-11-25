@@ -18,7 +18,7 @@ class IsOwner(BasePermission):
 
 
 def isOwner(institution, user):
-    return get_object_or_404(Institution, pk=institution).owner == user
+    return Institution.objects.get(pk=institution).owner == user
 
 
 def isStaff(institution, user):
@@ -101,7 +101,7 @@ class IsNotInstitutionOwner(BasePermission):
         if request.method in SAFE_METHODS:
             return True
 
-        if get_object_or_404(Institution, pk=view.kwargs.get("institution")) == request.data["user"]:
+        if Institution.objects.get(pk=view.kwargs.get("institution")).owner == request.user:
             return True
 
         return False
