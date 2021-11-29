@@ -37,12 +37,32 @@ class ModeratorInstitutionDetail(generics.RetrieveUpdateDestroyAPIView):
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class ModeratorInstitutionList(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = InstitutionByStaffSerializer
+
+    def get_queryset(self):
+        return Staff.objects.filter(user=self.request.user, type__name="Creator")
+
+    # def list(self, request, *args, **kwargs):
+    #     queryset = self.filter_queryset(self.get_queryset())
+
+    #     page = self.paginate_queryset(queryset)
+    #     if page is not None:
+    #         serializer = self.get_serializer(page, many=True)
+    #         return self.get_paginated_response(serializer.data)
+
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     breakpoint()
+    #     return response.Response(serializer.data)
+
+
 class StaffInstitutionList(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = InstitutionByStaffSerializer
 
     def get_queryset(self):
-        return Staff.objects.filter(user=self.request.user)
+        return Staff.objects.filter(user=self.request.user).exclude(type__name="Creator")
 
 
 class InstitutionVerificationView(generics.CreateAPIView):
