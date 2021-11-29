@@ -3,12 +3,17 @@ from .models import *
 
 
 class AdviserClassroomSerializer(serializers.ModelSerializer):
-    owner = serializers.CharField(source="owner.full_name", read_only=True)
+    # owner = serializers.CharField(source="owner.full_name", read_only=True)
 
     class Meta:
         model = Classroom
         fields = "__all__"
-        extra_kwargs = {"code": {"read_only": True}, "owner": {"read_only": True}}
+        extra_kwargs = {"code": {"read_only": True}}
+
+    def create(self, validated_data):
+        print(self)
+        print(validated_data)
+        return Classroom(validated_data)
 
 
 class JoinClassroomSerializer(serializers.ModelSerializer):
@@ -17,12 +22,12 @@ class JoinClassroomSerializer(serializers.ModelSerializer):
     description = serializers.CharField(source="classroom.description", read_only=True)
     id = serializers.CharField(source="classroom.id", read_only=True)
     cover = serializers.FileField(source="classroom.cover", read_only=True)
-    owner = serializers.CharField(source="classroom.owner.full_name", read_only=True)
+    # owner = serializers.CharField(source="classroom.owner.full_name", read_only=True)
     subject = serializers.CharField(source="classroom.subject", read_only=True)
 
     class Meta:
-        model = Student
-        fields = ["id", "status", "classroom", "name", "description", "cover", "owner", "subject"]
+        model = ClassroomMember
+        fields = ["id", "status", "classroom", "name", "description", "cover", "subject"]
 
 
 class StudentClassroomSerializer(serializers.ModelSerializer):
@@ -31,12 +36,12 @@ class StudentClassroomSerializer(serializers.ModelSerializer):
     description = serializers.CharField(source="classroom.description")
     id = serializers.CharField(source="classroom.id")
     cover = serializers.FileField(source="classroom.cover")
-    owner = serializers.CharField(source="classroom.owner.full_name")
+    # owner = serializers.CharField(source="classroom.owner.full_name")
     subject = serializers.CharField(source="classroom.subject")
 
     class Meta:
-        model = Student
-        fields = ["id", "status", "code", "name", "description", "cover", "owner", "subject", "classroom"]
+        model = ClassroomMember
+        fields = ["id", "status", "code", "name", "description", "cover", "subject", "classroom"]
 
 
 class ClassroomStudentSerializer(serializers.ModelSerializer):
@@ -46,11 +51,11 @@ class ClassroomStudentSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="user.username", read_only=True)
 
     class Meta:
-        model = Student
+        model = ClassroomMember
         fields = ["id", "status", "name", "image", "username"]
 
 
-class StudentTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StudentType
-        fields = ["id", "name", "description", "permissions", "custom_Type_For"]
+# class StudentTypeSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = StudentType
+#         fields = ["id", "name", "description", "permissions", "custom_Type_For"]

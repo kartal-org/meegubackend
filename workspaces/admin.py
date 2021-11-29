@@ -8,6 +8,8 @@ class ModelConfig(admin.ModelAdmin):
 
 admin.site.register(Workspace, ModelConfig)
 admin.site.register(Member, ModelConfig)
+admin.site.register(MemberType, ModelConfig)
 admin.site.register(WorkspaceFolder, ModelConfig)
-admin.site.register(WorkspaceQuillFile, ModelConfig)
-admin.site.register(WorkspaceUploadedFile, ModelConfig)
+admin.site.register(WorkspaceFile, ModelConfig)
+# admin.site.register(WorkspaceQuillFile, ModelConfig)
+# admin.site.register(WorkspaceUploadedFile, ModelConfig)

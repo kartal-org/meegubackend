@@ -6,7 +6,7 @@ from .permissions import *
 from django.shortcuts import get_list_or_404, get_object_or_404
 import shortuuid
 from rest_framework.parsers import MultiPartParser, FormParser
-from classrooms.models import Student
+from classrooms.models import ClassroomMember
 from rest_framework.decorators import api_view
 from itertools import chain
 from django.db.models import F
@@ -28,7 +28,9 @@ class WorkspaceList(generics.ListCreateAPIView):
         return Workspace.objects.filter(classroom=self.kwargs["classroom"])
 
     def perform_create(self, serializer):
-        serializer.save(classroom=Classroom.objects.get(pk=self.kwargs["classroom"]), code=get_code())
+        serializer.save(
+            classroom=Classroom.objects.get(pk=self.kwargs["classroom"]), code=get_code(), creator=self.request.user
+        )
 
 
 class WorkspaceDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -68,8 +70,30 @@ class WorkspaceFolderDetail(generics.RetrieveUpdateDestroyAPIView):
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class WorkspaceFileList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FileSerializer
+
+    def get_queryset(self):
+        return WorkspaceFile.objects.filter(folder=self.kwargs["folder"])
+
+    def perform_create(self, serializer):
+        serializer.save(folder=WorkspaceFolder.objects.get(pk=self.kwargs["folder"]))
+
+
+class WorkspaceFileDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FileSerializer
+    queryset = WorkspaceFile.objects.all()
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class QuillFileList(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, IsStudent]
+    permission_classes = [IsAuthenticated]
     serializer_class = QuillSerializer
 
     def get_queryset(self):
@@ -80,7 +104,7 @@ class QuillFileList(generics.ListCreateAPIView):
 
 
 class QuillFileDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsStudent]
+    permission_classes = [IsAuthenticated]
     serializer_class = QuillSerializer
     queryset = WorkspaceQuillFile.objects.all()
 
@@ -172,7 +196,11 @@ def availableStudents(request, classroom):
         combineList = list(chain(studentList, memberList))
 
         available = list(map(dict, set(tuple(sorted(d.items())) for d in combineList)))
-        return response.Response(available)
+
+        res = [i for i in available if not (i["uid"] == 1)]
+        res = [i for i in res if not (i["uid"] == request.user.id)]
+
+        return response.Response(res)
 
 
 class MemberListCreate(generics.ListCreateAPIView):

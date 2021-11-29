@@ -45,6 +45,7 @@ class IsAdviser(BasePermission):
 def checkStudent(classroom, user):
     try:
         student = Member.objects.get(user=user, workspace=classroom)
+
     except ObjectDoesNotExist:
 
         return False
@@ -59,16 +60,16 @@ class IsStudent(BasePermission):
             return True
         user = request.user
         if "WorkspaceFolderList" in str(view):
+
             workspaceClassroom = get_object_or_404(Workspace, pk=view.kwargs.get("workspace")).id
             if checkStudent(workspaceClassroom, user):
                 return True
         if "WorkspaceFolderDetail" in str(view):
-            workspaceClassroom = get_object_or_404(WorkspaceFolder, pk=view.kwargs.get("pk")).workspace.classroom.id
-
+            # breakpoint()
+            workspaceClassroom = get_object_or_404(WorkspaceFolder, pk=view.kwargs.get("pk")).workspace.id
             if checkStudent(workspaceClassroom, user):
                 return True
         if "QuillFileList" in str(view) or "UploadFileList" in str(view):
-
             workspaceClassroom = get_object_or_404(WorkspaceFolder, pk=view.kwargs.get("folder")).workspace.classroom.id
             if checkStudent(workspaceClassroom, user):
                 return True

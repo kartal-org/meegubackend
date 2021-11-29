@@ -4,12 +4,20 @@ from users.models import NewUser
 
 
 class InstitutionSerializer(serializers.ModelSerializer):
-    owner = serializers.CharField(source="owner.full_name", read_only=True)
+    # owner = serializers.CharField(source="owner.full_name", read_only=True)
 
     class Meta:
         model = Institution
         fields = "__all__"
-        extra_kwargs = {"owner": {"read_only": True}}
+        # extra_kwargs = {"owner": {"read_only": True}}
+
+
+class InstitutionByStaffSerializer(serializers.ModelSerializer):
+    institution = InstitutionSerializer(read_only=True)
+
+    class Meta:
+        model = Staff
+        fields = ["institution"]
 
 
 class StaffInstitutionSerializer(serializers.ModelSerializer):

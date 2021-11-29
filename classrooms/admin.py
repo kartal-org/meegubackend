@@ -7,6 +7,6 @@ class ClassroomConfig(admin.ModelAdmin):
 
 
 admin.site.register(Classroom, ClassroomConfig)
-admin.site.register(Student, ClassroomConfig)
-admin.site.register(StudentType, ClassroomConfig)
+admin.site.register(ClassroomMember, ClassroomConfig)
+
 # admin.site.register(ClassroomSubscription, ClassroomConfig)

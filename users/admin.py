@@ -43,12 +43,20 @@ class UserAdminConfig(UserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("email", "username", "first_name", "password1", "password2", "is_active", "is_staff"),
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "username",
+                    "email",
+                    "password1",
+                    "password2",
+                    "about",
+                    "is_active",
+                    "is_staff",
+                ),
             },
         ),
     )
 
 
 admin.site.register(NewUser, UserAdminConfig)
-
-admin.site.register(Profile)

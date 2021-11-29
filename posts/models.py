@@ -1,10 +1,12 @@
 from django.db import models
 from django.conf import settings
-from workspaces.models import Workspace, WorkspaceUploadedFile
+from institutions.models import Department
+from workspaces.models import Workspace, WorkspaceUploadedFile, Member
 from institutions.models import Institution
 from django.utils.text import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
+from django.db.models import F
 
 # Create your models here.
 def upload_to(instance, filename):
@@ -23,13 +25,18 @@ class Post(models.Model):
     is_featured = models.BooleanField(default=False)
     title = models.TextField(max_length=250, unique=True)
     abstract = models.TextField()
-    institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
+    # institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     slug = models.SlugField(max_length=250, null=True, blank=True)
     publishedDate = models.DateTimeField(auto_now_add=True)
     dateModified = models.DateTimeField(auto_now=True)
     category = models.ManyToManyField(Category, blank=True)
     privacy = models.CharField(choices=options, default="public", max_length=10)
     # author = models.ManyToManyField(settings.AUTH_USER_MODEL)
+
+    @property
+    def institution(self):
+        return self.department.institution.id
 
     def __str__(self):
         return self.title
@@ -42,8 +49,18 @@ class Article(Post):
     file = models.ForeignKey(WorkspaceUploadedFile, on_delete=models.CASCADE, blank=True, null=True)
 
     @property
-    def users(self):
+    def workspace(self):
         return self.file.folder.workspace.id
+
+    @property
+    def authors(self):
+        workspace = self.file.folder.workspace.id
+        # query = Member.objects.filter(workspace=workspace).values(
+        #     uid=F("user__id"), first_name=F("user__first_name"), last_name=F("user__last_name")
+        # )
+        return Member.objects.filter(workspace=workspace).values(
+            uid=F("user__id"), first_name=F("user__first_name"), last_name=F("user__last_name")
+        )
 
 
 class Archive(Post):

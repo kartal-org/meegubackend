@@ -3,6 +3,15 @@ from django.db.models.deletion import CASCADE, DO_NOTHING
 from django.utils.translation import gettext_lazy as _
 from products.models import Product
 from members.models import BaseMember, BaseMemberType
+from django.shortcuts import get_object_or_404, get_list_or_404
+from django.core.exceptions import ObjectDoesNotExist
+from subscriptions.models import InstitutionSubscription
+from django.db.models.functions import Cast
+from django.db.models import Sum, IntegerField
+from django.contrib.postgres.fields.jsonb import KeyTextTransform
+from django.dispatch import receiver
+from django.db.models.signals import post_save, pre_save
+from django_currentuser.middleware import get_current_authenticated_user
 
 
 def upload_to(instance, filename):
@@ -18,11 +27,37 @@ def upload_to_department(instance, filename):
 
 
 class Institution(Product):
+
+    name = models.CharField(max_length=255, unique=True)
     image = models.ImageField(_("Profile"), upload_to=upload_to, default="userProfile/default_egry2i.jpg")
     address = models.TextField()
-    contact = models.CharField(max_length=11)
-    email = models.EmailField()
+    contact = models.CharField(max_length=11, unique=True)
+    email = models.EmailField(unique=True)
     website = models.URLField(null=True, blank=True)
+
+    # staff =
+
+    @property
+    def is_Verified(self):
+        # returns boolean
+        if InstitutionVerification.objects.get(institution=self.id):
+            return True
+        return False
+
+    @property
+    def storage_Limit(self):
+        # returns all storage bought through subscription
+        return (
+            InstitutionSubscription.objects.filter(institution=self.id)
+            .annotate(storage_limit=Cast(KeyTextTransform("storage", "plan__limitations"), IntegerField()))
+            .aggregate(Sum("storage_limit"))["storage_limit__sum"]
+        )
+
+    # Hack to pass the user to post save signal.
+    def save(self, *args, **kwargs):
+        # Hack to pass the user to post save signal.
+        self.current_authenticated_user = get_current_authenticated_user()
+        super(Institution, self).save(*args, **kwargs)
 
 
 class StaffType(BaseMemberType):
@@ -53,6 +88,9 @@ class Staff(BaseMember):
     class Meta:
         unique_together = ["user", "institution"]
 
+    def __str__(self):
+        return "%s - %s" % (self.user.full_name, self.institution.name)
+
 
 class InstitutionVerification(models.Model):
     class VerifiedInstitution(models.Manager):
@@ -78,3 +116,17 @@ class InstitutionVerification(models.Model):
 
     class Meta:
         ordering = ("-dateModified",)
+
+
+# signals
+@receiver(post_save, sender=Institution)
+def institution_create_owner(created, instance, *args, **kwargs):
+
+    if created:
+        user = getattr(instance, "current_authenticated_user", None)
+        print(user)
+
+        defaultMember = Staff.objects.create(
+            institution=instance, type=StaffType.objects.get(name="Creator"), user=user
+        )
+        defaultMember.save()

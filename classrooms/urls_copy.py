@@ -13,6 +13,6 @@ urlpatterns = [
     path("my-class", StudentClassroomListView.as_view(), name="student_classroom_list"),
     path("members/<int:classroom>", ClassroomStudentList.as_view(), name="classroom_classroom_list"),
     path("members/change/<int:pk>", ClassroomStudentModify.as_view(), name="classroom_classroom_list"),
-    path("member-type/<int:classroom>", StudentTypeViewList.as_view(), name="student_type"),
-    path("member-type/change/<int:pk>", StudentTypeViewDetail.as_view(), name="student_type_detail"),
+    # path("member-type/<int:classroom>", StudentTypeViewList.as_view(), name="student_type"),
+    # path("member-type/change/<int:pk>", StudentTypeViewDetail.as_view(), name="student_type_detail"),
 ]

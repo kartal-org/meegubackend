@@ -11,7 +11,7 @@ from .permissions import IsOwner
 
 from rest_framework.permissions import IsAuthenticated
 
-from .models import NewUser, Profile
+from .models import NewUser
 from .utils import Util
 from django.urls import reverse
 
@@ -159,19 +159,6 @@ class UpdateImg(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = NewUser.objects.all()
     serializer_class = UserProfileSerializer
-
-    # def get_queryset(self):  # this will filter resources according to classroom
-    #     user = self.kwargs["user"]
-    #     return NewUser.objects.filter(user=user)
-
-
-class GetUserProfileView(generics.ListCreateAPIView):
-    serializer_class = UserProfileSerializer
-    parser_classes = [MultiPartParser, FormParser]
-
-    def get_queryset(self):  # this will filter resources according to classroom
-        user = self.kwargs["user"]
-        return Profile.objects.filter(user=user)
 
 
 class UpdateUserProfileView(APIView):

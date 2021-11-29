@@ -5,7 +5,8 @@ from .views_copy import *
 app_name = "institutions"
 
 urlpatterns = [
-    path("", ModeratorInstitutionListCreate.as_view(), name="institution_listcreate"),
+    path("", ModeratorInstitutionCreate.as_view(), name="institution_create"),
+    path("list", StaffInstitutionList.as_view(), name="institution_list"),
     path("change/<int:pk>", ModeratorInstitutionDetail.as_view(), name="institution_detail"),
     path("verify/<int:institution>", InstitutionVerificationView.as_view(), name="institution_verify"),
     path("verify/change/<int:pk>", InstitutionVerificationDetailView.as_view(), name="institution_verify_update"),
