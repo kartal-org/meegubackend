@@ -39,19 +39,19 @@ class CustomAccountManager(BaseUserManager):
 
 class NewUser(AbstractBaseUser, PermissionsMixin):
 
-    email = models.EmailField(_("email address"), unique=True)
-    username = models.CharField(max_length=150, unique=True)
     first_name = models.CharField(max_length=150, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
+    username = models.CharField(max_length=150, unique=True)
+    email = models.EmailField(_("email address"), unique=True)
     about = models.TextField(_("about"), max_length=500, blank=True)
-    image = models.ImageField(
+    profileImage = models.ImageField(
         _("Profile"), upload_to=upload_to, default="userProfile/default_egry2i.jpg", blank=True, null=True
     )
-    cover = models.ImageField(
+    profileCover = models.ImageField(
         _("Cover"), upload_to=upload_to, default="userProfile/coverDefault_pdrisr.jpg", blank=True, null=True
     )
-    is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=True)
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateUpdated = models.DateTimeField(auto_now=True)
@@ -68,12 +68,3 @@ class NewUser(AbstractBaseUser, PermissionsMixin):
     def full_name(self):
         "Returns the person's full name."
         return "%s %s" % (self.first_name, self.last_name)
-
-
-class Profile(models.Model):
-    user = models.OneToOneField(NewUser, related_name="user_profile", on_delete=models.CASCADE)
-    image = models.ImageField(_("Image"), upload_to=upload_to, default="posts/default.jpg")
-    file = models.FileField(upload_to=upload_to, blank=True, default="")
-
-    def __str__(self):
-        return self.user.username

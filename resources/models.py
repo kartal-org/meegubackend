@@ -27,19 +27,7 @@ class ClassroomResourceFolder(Folder):
         unique_together = ["name", "resource"]
 
 
-class ClassroomResourceQuillFile(QuillFile):
-    folder = models.ForeignKey(
-        ClassroomResourceFolder,
-        on_delete=models.CASCADE,
-        related_name="%(app_label)s_%(class)s_related",
-        related_query_name="%(app_label)s_%(class)ss",
-    )
-
-    class Meta:
-        unique_together = ["name", "folder"]
-
-
-class ClassroomResourceUploadedFile(UploadedFile):
+class ClassroomResourceFile(File):
     folder = models.ForeignKey(
         ClassroomResourceFolder,
         on_delete=models.CASCADE,
@@ -69,7 +57,7 @@ class InstitutionResourceFolder(Folder):
         unique_together = ["name", "resource"]
 
 
-class InstitutionResourceQuillFile(QuillFile):
+class InstitutionResourceFile(File):
     folder = models.ForeignKey(
         InstitutionResourceFolder,
         on_delete=models.CASCADE,
@@ -79,12 +67,3 @@ class InstitutionResourceQuillFile(QuillFile):
 
     class Meta:
         unique_together = ["name", "folder"]
-
-
-class InstitutionResourceUploadedFile(UploadedFile):
-    folder = models.ForeignKey(
-        InstitutionResourceFolder,
-        on_delete=models.CASCADE,
-        related_name="%(app_label)s_%(class)s_related",
-        related_query_name="%(app_label)s_%(class)ss",
-    )

@@ -1,5 +1,7 @@
+from django.db import connection
 from django.shortcuts import render
 from rest_framework import generics, permissions
+from rest_framework import response
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 
@@ -10,12 +12,14 @@ from .permissions import *
 from rest_framework.response import Response
 from django.db.models import Avg
 from workspaces.models import Workspace
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, parser_classes
 from django.db.models import F
+from .serializers_copy import ArticleListSerializer, ArticleDetailSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 1
+    page_size = 10
     page_size_query_param = "page_size"
     max_page_size = 10
 
@@ -32,36 +36,46 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class SearchArticleList(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = Article2Serializer
+    serializer_class = ArticleListSerializer
     pagination_class = StandardResultsSetPagination
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = [
         "title",
         "abstract",
-        "author__first_name",
-        "author__last_name",
-        "publisher__name",
+        "department__institution__name",
     ]
     queryset = Article.objects.filter(privacy="public")
 
 
 class InstitutionArticleListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = Article2Serializer
+    serializer_class = ArticleListSerializer
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):
-        return Article.objects.filter(institution=self.kwargs["institution"])
+        return Article.objects.filter(department__institution=self.kwargs["institution"])
 
     def perform_create(self, serializer):
         serializer.save(
-            publisher=Institution.objects.get(pk=self.kwargs["institution"]),
-            workspace=Workspace.objects.get(pk=self.request.data.get("workspace")),
+            department=Department.objects.get(pk=self.request.data.get("department")),
+            # workspace=Workspace.objects.get(pk=self.request.data.get("workspace")),
         )
+
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        print("Queries count is: {}".format(len(connection.queries)))
+        return response
+
+
+class ArchiveListCreate(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ArchiveSerializer
+    queryset = Archive.objects.all()
 
 
 class InstitutionArticleDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, IsStaff]
-    serializer_class = Article2Serializer
+    serializer_class = ArticleDetailSerializer
     queryset = Article.objects.all()
 
 

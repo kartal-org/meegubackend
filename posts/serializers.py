@@ -1,8 +1,9 @@
 from django.db.models import fields
 from rest_framework import serializers
 from .models import *
-from workspaces.models import Member, Workspace
+from workspaces.models import *
 from users.models import NewUser
+from workspaces.serializers_copy import UploadFileSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -28,17 +29,9 @@ class MemberSerializer(serializers.ModelSerializer):
     pass
 
 
-class WorkspaceForPostSerializer(serializers.ModelSerializer):
-    members = serializers.StringRelatedField(many=True, read_only=True)
-
-    class Meta:
-        model = Workspace
-        fields = ["members", "id", "name"]
-
-
 class Article2Serializer(serializers.ModelSerializer):
-    workspace = serializers.CharField(source="file.folder.workspace.name", read_only=True)
-    workspaceID = serializers.IntegerField(source="file.folder.workspace.id", read_only=True)
+    file = UploadFileSerializer()
+    # workspaceID = serializers.IntegerField(source="file.folder.workspace.id", read_only=True)
 
     # members = serializers.SlugRelatedField(slug_field="id", read_only=True)
     # members = serializers.CharField(source="file.folder.workspace.members", read_only=True)
@@ -58,10 +51,28 @@ class Article2Serializer(serializers.ModelSerializer):
 
 
 class ArchiveSerializer(serializers.ModelSerializer):
+    # category = serializers.CharField(source="category.name")
+
     class Meta:
         model = Archive
         fields = "__all__"
-        extra_kwargs = {"institution": {"read_only": True}, "slug": {"read_only": True}}
+        extra_kwargs = {"department": {"read_only": True}, "slug": {"read_only": True}}
+
+
+# class BookSerializer(serializers.ModelSerializer):
+#     members = serializers.SlugRelatedField(queryset=Member.objects.all(), many=True, read_only=True,slug_field='username')
+
+#     class Meta:
+#         model = Book
+#         fields = ('id', 'name', 'published', 'authors')
+
+
+# class AuthorSerializer(serializers.ModelSerializer):
+#     book_list = BookSerializer(many=True, read_only=True)
+
+#     class Meta:
+#         model = Author
+#         fields = ('id', 'name', 'last_name', 'book_list')
 
 
 class CommentSerializer(serializers.ModelSerializer):

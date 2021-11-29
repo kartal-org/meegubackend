@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from users.models import NewUser, Profile
+from users.models import NewUser
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
@@ -51,8 +51,8 @@ class GetUserSerializer(serializers.ModelSerializer):
             "email",
             "username",
             "about",
-            "image",
-            "cover",
+            "profileImage",
+            "profileCover",
             "is_verified",
         )
 
@@ -76,8 +76,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "about",
             "name",
             "email",
-            "image",
-            "cover",
+            "profileImage",
+            "profileCover",
             "is_verified",
         )
         extra_kwargs = {
@@ -89,7 +89,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class UpdateUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
     # password = serializers.CharField(write_only=True, required=True)
-    image = serializers.FileField(required=False)
+    profileImage = serializers.FileField(required=False)
     name = serializers.SerializerMethodField("get_user_full_name")
 
     def get_user_full_name(self, obj):
@@ -100,7 +100,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = NewUser
-        fields = ("id", "username", "first_name", "last_name", "about", "email", "name", "image", "cover")
+        fields = ("id", "username", "first_name", "last_name", "about", "email", "name", "profileImage", "profileCover")
         extra_kwargs = {
             "first_name": {"required": True},
             "last_name": {"required": True},
@@ -134,12 +134,6 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
-
-
-class UpdateImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = NewUser
-        fields = ["id", "image"]
 
 
 class EmailVerificationSerializer(serializers.ModelSerializer):
@@ -188,4 +182,4 @@ class SetNewPasswordSerializer(serializers.Serializer):
 class SearchUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewUser
-        fields = ["username", "full_name", "image"]
+        fields = ["username", "full_name", "profileImage"]

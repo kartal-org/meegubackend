@@ -8,5 +8,7 @@ class ResourceConfig(admin.ModelAdmin):
 
 admin.site.register(ClassroomResource, ResourceConfig)
 admin.site.register(ClassroomResourceFolder, ResourceConfig)
-admin.site.register(ClassroomResourceQuillFile, ResourceConfig)
-admin.site.register(ClassroomResourceUploadedFile, ResourceConfig)
+admin.site.register(ClassroomResourceFile, ResourceConfig)
+admin.site.register(InstitutionResource, ResourceConfig)
+admin.site.register(InstitutionResourceFolder, ResourceConfig)
+admin.site.register(InstitutionResourceFile, ResourceConfig)

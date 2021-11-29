@@ -37,6 +37,7 @@ class AdviserClassroomListCreateView(generics.ListCreateAPIView):
         code = get_classroom_code()
         user = self.request.user
         serializer.save(code=code, owner=user)
+        breakpoint()
 
     def get_queryset(self):
         user = self.request.user
@@ -80,27 +81,27 @@ class StudentClassroomListView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Student.objects.filter(user=user)
+        return ClassroomMember.objects.filter(user=user)
 
 
-class StudentTypeViewList(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = StudentTypeSerializer
+# class StudentTypeViewList(generics.ListCreateAPIView):
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = StudentTypeSerializer
 
-    def get_queryset(self):
-        classroom = self.kwargs["classroom"]
-        return StudentType.objects.filter(Q(custom_Type_For__isnull=True) | Q(custom_Type_For=classroom))
+#     def get_queryset(self):
+#         classroom = self.kwargs["classroom"]
+#         return StudentType.objects.filter(Q(custom_Type_For__isnull=True) | Q(custom_Type_For=classroom))
 
 
-class StudentTypeViewDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsStudentTypeCreator]
-    serializer_class = StudentTypeSerializer
-    queryset = StudentType.objects.all()
+# class StudentTypeViewDetail(generics.RetrieveUpdateDestroyAPIView):
+#     permission_classes = [IsAuthenticated, IsStudentTypeCreator]
+#     serializer_class = StudentTypeSerializer
+#     queryset = StudentType.objects.all()
 
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return response.Response(serializer.data, status=status.HTTP_200_OK)
+#     def destroy(self, *args, **kwargs):
+#         serializer = self.get_serializer(self.get_object())
+#         super().destroy(*args, **kwargs)
+#         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ClassroomStudentList(generics.ListCreateAPIView):
@@ -112,7 +113,7 @@ class ClassroomStudentList(generics.ListCreateAPIView):
     def get_queryset(self):
         classroom = self.kwargs["classroom"]
 
-        return Student.objects.filter(classroom=classroom)
+        return ClassroomMember.objects.filter(classroom=classroom)
 
     def perform_create(self, serializer):
         serializer.save(
@@ -126,7 +127,7 @@ class ClassroomStudentModify(generics.RetrieveUpdateDestroyAPIView):
 
     permission_classes = [IsAuthenticated]  # add is adviser permission
     serializer_class = ClassroomStudentSerializer
-    queryset = Student.objects.all()
+    queryset = ClassroomMember.objects.all()
 
     def destroy(self, *args, **kwargs):
         serializer = self.get_serializer(self.get_object())
@@ -139,4 +140,4 @@ class StudentList(generics.ListCreateAPIView):
     serializer_class = ClassroomStudentSerializer
 
     def get_queryset(self):
-        return Student.objects.filter(classroom=self.kwargs.get("classroom"))
+        return ClassroomMember.objects.filter(classroom=self.kwargs.get("classroom"))

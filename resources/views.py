@@ -54,12 +54,12 @@ class ResourceFolderDetail(generics.RetrieveUpdateDestroyAPIView):
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ResourceQuillFileList(generics.ListCreateAPIView):
+class ClassroomResourceFileList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsClassroomAdviser]
-    serializer_class = ClassroomResourceQuillFileSerializer
+    serializer_class = ClassroomResourceFileSerializer
 
     def get_queryset(self):
-        return ClassroomResourceQuillFile.objects.filter(
+        return ClassroomResourceFile.objects.filter(
             folder=ClassroomResourceFolder.objects.get(pk=self.kwargs["folder"])
         )
 
@@ -67,32 +67,10 @@ class ResourceQuillFileList(generics.ListCreateAPIView):
         serializer.save(folder=ClassroomResourceFolder.objects.get(pk=self.kwargs["folder"]))
 
 
-class ResourceQuillFileDetail(generics.RetrieveUpdateDestroyAPIView):
+class ClassroomResourceFileDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsClassroomAdviser]
-    serializer_class = ClassroomResourceQuillFileSerializer
-    queryset = ClassroomResourceQuillFile.objects.all()
-
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return response.Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class ResourceUploadFileList(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, IsClassroomAdviser, IsNotSubscriptionLimit]
-    serializer_class = ClassroomResourceUploadedFileSerializer
-
-    def get_queryset(self):
-        return ClassroomResourceUploadedFile.objects.filter(folder=self.kwargs["folder"])
-
-    def perform_create(self, serializer):
-        serializer.save(folder=ClassroomResourceFolder.objects.get(pk=self.kwargs["folder"]))
-
-
-class ResourceUploadFileDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsClassroomAdviser]
-    serializer_class = ClassroomResourceUploadedFileSerializer
-    queryset = ClassroomResourceUploadedFile.objects.all()
+    serializer_class = ClassroomResourceFileSerializer
+    queryset = ClassroomResourceFile.objects.all()
 
     def destroy(self, *args, **kwargs):
         serializer = self.get_serializer(self.get_object())
@@ -147,12 +125,12 @@ class InstitutionResourceFolderDetail(generics.RetrieveUpdateDestroyAPIView):
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class InstitutionResourceQuillFileList(generics.ListCreateAPIView):
+class InstitutionResourceFileList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsInstitutionStaff]
-    serializer_class = InstitutionResourceQuillFileSerializer
+    serializer_class = InstitutionResourceFileSerializer
 
     def get_queryset(self):
-        return InstitutionResourceQuillFile.objects.filter(
+        return InstitutionResourceFile.objects.filter(
             folder=InstitutionResourceFolder.objects.get(pk=self.kwargs["folder"])
         )
 
@@ -160,34 +138,10 @@ class InstitutionResourceQuillFileList(generics.ListCreateAPIView):
         serializer.save(folder=InstitutionResourceFolder.objects.get(pk=self.kwargs["folder"]))
 
 
-class InstitutionResourceQuillFileDetail(generics.RetrieveUpdateDestroyAPIView):
+class InstitutionResourceFileDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsInstitutionStaff]
-    serializer_class = InstitutionResourceQuillFileSerializer
-    queryset = InstitutionResourceQuillFile.objects.all()
-
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return response.Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class InstitutionResourceUploadFileList(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, IsInstitutionStaff, IsNotSubscriptionLimit]
-    serializer_class = InstitutionResourceUploadedFileSerializer
-
-    def get_queryset(self):
-        return InstitutionResourceUploadedFile.objects.filter(
-            folder=InstitutionResourceFolder.objects.get(pk=self.kwargs["folder"])
-        )
-
-    def perform_create(self, serializer):
-        serializer.save(folder=InstitutionResourceFolder.objects.get(pk=self.kwargs["folder"]))
-
-
-class InstitutionResourceUploadFileDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsInstitutionStaff]
-    serializer_class = InstitutionResourceUploadedFileSerializer
-    queryset = InstitutionResourceUploadedFile.objects.all()
+    serializer_class = InstitutionResourceFileSerializer
+    queryset = InstitutionResourceFile.objects.all()
 
     def destroy(self, *args, **kwargs):
         serializer = self.get_serializer(self.get_object())

@@ -11,14 +11,14 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 
-class ModeratorInstitutionListCreate(generics.ListCreateAPIView):
+class ModeratorInstitutionCreate(generics.CreateAPIView):
     """Moderator List Create View"""
 
     permission_classes = [IsAuthenticated]
     serializer_class = InstitutionSerializer
 
-    def get_queryset(self):
-        return Institution.objects.filter(owner=self.request.user)
+    # def get_queryset(self):
+    #     return Institution.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -35,6 +35,14 @@ class ModeratorInstitutionDetail(generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(self.get_object())
         super().destroy(*args, **kwargs)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class StaffInstitutionList(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = InstitutionByStaffSerializer
+
+    def get_queryset(self):
+        return Staff.objects.filter(user=self.request.user)
 
 
 class InstitutionVerificationView(generics.CreateAPIView):
@@ -147,12 +155,12 @@ class InstitutionSearchList(generics.ListAPIView):
     search_fields = ["name", "address", "owner__username"]
 
 
-# Institution Staff list view please
-class StaffInstitutionList(generics.ListAPIView):
-    """This view list all the staff's Institution"""
+# # Institution Staff list view please
+# class StaffInstitutionList(generics.ListAPIView):
+#     """This view list all the staff's Institution"""
 
-    permission_classes = [IsAuthenticated]
-    serializer_class = StaffInstitutionSerializer
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = StaffInstitutionSerializer
 
-    def get_queryset(self):
-        return Staff.objects.filter(user=self.request.user)
+#     def get_queryset(self):
+#         return Staff.objects.filter(user=self.request.user)

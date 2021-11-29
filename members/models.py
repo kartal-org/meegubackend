@@ -28,8 +28,6 @@ class BaseMember(models.Model):
     # @property
     # def users(self):
     #     return self.user.full_name
-    def __str__(self):
-        return self.user.full_name
 
     class Meta:
         abstract = True
