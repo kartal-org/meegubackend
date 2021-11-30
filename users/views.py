@@ -28,8 +28,7 @@ import os
 
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
-
-
+ 
 class CustomRedirect(HttpResponsePermanentRedirect):
 
     allowed_schemes = [os.environ.get("APP_SCHEME"), "http", "https"]
@@ -201,3 +200,4 @@ class SearchPeople(generics.ListAPIView):
     pagination_class = StandardResultsSetPagination
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["first_name", "last_name", "username"]
+ 
