@@ -16,5 +16,5 @@ urlpatterns = [
     path("upload-file/change/<int:pk>", UploadFileDetail.as_view(), name="upload_file_detail"),
     # path("user/<int:classroom>", SharedWorkspaceList.as_view(), name="user_workspace_list"),
     path("members/<int:workspace>", MemberListCreate.as_view(), name="member_list"),
-    path("members/available/<int:classroom>", availableStudents, name="available_member_list"),
+    # path("members/available/<int:classroom>", availableStudents, name="available_member_list"),
 ]

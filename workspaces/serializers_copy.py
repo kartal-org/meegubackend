@@ -49,13 +49,13 @@ class NestedFileSerializer(serializers.ModelSerializer):
     # folder = FolderSerializer()
 
     class Meta:
-        model = WorkspaceUploadedFile
+        model = WorkspaceFile
         fields = "__all__"
 
 
 class QuillSerializer(serializers.ModelSerializer):
     class Meta:
-        model = WorkspaceQuillFile
+        model = WorkspaceFile
         fields = "__all__"
         extra_kwargs = {"folder": {"read_only": True}}
 
@@ -64,7 +64,7 @@ class UploadFileSerializer(serializers.ModelSerializer):
     # folder = FolderSerializer()
 
     class Meta:
-        model = WorkspaceUploadedFile
+        model = WorkspaceFile
         fields = "__all__"
         extra_kwargs = {"folder": {"read_only": True}}
 

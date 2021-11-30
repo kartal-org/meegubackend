@@ -1,12 +1,19 @@
 from django.db import models
 from django.conf import settings
-from institutions.models import Department
-from workspaces.models import Workspace, WorkspaceUploadedFile, Member
-from institutions.models import Institution
+
+# from institutions.models import Department
+from workspaces.models import WorkspaceFile, Member
+from submissions.models import Submission
+
+# from institutions.models import Institution
 from django.utils.text import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 from django.db.models import F
+from django.db.models.functions import Cast
+from django.db.models import Sum, IntegerField, Avg
+from django.contrib.postgres.fields.jsonb import KeyTextTransform
+
 
 # Create your models here.
 def upload_to(instance, filename):
@@ -20,56 +27,43 @@ class Category(models.Model):
         return self.name
 
 
-class Post(models.Model):
+class Publication(models.Model):
     options = (("public", "Public"), ("private", "Private"))
-    is_featured = models.BooleanField(default=False)
     title = models.TextField(max_length=250, unique=True)
     abstract = models.TextField()
-    # institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     slug = models.SlugField(max_length=250, null=True, blank=True)
+    privacy = models.CharField(choices=options, default="public", max_length=10)
+    department = models.ForeignKey("institutions.Department", on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ManyToManyField(Category, blank=True, null=True)
+    is_featured = models.BooleanField(default=False)
     publishedDate = models.DateTimeField(auto_now_add=True)
     dateModified = models.DateTimeField(auto_now=True)
-    category = models.ManyToManyField(Category, blank=True)
-    privacy = models.CharField(choices=options, default="public", max_length=10)
-    # author = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    archiveFile = models.FileField(upload_to=upload_to, null=True, blank=True)
+    archiveAuthors = models.TextField(null=True, blank=True)
+    submission = models.ForeignKey(Submission, on_delete=models.PROTECT, blank=True, null=True)
+    size = models.PositiveBigIntegerField(default=0)
 
     @property
     def institution(self):
-        return self.department.institution.id
+        if self.department:
+            return self.department.institution.id
+
+    @property
+    def authors(self):
+        if self.archiveFile:
+            return self.archiveAuthors
+        if self.submission:
+            return self.submission.file.folder.workspace.members
+
+    @property
+    def rating(self):
+        return Rating.objects.filter(publication=self.id).aggregate(Avg("rate"))["rate__avg"]
 
     def __str__(self):
         return self.title
 
-    class Meta:
-        abstract = True
 
-
-class Article(Post):
-    file = models.ForeignKey(WorkspaceUploadedFile, on_delete=models.CASCADE, blank=True, null=True)
-
-    @property
-    def workspace(self):
-        return self.file.folder.workspace.id
-
-    @property
-    def authors(self):
-        workspace = self.file.folder.workspace.id
-        # query = Member.objects.filter(workspace=workspace).values(
-        #     uid=F("user__id"), first_name=F("user__first_name"), last_name=F("user__last_name")
-        # )
-        return Member.objects.filter(workspace=workspace).values(
-            uid=F("user__id"), first_name=F("user__first_name"), last_name=F("user__last_name")
-        )
-
-
-class Archive(Post):
-    file = models.FileField(upload_to=upload_to)
-    authors = models.TextField()
-
-
-@receiver(pre_save, sender=Article)
-@receiver(pre_save, sender=Archive)
+@receiver(pre_save, sender=Publication)
 def slug_pre_save(sender, instance, *args, **kwargs):
 
     if not instance.slug:
@@ -77,28 +71,30 @@ def slug_pre_save(sender, instance, *args, **kwargs):
 
 
 class Comment(models.Model):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, blank=True, null=True)
-    archive = models.ForeignKey(Archive, on_delete=models.CASCADE, blank=True, null=True)
+    publication = models.ForeignKey(Publication, on_delete=models.CASCADE, blank=True, null=True)
     content = models.TextField()
-    dateAdded = models.DateTimeField(auto_now_add=True)
+    dateCreated = models.DateTimeField(auto_now_add=True)
+    dateUpdated = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ("-dateAdded",)
+        ordering = ("-dateUpdated",)
 
     def __str__(self):
-        return "%s - %s (%s)" % (self.user.username, self.article.title, self.dateAdded)
+        return "%s - %s (%s)" % (self.user.username, self.publication.title, self.dateUpdated)
 
 
 class Rating(models.Model):
     options = ((1, "Very Bad"), (2, "Bad"), (3, "Average"), (4, "Good"), (5, "Very Good"))
     rate = models.IntegerField(choices=options)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, blank=True, null=True)
-    archive = models.ForeignKey(Archive, on_delete=models.CASCADE, blank=True, null=True)
+    publication = models.ForeignKey(Publication, on_delete=models.CASCADE, blank=True, null=True)
+    dateCreated = models.DateTimeField(auto_now_add=True)
+    dateUpdated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ["user", "article", "archive"]
+        unique_together = ["user", "publication"]
+        ordering = ("-dateUpdated",)
 
     def __str__(self):
-        return "%s - %s (%d)" % (self.user.username, self.article.title, self.rate)
+        return "%s - %s (%d)" % (self.user.full_name, self.publication.title, self.rate)

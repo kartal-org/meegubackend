@@ -38,7 +38,7 @@ class Article2Serializer(serializers.ModelSerializer):
     # authors = MemberSerializer(source="members_set")
 
     class Meta:
-        model = Article
+        model = Publication
         fields = "__all__"
 
         # depth = 2
@@ -54,7 +54,7 @@ class ArchiveSerializer(serializers.ModelSerializer):
     # category = serializers.CharField(source="category.name")
 
     class Meta:
-        model = Archive
+        model = Publication
         fields = "__all__"
         extra_kwargs = {"department": {"read_only": True}, "slug": {"read_only": True}}
 

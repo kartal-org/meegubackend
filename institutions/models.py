@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.deletion import CASCADE, DO_NOTHING
 from django.utils.translation import gettext_lazy as _
+from resources.models import InstitutionResourceFile
 from products.models import Product
 from members.models import BaseMember, BaseMemberType
 from django.shortcuts import get_object_or_404, get_list_or_404
@@ -12,6 +13,7 @@ from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 from django_currentuser.middleware import get_current_authenticated_user
+from posts.models import Publication
 
 
 def upload_to(instance, filename):
@@ -40,9 +42,12 @@ class Institution(Product):
     @property
     def is_Verified(self):
         # returns boolean
-        if InstitutionVerification.objects.get(institution=self.id):
+        try:
+            status = InstitutionVerification.objects.get(institution=self.id, status="approved")
+        except ObjectDoesNotExist:
+            return False
+        if status:
             return True
-        return False
 
     @property
     def storage_Limit(self):
@@ -53,15 +58,45 @@ class Institution(Product):
             .aggregate(Sum("storage_limit"))["storage_limit__sum"]
         )
 
+    @property
+    def storage_used(self):
+        # how to compute? publication + resource
+        publication = Publication.objects.filter(department__institution=self).aggregate(Sum("size"))["size__sum"]
+        if publication == None:
+            publication = 0
+
+        resource = InstitutionResourceFile.objects.filter(folder__resource__institution=self).aggregate(Sum("size"))[
+            "size__sum"
+        ]
+
+        if resource == None:
+            resource = 0
+
+        return publication + resource
+
+    @property
+    def storage_left(self):
+        # returns all storage bought through subscription
+        institution = (
+            InstitutionSubscription.objects.filter(institution=self)
+            .annotate(storage_limit=Cast(KeyTextTransform("storage", "plan__limitations"), IntegerField()))
+            .aggregate(Sum("storage_limit"))["storage_limit__sum"]
+        )
+        if institution == None:
+            institution = 0
+
+        return institution - self.storage_used
+
+    @property
+    def owner(self):
+        # returns the owner of the institution
+        return Staff.objects.get(institution=self.id, type__name="Creator").user.full_name
+
     # Hack to pass the user to post save signal.
     def save(self, *args, **kwargs):
         # Hack to pass the user to post save signal.
         self.current_authenticated_user = get_current_authenticated_user()
         super(Institution, self).save(*args, **kwargs)
-
-
-class StaffType(BaseMemberType):
-    custom_Type_For = models.ForeignKey(Institution, on_delete=CASCADE, null=True, blank=True)
 
 
 class Department(models.Model):
@@ -78,6 +113,10 @@ class Department(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class StaffType(BaseMemberType):
+    custom_Type_For = models.ForeignKey(Institution, on_delete=CASCADE, null=True, blank=True)
 
 
 class Staff(BaseMember):

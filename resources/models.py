@@ -1,7 +1,7 @@
 from django.db import models
 from files.models import *
-from classrooms.models import Classroom
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Sum
 
 
 def upload_to(instance, filename):
@@ -10,7 +10,7 @@ def upload_to(instance, filename):
 
 # Create your models here.
 class ClassroomResource(Package):
-    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
+    classroom = models.ForeignKey("classrooms.Classroom", on_delete=models.CASCADE)
     institution = models.ForeignKey("institutions.Institution", on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
@@ -18,6 +18,10 @@ class ClassroomResource(Package):
             "classroom",
             "name",
         )
+
+    @property
+    def storageUsed(self):
+        return ClassroomResourceFile.objects.filter(folder__resource=self).aggregate(Sum("size"))["size__sum"]
 
 
 class ClassroomResourceFolder(Folder):

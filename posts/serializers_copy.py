@@ -20,7 +20,7 @@ class ArticleListSerializer(serializers.ModelSerializer):
     department = serializers.CharField(source="department.name", read_only=True)
 
     class Meta:
-        model = Article
+        model = Publication
         fields = [
             "id",
             "authors",
@@ -42,7 +42,7 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
     department = serializers.CharField(source="department.name", read_only=True)
 
     class Meta:
-        model = Article
+        model = Publication
         fields = [
             "id",
             "authors",

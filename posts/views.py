@@ -44,7 +44,7 @@ class SearchArticleList(generics.ListAPIView):
         "abstract",
         "department__institution__name",
     ]
-    queryset = Article.objects.filter(privacy="public")
+    queryset = Publication.objects.filter(privacy="public")
 
 
 class InstitutionArticleListCreate(generics.ListCreateAPIView):
@@ -53,7 +53,7 @@ class InstitutionArticleListCreate(generics.ListCreateAPIView):
     parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):
-        return Article.objects.filter(department__institution=self.kwargs["institution"])
+        return Publication.objects.filter(department__institution=self.kwargs["institution"])
 
     def perform_create(self, serializer):
         serializer.save(
@@ -70,13 +70,13 @@ class InstitutionArticleListCreate(generics.ListCreateAPIView):
 class ArchiveListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ArchiveSerializer
-    queryset = Archive.objects.all()
+    queryset = Publication.objects.all()
 
 
 class InstitutionArticleDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, IsStaff]
     serializer_class = ArticleDetailSerializer
-    queryset = Article.objects.all()
+    queryset = Publication.objects.all()
 
 
 class CommentListCreate(generics.ListCreateAPIView):
@@ -87,7 +87,7 @@ class CommentListCreate(generics.ListCreateAPIView):
         return Comment.objects.filter(article=self.kwargs["article"])
 
     def perform_create(self, serializer):
-        serializer.save(article=Article.objects.get(pk=self.kwargs["article"]), user=self.request.user)
+        serializer.save(article=Publication.objects.get(pk=self.kwargs["article"]), user=self.request.user)
 
 
 class RatingList(generics.ListCreateAPIView):
@@ -104,7 +104,7 @@ class RatingList(generics.ListCreateAPIView):
         return Response({"rating": queryset.aggregate(Avg("rate"))["rate__avg"]})
 
     def perform_create(self, serializer):
-        serializer.save(article=Article.objects.get(pk=self.kwargs["article"]), user=self.request.user)
+        serializer.save(article=Publication.objects.get(pk=self.kwargs["article"]), user=self.request.user)
 
 
 class RatingDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -121,10 +121,10 @@ def articleView(request):
     """Create and Get Articles"""
     if request.method == "GET":
         # what do we want? All article fields, Authors, and Institution
-        workspaceList = list(Article.objects.values_list("file", flat=True))
+        workspaceList = list(Publication.objects.values_list("file", flat=True))
         authorList = [member.user.full_name for member in Member.objects.filter(workspace__id__in=workspaceList)]
-        article = Article.objects.all()
-        Article.objects.all().values(workspace=F("file__folder__workspace"))
+        article = Publication.objects.all()
+        Publication.objects.all().values(workspace=F("file__folder__workspace"))
         #  membersList
         # [member.user.full_name for member in Member.objects.filter(workspace__id__in=workspaceList)]
         # return Response(article)

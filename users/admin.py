@@ -29,8 +29,8 @@ class UserAdminConfig(UserAdmin):
             {
                 "fields": (
                     "about",
-                    "image",
-                    "cover",
+                    "profileImage",
+                    "profileCover",
                 )
             },
         ),

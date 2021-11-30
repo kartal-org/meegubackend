@@ -32,21 +32,6 @@ class File(models.Model):
         return self.name
 
 
-class UploadedFile(File):
-    size = models.PositiveIntegerField(default=0)
-    file = models.FileField(upload_to=upload_to)
-
-    class Meta:
-        abstract = True
-
-
-class QuillFile(File):
-    content = models.TextField(null=True, blank=True)
-
-    class Meta:
-        abstract = True
-
-
 class Folder(models.Model):
     name = models.CharField(max_length=50)
 

@@ -1,65 +1,68 @@
 from django.contrib import admin
-from .models import *
+from .models_copy import *
 from django.core.paginator import Paginator
 from django.core.cache import cache
 
 
-admin.site.register(Conversation)
-# admin.site.register(PublicRoomChatMessage)
+# admin.site.register(Conversation)
+# # admin.site.register(PublicRoomChatMessage)
 
 
-class PublicChatRoomAdmin(admin.ModelAdmin):
-    list_display = [
-        "id",
-        "title",
-    ]
-    search_fields = [
-        "id",
-        "title",
-    ]
-    readonly_fields = [
-        "id",
-    ]
+# class PublicChatRoomAdmin(admin.ModelAdmin):
+#     list_display = [
+#         "id",
+#         "title",
+#     ]
+#     search_fields = [
+#         "id",
+#         "title",
+#     ]
+#     readonly_fields = [
+#         "id",
+#     ]
 
-    class Meta:
-        model = PublicChatRoom
-
-
-admin.site.register(PublicChatRoom, PublicChatRoomAdmin)
-
-# Resource: http://masnun.rocks/2017/03/20/django-admin-expensive-count-all-queries/
-class CachingPaginator(Paginator):
-    def _get_count(self):
-
-        if not hasattr(self, "_count"):
-            self._count = None
-
-        if self._count is None:
-            try:
-                key = "adm:{0}:count".format(hash(self.object_list.query.__str__()))
-                self._count = cache.get(key, -1)
-                if self._count == -1:
-                    self._count = super().count
-                    cache.set(key, self._count, 3600)
-
-            except:
-                self._count = len(self.object_list)
-        return self._count
-
-    count = property(_get_count)
+#     class Meta:
+#         model = PublicChatRoom
 
 
-class PublicRoomChatMessageAdmin(admin.ModelAdmin):
-    list_filter = ["room", "user", "timestamp"]
-    list_display = ["room", "user", "content", "timestamp"]
-    search_fields = ["room__title", "user__username", "content"]
-    readonly_fields = ["id", "user", "room", "timestamp"]
+# admin.site.register(PublicChatRoom, PublicChatRoomAdmin)
 
-    show_full_result_count = False
-    paginator = CachingPaginator
+# # Resource: http://masnun.rocks/2017/03/20/django-admin-expensive-count-all-queries/
+# class CachingPaginator(Paginator):
+#     def _get_count(self):
 
-    class Meta:
-        model = PublicRoomChatMessage
+#         if not hasattr(self, "_count"):
+#             self._count = None
+
+#         if self._count is None:
+#             try:
+#                 key = "adm:{0}:count".format(hash(self.object_list.query.__str__()))
+#                 self._count = cache.get(key, -1)
+#                 if self._count == -1:
+#                     self._count = super().count
+#                     cache.set(key, self._count, 3600)
+
+#             except:
+#                 self._count = len(self.object_list)
+#         return self._count
+
+#     count = property(_get_count)
 
 
-admin.site.register(PublicRoomChatMessage, PublicRoomChatMessageAdmin)
+# class PublicRoomChatMessageAdmin(admin.ModelAdmin):
+#     list_filter = ["room", "user", "timestamp"]
+#     list_display = ["room", "user", "content", "timestamp"]
+#     search_fields = ["room__title", "user__username", "content"]
+#     readonly_fields = ["id", "user", "room", "timestamp"]
+
+#     show_full_result_count = False
+#     paginator = CachingPaginator
+
+#     class Meta:
+#         model = PublicRoomChatMessage
+
+
+# admin.site.register(PublicRoomChatMessage, PublicRoomChatMessageAdmin)
+admin.site.register(ChatRoom)
+admin.site.register(ChatMember)
+admin.site.register(ChatMessage)
