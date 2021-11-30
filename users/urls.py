@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *
+from .views import * 
 
 app_name = "users"
 
@@ -12,5 +12,5 @@ urlpatterns = [
     path("password-reset-confirm/<uidb64>/<token>/", PasswordTokenCheckAPI.as_view(), name="password-reset-confirm"),
     path("password-reset-complete", SetNewPasswordAPIView.as_view(), name="password-reset-complete"),
     # Search and Filters
-    path("search", SearchPeople.as_view(), name="search_user"),
+    path("search", SearchPeople.as_view(), name="search_user"), 
 ]

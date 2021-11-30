@@ -22,7 +22,10 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
-urlpatterns = [
+urlpatterns = [ 
+    #admin
+    path("adminhoax/", include("adminhoax.urls")),
+
     path("admin/", admin.site.urls),
     path("classroom/", include("classrooms.urls_copy")),
     path("workspace/", include("workspaces.urls_copy")),
@@ -43,6 +46,7 @@ urlpatterns = [
     path("api/api.json/", schema_view.without_ui(cache_timeout=0), name="schema-swagger-ui"),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     path("", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

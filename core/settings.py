@@ -71,6 +71,9 @@ INSTALLED_APPS = [
     "posts",
     "submissions",
     "notifications",
+
+    #admin
+    "adminhoax",
 ]
 
 MIDDLEWARE = [
@@ -91,7 +94,7 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, 'templates/')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -237,6 +240,10 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 SOCIAL_AUTH_USER_FIELDS = ["email", "username", "first_name", "last_name", "password"]
 
 STATIC_URL = "/static/"
+#adminhoax
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 MEDIA_URL = "/media/"
 
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
