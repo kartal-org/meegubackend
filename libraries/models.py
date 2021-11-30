@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from articles.models import Article
+from posts.models import Publication
 
 # Create your models here.
 
@@ -14,7 +14,7 @@ from articles.models import Article
 
 class LibraryItem(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
-    content = models.ForeignKey(Article, on_delete=models.CASCADE)
+    content = models.ForeignKey(Publication, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ["owner", "content"]

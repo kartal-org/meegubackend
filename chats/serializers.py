@@ -2,6 +2,12 @@ from rest_framework import serializers
 from .models import *
 
 
+# Revamp
+
+
+# PreRevamp
+
+
 class MessagesSerializer(serializers.ModelSerializer):
     receiver = serializers.PrimaryKeyRelatedField(read_only=True)
 

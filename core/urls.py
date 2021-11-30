@@ -28,7 +28,6 @@ urlpatterns = [
     path("workspace/", include("workspaces.urls_copy")),
     path("note/", include("notes.urls")),
     path("chat/", include("chats.urls")),
-    path("article/", include("articles.urls")),
     path("library/", include("libraries.urls")),
     path("institution/", include("institutions.urls_copy")),
     path("subscription/", include("subscriptions.urls")),
