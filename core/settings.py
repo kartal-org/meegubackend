@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     "oauth2_provider",
     "social_django",
     "drf_social_oauth2",
+    # filter
+    "django_property_filter",
     # apps
     "users",
     "classrooms",
@@ -61,7 +63,6 @@ INSTALLED_APPS = [
     "chats",
     "institutions",
     "subscriptions",
-    "articles",
     "libraries",
     "files",
     "products",

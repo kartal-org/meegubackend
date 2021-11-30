@@ -4,7 +4,7 @@ from rest_framework import generics, permissions
 from rest_framework import response
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
-
+from institutions.models import Department
 from workspaces.models import Member
 from .serializers import *
 from .models import *

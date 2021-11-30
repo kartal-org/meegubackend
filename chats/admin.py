@@ -64,5 +64,5 @@ from django.core.cache import cache
 
 # admin.site.register(PublicRoomChatMessage, PublicRoomChatMessageAdmin)
 admin.site.register(ChatRoom)
-admin.site.register(ChatMember)
+
 admin.site.register(ChatMessage)
