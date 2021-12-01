@@ -13,11 +13,19 @@ class WorkspaceFileFieldSerializer(serializers.ModelSerializer):
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
-    file = WorkspaceFileFieldSerializer(source="file.name", read_only=True)
+    file = WorkspaceFileFieldSerializer(read_only=True)
 
     class Meta:
         model = Submission
         fields = ["id", "file", "title", "description", "authors", "responseStatus", "status"]
+
+
+class SubmissionCreateSerializer(serializers.ModelSerializer):
+    # file = WorkspaceFileFieldSerializer(source="file.name", read_only=True)
+
+    class Meta:
+        model = Submission
+        fields = "__all__"
 
 
 class RecommendationSerializer(serializers.ModelSerializer):

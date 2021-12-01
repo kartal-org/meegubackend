@@ -6,12 +6,13 @@ from .views_copy import *
 app_name = "workspaces"
 
 urlpatterns = [
-    path("", WorkspaceList.as_view(), name="workspace_list"),
-    path("change/<int:pk>", WorkspaceDetail.as_view(), name="workspace_list"),
-    path("folder", WorkspaceFolderList.as_view(), name="workspace_list"),
-    path("folder/<int:pk>", WorkspaceFolderDetail.as_view(), name="workspace_list"),
-    path("file", WorkspaceFileList.as_view(), name="workspace_list"),
-    path("file/<int:pk>", WorkspaceFileDetail.as_view(), name="workspace_list"),
+    path("adviser", AdviserWorkspaceList.as_view()),
+    path("student/<int:classroom>", StudentWorkspaceList.as_view()),
+    path("change/<int:pk>", WorkspaceDetail.as_view()),
+    path("folder", WorkspaceFolderList.as_view()),
+    path("folder/<int:pk>", WorkspaceFolderDetail.as_view()),
+    path("file", WorkspaceFileList.as_view()),
+    path("file/<int:pk>", WorkspaceFileDetail.as_view()),
     # path("change/<int:pk>", WorkspaceDetail.as_view(), name="workspace_detail"),
     # path("folder/<int:workspace>", WorkspaceFolderList.as_view(), name="folder_list"),
     # path("folder/change/<int:pk>", WorkspaceFolderDetail.as_view(), name="folder_detail"),

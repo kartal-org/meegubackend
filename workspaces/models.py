@@ -80,7 +80,8 @@ def workspace_create_leader(created, instance, *args, **kwargs):
     if created:
         user = getattr(instance, "current_authenticated_user", None)
         print(user)
-        breakpoint()
+
         classroomMember = apps.get_model("classrooms", "ClassroomMember")
-        instance.members.add(classroomMember.objects.get(user=user, classroom=instance.classroom))
+        instance.members.add(classroomMember.objects.get(user=user, classroom=instance.classroom).id)
         instance.leader = classroomMember.objects.get(user=user, classroom=instance.classroom)
+        instance.save()

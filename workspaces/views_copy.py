@@ -19,15 +19,28 @@ def get_code():
     return codeID
 
 
-class WorkspaceList(generics.ListCreateAPIView):
+class AdviserWorkspaceList(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = WorkspaceSerializer
-    filter_class = WorkspaceFilter
-    filter_fields = (
-        "classroom",
-        "members",
-    )
+    serializer_class = WorkspaceListSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ["classroom__id"]
     queryset = Workspace.objects.all()
+
+
+class StudentWorkspaceList(generics.ListCreateAPIView):
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]
+    serializer_class = WorkspaceListSerializer
+    # filter_fields = ("classroom__id", "members")
+    # filter_class = WorkspaceFilter
+    queryset = Workspace.objects.all()
+
+    def get_queryset(self):
+        member = ClassroomMember.objects.filter(user=self.request.user, classroom=self.kwargs.get("classroom"))
+        return Workspace.objects.filter(members__in=member)
+
+    def perform_create(self, serializer):
+        serializer.save(classroom=Classroom.objects.get(id=self.kwargs.get("classroom")), code=get_code())
 
 
 class WorkspaceDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -47,7 +60,7 @@ class WorkspaceFolderList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = WorkspaceFolder.objects.all()
     filter_backends = [SearchFilter]
-    search_fields = ["workspace"]
+    search_fields = ["workspace__id"]
 
 
 class WorkspaceFolderDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -66,7 +79,7 @@ class WorkspaceFileList(generics.ListCreateAPIView):
     serializer_class = WorkspaceFileSerializer
     queryset = WorkspaceFile.objects.all()
     filter_backends = [SearchFilter]
-    search_fields = ["folder"]
+    search_fields = ["folder__id"]
 
 
 class WorkspaceFileDetail(generics.RetrieveUpdateDestroyAPIView):
