@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from .permissions import *
 from classrooms.models import Classroom
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 # CLassroom Resources
@@ -16,8 +17,7 @@ class ResourceListCreateView(generics.ListCreateAPIView):
     serializer_class = ClasssroomResourceSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = [
-        "classroom",
-        "institution",
+        "classroom__id",
     ]
     queryset = ClassroomResource.objects.all()
 
@@ -37,7 +37,8 @@ class ResourceFolderList(generics.ListCreateAPIView):
     serializer_class = ClasssroomResourceFolderSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ["resource"]
+    search_fields = ["resource__id"]
+    queryset = ClassroomResourceFolder.objects.all()
 
 
 class ResourceFolderDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -53,9 +54,11 @@ class ResourceFolderDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class ClassroomResourceFileList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
     serializer_class = ClassroomResourceFileSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ["folder"]
+    search_fields = ["folder__id"]
+    queryset = ClassroomResourceFile.objects.all()
 
 
 class ClassroomResourceFileDetail(generics.RetrieveUpdateDestroyAPIView):

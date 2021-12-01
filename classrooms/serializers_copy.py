@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from users.models import NewUser
 
 
 class ClassroomFieldSerializer(serializers.ModelSerializer):
@@ -34,7 +35,17 @@ class MemberJoinSerializer(serializers.ModelSerializer):
         fields = ["id", "classroom", "classrooms", "user"]
 
 
+class UserFieldSerializer(serializers.ModelSerializer):
+    profileImage = serializers.FileField()
+
+    class Meta:
+        model = NewUser
+        fields = ["id", "full_name", "profileImage"]
+
+
 class MemberSerializer(serializers.ModelSerializer):
+    user = UserFieldSerializer(read_only=True, many=False)
+
     class Meta:
         model = ClassroomMember
         fields = "__all__"

@@ -63,7 +63,7 @@ class MemberListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = MemberSerializer
     filter_backends = [SearchFilter]
-    search_fields = ["classroom"]
+    search_fields = ["classroom__id"]
     queryset = ClassroomMember.objects.all()
 
 

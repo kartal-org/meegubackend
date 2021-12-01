@@ -19,6 +19,14 @@ class InstitutionCreateView(generics.CreateAPIView):
     serializer_class = InstitutionSerializer
 
 
+class InstitutionListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = InstitutionListSerializer
+
+    def get_queryset(self):
+        return Staff.objects.filter(user=self.request.user)
+
+
 class OwnerInstitutionListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = InstitutionListSerializer

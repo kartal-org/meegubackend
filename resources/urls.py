@@ -9,8 +9,8 @@ urlpatterns = [
     path("classroom/change/<int:pk>", ResourceDetailView.as_view()),
     path("classroom/folder", ResourceFolderList.as_view()),
     path("classroom/folder/change/<int:pk>", ResourceFolderDetail.as_view()),
-    path("classroom/file", ClassroomResourceFileDetail.as_view()),
-    path("classroom/file/change/<int:pk>", ClassroomResourceFileList.as_view()),
+    path("classroom/file", ClassroomResourceFileList.as_view()),
+    path("classroom/file/change/<int:pk>", ClassroomResourceFileDetail.as_view()),
     # Institution
     path("institution", InstitutionResourceListCreateView.as_view()),
     path("institution/change/<int:pk>", InstitutionResourceDetailView.as_view()),

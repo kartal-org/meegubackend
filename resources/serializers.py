@@ -16,7 +16,16 @@ class ClasssroomResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassroomResource
         fields = "__all__"
-        # extra_kwargs = {"classroom": {"read_only": True}, "owner": {"read_only": True}}
+        extra_kwargs = {"adviser": {"read_only": True}}
+
+
+# class ClasssroomResourceDetailSerializer(serializers.ModelSerializer):
+#     adviser = ClassroomOwnerSerializer(many=False, read_only=True)
+
+#     class Meta:
+#         model = ClassroomResource
+#         fields = "__all__"
+#         extra_kwargs = {"adviser": {"read_only": True},}
 
 
 class ClasssroomResourceFolderSerializer(serializers.ModelSerializer):

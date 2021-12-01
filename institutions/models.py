@@ -33,8 +33,8 @@ class Institution(Product):
     name = models.CharField(max_length=255, unique=True)
     image = models.ImageField(_("Profile"), upload_to=upload_to, default="userProfile/default_egry2i.jpg")
     address = models.TextField()
-    contact = models.CharField(max_length=11, unique=True)
-    email = models.EmailField(unique=True)
+    contact = models.CharField(max_length=20)
+    email = models.EmailField()
     website = models.URLField(null=True, blank=True)
 
     # staff =
