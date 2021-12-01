@@ -9,8 +9,8 @@ from django.contrib.auth import authenticate, login
 
 
 TYPE = [
-    "Classroom",
-    "Institution", 
+    "classroom",
+    "institution", 
 ]
 
 class Provider(faker.providers.BaseProvider):
