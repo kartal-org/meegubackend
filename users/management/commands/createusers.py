@@ -13,14 +13,15 @@ class Command(BaseCommand):
 
         fake = Faker(["tl_PH"])
         # for i in range(1, 10):
-        # for i in range(87, 102):
-        fname = fake.unique.first_name()
-        lname = fake.unique.last_name()
-        uname = "%s%s%d" % (fname.lower(), lname.lower(), random.randint(1000, 9999))
-        email = fake.unique.ascii_safe_email()
-        password = "QaxSf96H"
-        about = fake.sentence()
-        NewUser.objects.create_user(
-            first_name=fname, last_name=lname, username=uname, email=email, password=password, about=about
-        )
-        print(email, password)
+        for _ in range(15):
+            fname = fake.unique.first_name()
+            lname = fake.unique.last_name()
+            uname = "%s%s%d" % (fname.lower(), lname.lower(), random.randint(1000, 9999))
+            email = fake.unique.ascii_safe_email()
+            password = "QaxSf96H"
+            about = fake.sentence()  
+
+            NewUser.objects.create_user(
+                first_name=fname, last_name=lname, username=uname, email=email, password=password, about=about 
+            )
+            print(email, password) 

@@ -74,7 +74,7 @@ class WorkspaceFile(File):
         unique_together = ["name", "folder"]
 
 
-@receiver(post_save, sender=Workspace)
+# @receiver(post_save, sender=Workspace)
 def workspace_create_leader(created, instance, *args, **kwargs):
 
     if created:

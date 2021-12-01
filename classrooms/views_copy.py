@@ -29,8 +29,8 @@ def get_classroom_code():
 # Adviser's Classroom Views
 class ClassroomCreateView(generics.CreateAPIView):
 
-    parser_classes = [MultiPartParser, FormParser]
-    serializer_class = ClassroomSerializer
+    parser_classes = [MultiPartParser, FormParser] 
+    serializer_class = ClassroomSerializer 
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
@@ -48,9 +48,9 @@ class ClassroomListView(generics.ListAPIView):
 
 
 class ClassroomDetailView(generics.RetrieveUpdateDestroyAPIView):
-    parser_classes = [MultiPartParser, FormParser]
+    parser_classes = [MultiPartParser, FormParser] 
     serializer_class = ClassroomSerializer
-    permission_classes = [IsAuthenticated]  # add is classroom adviser unya ha
+    permission_classes = [IsAuthenticated]  # add is classroom adviser unya ha 
     queryset = Classroom.objects.all()
 
 
@@ -91,8 +91,8 @@ class MemberDetailView(generics.RetrieveUpdateDestroyAPIView):
 #         super().destroy(*args, **kwargs)
 #         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
-
-# # Student's Classroom Views
+ 
+# # Student's Classroom Views 
 
 
 # class StudentClassroomJoinView(generics.CreateAPIView):
@@ -102,9 +102,9 @@ class MemberDetailView(generics.RetrieveUpdateDestroyAPIView):
 #     serializer_class = JoinClassroomSerializer
 
 #     def perform_create(self, serializer):
-
+ 
 #         user = self.request.user
-#         serializer.save(user=user)
+#         serializer.save(user=user) 
 
 
 # class StudentClassroomListView(generics.ListAPIView):
@@ -131,11 +131,11 @@ class MemberDetailView(generics.RetrieveUpdateDestroyAPIView):
 # #     permission_classes = [IsAuthenticated, IsStudentTypeCreator]
 # #     serializer_class = StudentTypeSerializer
 # #     queryset = StudentType.objects.all()
-
+ 
 # #     def destroy(self, *args, **kwargs):
 # #         serializer = self.get_serializer(self.get_object())
 # #         super().destroy(*args, **kwargs)
-# #         return response.Response(serializer.data, status=status.HTTP_200_OK)
+# #         return response.Response(serializer.data, status=status.HTTP_200_OK) 
 
 
 # class ClassroomStudentList(generics.ListCreateAPIView):
@@ -148,20 +148,20 @@ class MemberDetailView(generics.RetrieveUpdateDestroyAPIView):
 #         classroom = self.kwargs["classroom"]
 
 #         return ClassroomMember.objects.filter(classroom=classroom)
-
+ 
 #     def perform_create(self, serializer):
 #         serializer.save(
 #             user=NewUser.objects.get(username=self.request.data.get("username")),
 #             classroom=Classroom.objects.get(pk=self.kwargs["classroom"]),
-#         )
+#         ) 
 
 
 # class ClassroomStudentModify(generics.RetrieveUpdateDestroyAPIView):
 #     """This view will allow advisers to modify student membership in his classroom"""
-
+ 
 #     permission_classes = [IsAuthenticated]  # add is adviser permission
 #     serializer_class = ClassroomStudentSerializer
-#     queryset = ClassroomMember.objects.all()
+#     queryset = ClassroomMember.objects.all() 
 
 #     def destroy(self, *args, **kwargs):
 #         serializer = self.get_serializer(self.get_object())
