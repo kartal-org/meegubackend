@@ -1,7 +1,7 @@
 from django.db import models
 
 # from institutions.models import Department
-from workspaces.models import Workspace, WorkspaceFile, Member
+from workspaces.models import Workspace, WorkspaceFile
 
 # from institutions.models import Institution
 from django.db.models import F
@@ -9,15 +9,7 @@ from django.db.models import F
 
 # Create your models here.
 class Submission(models.Model):
-    options = (("accepted", "Accepted"), ("revise", "Revise"), ("rejected", "Rejected"), ("pending", "Pending"))
-    institutionOptions = (
-        ("accepted", "Accepted"),
-        ("revise", "Revise"),
-        ("rejected", "Rejected"),
-        ("pending", "Pending"),
-        ("published", "Published"),
-    )
-    status_options = (("draft", "Draft"), ("submit", "Submit"))
+    options = (("draft", "Draft"), ("submit", "Submit"))
 
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
@@ -26,7 +18,7 @@ class Submission(models.Model):
     )
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateUpdated = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=10, choices=status_options, default="draft")
+    status = models.CharField(max_length=10, choices=options, default="draft")
 
     class Meta:
 
@@ -40,9 +32,12 @@ class Submission(models.Model):
 
         workspace = self.file.folder.workspace.id
 
-        return Member.objects.filter(workspace=workspace).values(
-            uid=F("user__id"), first_name=F("user__first_name"), last_name=F("user__last_name")
-        )
+        return Workspace.objects.filter(id=workspace).values("members")
+
+    @property
+    def responseStatus(self):
+        # return the latest response of this
+        return SubmissionResponse.objects.filter(submission=self).earliest("dateModified").values("responseStatus")
 
 
 class Recommendation(models.Model):
@@ -53,6 +48,13 @@ class Recommendation(models.Model):
 
     def __str__(self):
         return "%s - (%s)" % (self.submission.title, self.submission.file.folder.workspace.name)
+
+    @property
+    def responseStatus(self):
+        # return the latest response of this
+        return (
+            RecommendationResponse.objects.filter(recommendation=self).earliest("dateModified").values("responseStatus")
+        )
 
 
 class Response(models.Model):
@@ -66,14 +68,14 @@ class Response(models.Model):
         abstract = True
 
 
-class ClassroomSubmissionResponse(Response):
+class SubmissionResponse(Response):
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
 
     def __str__(self):
         return "%s - (%s)" % (self.submission.title, self.dateModified)
 
 
-class InstitutionRecommendationResponse(Response):
+class RecommendationResponse(Response):
     options = (
         ("accepted", "Accepted"),
         ("revise", "Revise"),
