@@ -1,11 +1,21 @@
 from rest_framework import serializers
 from .models import *
+from users.models import NewUser
 
 
-class ClassroomSerializer(serializers.ModelSerializer):
+class ClassroomFieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classroom
         fields = "__all__"
+
+
+class ClassroomSerializer(serializers.ModelSerializer):
+    cover = serializers.FileField(read_only=True)
+
+    class Meta:
+        model = Classroom
+        fields = ["id", "name", "description", "adviser", "cover", "code", "subject", "privacy", "storage_left"]
+        extra_kwargs = {"code": {"read_only": True}}
 
 
 class ClassroomListSerializer(serializers.ModelSerializer):
@@ -13,7 +23,32 @@ class ClassroomListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ClassroomMember
-        fields = ["classrooms"]
+        fields = ["id", "classrooms"]
+
+
+class MemberJoinSerializer(serializers.ModelSerializer):
+    classroom = serializers.SlugRelatedField(slug_field="code", queryset=Classroom.objects.all())
+    classrooms = ClassroomSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = ClassroomMember
+        fields = ["id", "classroom", "classrooms", "user"]
+
+
+class UserFieldSerializer(serializers.ModelSerializer):
+    profileImage = serializers.FileField()
+
+    class Meta:
+        model = NewUser
+        fields = ["id", "full_name", "profileImage"]
+
+
+class MemberSerializer(serializers.ModelSerializer):
+    user = UserFieldSerializer(read_only=True, many=False)
+
+    class Meta:
+        model = ClassroomMember
+        fields = "__all__"
 
 
 # class AdviserClassroomSerializer(serializers.ModelSerializer):

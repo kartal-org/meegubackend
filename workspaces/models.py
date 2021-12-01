@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from django.db.models.deletion import CASCADE
+
 from django.utils import timezone
 from files.models import Folder, Package, File
 from members.models import BaseMemberType, BaseMember
@@ -18,6 +18,7 @@ from django.db.models.functions import Cast
 from django.db.models import Sum, IntegerField
 from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from django.apps import apps
+from users.models import NewUser
 
 
 def upload_to(instance, filename):
@@ -25,17 +26,19 @@ def upload_to(instance, filename):
 
 
 class Workspace(Package):
-    classroom = models.ForeignKey("classrooms.Classroom", on_delete=CASCADE, null=True, blank=True)
+
+    classroom = models.ForeignKey("classrooms.Classroom", on_delete=models.CASCADE, null=True, blank=True)
     code = models.CharField(unique=True, max_length=8)
+    members = models.ManyToManyField(
+        "classrooms.ClassroomMember",
+        blank=True,
+        help_text="Members of this workspace.",
+        related_name="workspace_members",
+    )
+    leader = models.ForeignKey("classrooms.ClassroomMember", blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         unique_together = ["name", "classroom"]
-
-    @property
-    def members(self):
-        return Member.objects.filter(workspace=self).values(
-            uid=F("user__user__id"), first_name=F("user__user__first_name"), last_name=F("user__user__last_name")
-        )
 
     @property
     def storageUsed(self):
@@ -46,22 +49,6 @@ class Workspace(Package):
         # Hack to pass the user to post save signal.
         self.current_authenticated_user = get_current_authenticated_user()
         super(Workspace, self).save(*args, **kwargs)
-
-
-class Member(BaseMember):
-    options = (
-        ("member", "Member"),
-        ("leader", "Leader"),
-    )
-    user = models.ForeignKey("classrooms.ClassroomMember", on_delete=models.CASCADE, blank=True, null=True)
-    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
-    role = models.CharField(max_length=20, choices=options, default="member")
-
-    class Meta:
-        unique_together = ["user", "workspace"]
-
-    def __str__(self):
-        return "%s - %s" % (self.user.user.full_name, self.workspace.name)
 
 
 class WorkspaceFolder(Folder):
@@ -93,11 +80,8 @@ def workspace_create_leader(created, instance, *args, **kwargs):
     if created:
         user = getattr(instance, "current_authenticated_user", None)
         print(user)
-        breakpoint()
+
         classroomMember = apps.get_model("classrooms", "ClassroomMember")
-        defaultMember = Member.objects.create(
-            workspace=instance,
-            role="leader",
-            user=classroomMember.objects.get(classroom=instance.classroom, user=user),
-        )
-        defaultMember.save()
+        instance.members.add(classroomMember.objects.get(user=user, classroom=instance.classroom).id)
+        instance.leader = classroomMember.objects.get(user=user, classroom=instance.classroom)
+        instance.save()

@@ -12,6 +12,7 @@ import shortuuid
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from users.models import NewUser
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 
 def get_classroom_code():
@@ -19,114 +20,56 @@ def get_classroom_code():
     return codeID
 
 
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = "page_size"
-    max_page_size = 10
+# class StandardResultsSetPagination(PageNumberPagination):
+#     page_size = 10
+#     page_size_query_param = "page_size"
+#     max_page_size = 10
 
 
 # Adviser's Classroom Views
-class AdviserClassroomListCreateView(generics.ListCreateAPIView):
-    """Create and List view of Adviser's Classroom"""
+class ClassroomCreateView(generics.CreateAPIView):
 
-    parser_classes = [MultiPartParser, FormParser]
-    #serializer_class = AdviserClassroomSerializer
+    parser_classes = [MultiPartParser, FormParser] 
+    serializer_class = ClassroomSerializer 
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        code = get_classroom_code()
-        user = self.request.user
-        serializer.save(code=code, owner=user)
-        breakpoint()
+        serializer.save(code=get_classroom_code())
+
+
+class ClassroomListView(generics.ListAPIView):
+    serializer_class = ClassroomListSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [SearchFilter]
+    search_fields = ["role"]
 
     def get_queryset(self):
-        user = self.request.user
-        return Classroom.objects.filter(owner=user)
+        return ClassroomMember.objects.filter(user=self.request.user)
 
 
-class AdviserClassroomModifyView(generics.RetrieveUpdateDestroyAPIView):
-    """Allows Adviser to retrieve update and destroy his own classroom. Also use this as to retrieve student classroom"""
-
-    parser_classes = [MultiPartParser, FormParser]
-    #serializer_class = AdviserClassroomSerializer
-    permission_classes = [IsAuthenticated, IsClassroomAdviser, IsInstitutionStaff]  # IsClassroomPaid
+class ClassroomDetailView(generics.RetrieveUpdateDestroyAPIView):
+    parser_classes = [MultiPartParser, FormParser] 
+    serializer_class = ClassroomSerializer
+    permission_classes = [IsAuthenticated]  # add is classroom adviser unya ha 
     queryset = Classroom.objects.all()
 
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return response.Response(serializer.data, status=status.HTTP_200_OK)
 
-
-# Student's Classroom Views
-
-
-class StudentClassroomJoinView(generics.CreateAPIView):
-    """Let Student Join Classroom by entering the code"""
-
-    permission_classes = [IsAuthenticated, IsClassroomPublic, IsNotClassroomOwner]
-    #serializer_class = JoinClassroomSerializer
-
-    def perform_create(self, serializer):
-
-        user = self.request.user
-        serializer.save(user=user)
-
-
-class StudentClassroomListView(generics.ListAPIView):
-    """List Classroom of the Student"""
-
+class MemberCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
-    #serializer_class = StudentClassroomSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        return ClassroomMember.objects.filter(user=user)
+    serializer_class = MemberJoinSerializer
 
 
-# class StudentTypeViewList(generics.ListCreateAPIView):
-#     permission_classes = [IsAuthenticated]
-#     serializer_class = StudentTypeSerializer
-
-#     def get_queryset(self):
-#         classroom = self.kwargs["classroom"]
-#         return StudentType.objects.filter(Q(custom_Type_For__isnull=True) | Q(custom_Type_For=classroom))
-
-
-# class StudentTypeViewDetail(generics.RetrieveUpdateDestroyAPIView):
-#     permission_classes = [IsAuthenticated, IsStudentTypeCreator]
-#     serializer_class = StudentTypeSerializer
-#     queryset = StudentType.objects.all()
-
-#     def destroy(self, *args, **kwargs):
-#         serializer = self.get_serializer(self.get_object())
-#         super().destroy(*args, **kwargs)
-#         return response.Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class ClassroomStudentList(generics.ListCreateAPIView):
-    """This view display list of members the classroom have"""
-
-    #serializer_class = ClassroomStudentSerializer
+class MemberListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        classroom = self.kwargs["classroom"]
-
-        return ClassroomMember.objects.filter(classroom=classroom)
-
-    def perform_create(self, serializer):
-        serializer.save(
-            user=NewUser.objects.get(username=self.request.data.get("username")),
-            classroom=Classroom.objects.get(pk=self.kwargs["classroom"]),
-        )
+    serializer_class = MemberSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ["classroom__id"]
+    queryset = ClassroomMember.objects.all()
 
 
-class ClassroomStudentModify(generics.RetrieveUpdateDestroyAPIView):
-    """This view will allow advisers to modify student membership in his classroom"""
-
-    permission_classes = [IsAuthenticated]  # add is adviser permission
-    #serializer_class = ClassroomStudentSerializer
+class MemberDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = MemberSerializer
     queryset = ClassroomMember.objects.all()
 
     def destroy(self, *args, **kwargs):
@@ -135,9 +78,100 @@ class ClassroomStudentModify(generics.RetrieveUpdateDestroyAPIView):
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class StudentList(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    #serializer_class = ClassroomStudentSerializer
+# class AdviserClassroomModifyView(generics.RetrieveUpdateDestroyAPIView):
+#     """Allows Adviser to retrieve update and destroy his own classroom. Also use this as to retrieve student classroom"""
 
-    def get_queryset(self):
-        return ClassroomMember.objects.filter(classroom=self.kwargs.get("classroom"))
+#     parser_classes = [MultiPartParser, FormParser]
+#     serializer_class = AdviserClassroomSerializer
+#     permission_classes = [IsAuthenticated, IsClassroomAdviser, IsInstitutionStaff]  # IsClassroomPaid
+#     queryset = Classroom.objects.all()
+
+#     def destroy(self, *args, **kwargs):
+#         serializer = self.get_serializer(self.get_object())
+#         super().destroy(*args, **kwargs)
+#         return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+ 
+# # Student's Classroom Views 
+
+
+# class StudentClassroomJoinView(generics.CreateAPIView):
+#     """Let Student Join Classroom by entering the code"""
+
+#     permission_classes = [IsAuthenticated, IsClassroomPublic, IsNotClassroomOwner]
+#     serializer_class = JoinClassroomSerializer
+
+#     def perform_create(self, serializer):
+ 
+#         user = self.request.user
+#         serializer.save(user=user) 
+
+
+# class StudentClassroomListView(generics.ListAPIView):
+#     """List Classroom of the Student"""
+
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = StudentClassroomSerializer
+
+#     def get_queryset(self):
+#         user = self.request.user
+#         return ClassroomMember.objects.filter(user=user)
+
+
+# # class StudentTypeViewList(generics.ListCreateAPIView):
+# #     permission_classes = [IsAuthenticated]
+# #     serializer_class = StudentTypeSerializer
+
+# #     def get_queryset(self):
+# #         classroom = self.kwargs["classroom"]
+# #         return StudentType.objects.filter(Q(custom_Type_For__isnull=True) | Q(custom_Type_For=classroom))
+
+
+# # class StudentTypeViewDetail(generics.RetrieveUpdateDestroyAPIView):
+# #     permission_classes = [IsAuthenticated, IsStudentTypeCreator]
+# #     serializer_class = StudentTypeSerializer
+# #     queryset = StudentType.objects.all()
+ 
+# #     def destroy(self, *args, **kwargs):
+# #         serializer = self.get_serializer(self.get_object())
+# #         super().destroy(*args, **kwargs)
+# #         return response.Response(serializer.data, status=status.HTTP_200_OK) 
+
+
+# class ClassroomStudentList(generics.ListCreateAPIView):
+#     """This view display list of members the classroom have"""
+
+#     serializer_class = ClassroomStudentSerializer
+#     permission_classes = [IsAuthenticated]
+
+#     def get_queryset(self):
+#         classroom = self.kwargs["classroom"]
+
+#         return ClassroomMember.objects.filter(classroom=classroom)
+ 
+#     def perform_create(self, serializer):
+#         serializer.save(
+#             user=NewUser.objects.get(username=self.request.data.get("username")),
+#             classroom=Classroom.objects.get(pk=self.kwargs["classroom"]),
+#         ) 
+
+
+# class ClassroomStudentModify(generics.RetrieveUpdateDestroyAPIView):
+#     """This view will allow advisers to modify student membership in his classroom"""
+ 
+#     permission_classes = [IsAuthenticated]  # add is adviser permission
+#     serializer_class = ClassroomStudentSerializer
+#     queryset = ClassroomMember.objects.all() 
+
+#     def destroy(self, *args, **kwargs):
+#         serializer = self.get_serializer(self.get_object())
+#         super().destroy(*args, **kwargs)
+#         return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# class StudentList(generics.ListCreateAPIView):
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = ClassroomStudentSerializer
+
+#     def get_queryset(self):
+#         return ClassroomMember.objects.filter(classroom=self.kwargs.get("classroom"))

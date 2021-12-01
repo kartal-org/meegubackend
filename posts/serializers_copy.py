@@ -13,9 +13,9 @@ class CategorySerializer(serializers.RelatedField):
         model = Category
 
 
-class ArticleListSerializer(serializers.ModelSerializer):
+class PublicationSerializer(serializers.ModelSerializer):
     # authors = serializers.SerializerMethodField()
-    # file = serializers.FileField(source="file.file")
+    file = serializers.FileField(source="file.file")
     category = CategorySerializer(read_only=True, many=True)
     department = serializers.CharField(source="department.name", read_only=True)
 
@@ -27,15 +27,17 @@ class ArticleListSerializer(serializers.ModelSerializer):
             "title",
             "file",
             "abstract",
+            "rating",
             "category",
             "authors",
+            "privacy",
             "department",
             "dateModified",
             "is_featured",
         ]
 
 
-class ArticleDetailSerializer(serializers.ModelSerializer):
+class PublicationDetailSerializer(serializers.ModelSerializer):
     # authors = serializers.SerializerMethodField()
     file = serializers.FileField(source="file.file", read_only=True)
     category = CategorySerializer(read_only=True, many=True)
@@ -55,3 +57,17 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
             "dateModified",
             "is_featured",
         ]
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = "__all__"
+        extra_kwargs = {"user": {"read_only": True}}
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = "__all__"
+        extra_kwargs = {"user": {"read_only": True}}

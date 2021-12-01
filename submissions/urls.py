@@ -3,7 +3,15 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    # path("workspace/<int:workspace>", SubmissionList.as_view(), name="workspace_submission_list"),
+    path("", SubmissionList.as_view()),
+    path("classroom", ClassroomSubmissionList.as_view()),
+    path("change/<int:pk>", SubmissionDetail.as_view()),
+    path("recommendation", RecommendationList.as_view()),
+    path("recommendation/change/<int:pk>", RecommendationDetail.as_view()),
+    path("recommendation/response", SubmissionResponseList.as_view()),
+    path("recommendation/response/change/<int:pk>", SubmissionResponseDetail.as_view()),
+    path("response", RecommendationResponseList.as_view()),
+    path("response/change/<int:pk>", RecommendationResponseDetail.as_view()),
     # path("workspace/change/<int:pk>", WorkspaceSubmissionDetail.as_view(), name="workspace_submission_detail"),
     # path("classroom/<int:classroom>", ClassroomSubmissionList.as_view(), name="classroom_submission_list"),
     # path("classroom/change/<int:pk>", ClassroomSubmissionDetail.as_view(), name="classroom_submission_detail"),

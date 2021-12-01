@@ -17,6 +17,7 @@ class ChatRoom(models.Model):
     members = models.ManyToManyField(
         NewUser, blank=True, help_text="Users who are connected to the chat.", related_name="members"
     )
+    admins = models.ManyToManyField(NewUser, blank=True, help_text="Admins of this chat.", related_name="admins")
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateModified = models.DateTimeField(auto_now=True)
 
