@@ -1,24 +1,20 @@
-from rest_framework import generics
+from rest_framework import generics, response, status
 from .models import *
 from .serializers import *
 from rest_framework.permissions import IsAuthenticated
 from .permissions import *
+from rest_framework.filters import SearchFilter
 
 # Create your views here.
 
 
 class NotesListCreateView(generics.ListCreateAPIView):
-    """
-    This view will allow users to create and return list of notes
-    """
 
     permission_classes = [IsAuthenticated]
-    # queryset = Note.objects.all()
+    queryset = Note.objects.all()
     serializer_class = NotesSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        return Note.objects.filter(owner=user)
+    filter_backends = [SearchFilter]
+    search_fields = ["owner", "workspace", "institutionResource", "classroomResource"]
 
 
 class NotesRetrieve(generics.RetrieveUpdateDestroyAPIView):
@@ -29,7 +25,11 @@ class NotesRetrieve(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsOwner]
     serializer_class = NotesSerializer
     queryset = Note.objects.all()
-    lookup_field = "pk"
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
 """ Concrete View Classes

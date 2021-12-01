@@ -1,20 +1,24 @@
+from os import read
 from rest_framework import serializers
 from .models import *
+from posts.models import Publication
+
+
+class PublicationFieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Publication
+        fields = "__all__"
 
 
 class LibraryItemSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(source="content.title")
-    file = serializers.CharField(source="content.file")
-    author = serializers.CharField(source="content.author")
-    publisher = serializers.CharField(source="content.publisher")
-    itemID = serializers.CharField(source="content.id")
+    publication = PublicationFieldSerializer(read_only=True, many=True)
 
     class Meta:
         model = LibraryItem
-        fields = ["id", "title", "file", "author", "publisher", "itemID"]
+        fields = "__all__"
 
 
-class AddLibraryItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LibraryItem
-        fields = ["id", "content"]
+# class AddLibraryItemSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = LibraryItem
+#         fields = ["id", "content"]

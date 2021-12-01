@@ -19,16 +19,16 @@ class Workspace(Package):
         unique_together = ["name", "classroom"]
 
 
-class MemberType(BaseMemberType):
-    custom_Type_For = models.ForeignKey(Classroom, on_delete=CASCADE, null=True, blank=True)
-
-
 class Member(BaseMember):
-    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
-    role = models.ForeignKey(MemberType, on_delete=models.SET_NULL, null=True, blank=True)
+    options = (("leader", "Leader"), ("member", "Member"))
+    workspace = models.ForeignKey(Classroom, on_delete=models.CASCADE)
+    role = models.CharField(max_length=10, choices=options, default="member")
 
     class Meta:
         unique_together = ["user", "classroom"]
+
+
+# signal
 
 
 class WorkspaceFolder(Folder):
