@@ -36,8 +36,12 @@ class Command(BaseCommand):
             deptCount = Department.objects.count()
             department = Department.objects.get(id=random.randint(1,deptCount))  
 
+            #start category pending
             deptCount = Category.objects.count()
-            category = Category.objects.get(id=random.randint(1,deptCount))  
+            category = Category.objects.get(id=random.randint(1,deptCount)) 
+            category.save() 
+            category.name.add(category)
+            #end
 
             userCount = NewUser.objects.count()
             user = NewUser.objects.get(id=random.randint(1,userCount)) 

@@ -1,28 +1,26 @@
-# from django.core.management.base import BaseCommand
-# from faker import Faker
-# import faker.providers 
-# from institutions.models import Institution, Department, StaffType, Staff
-# from users.models import NewUser
-# import random
+from django.core.management.base import BaseCommand
+from faker import Faker
+import faker.providers 
+from institutions.models import Institution, Department, StaffType, Staff, InstitutionVerification
+from users.models import NewUser
+import random
 
 
-# class Command(BaseCommand):
-#     help = "Command Information"
+class Command(BaseCommand):
+    help = "Command Information"
 
-#     def handle(self, *args, **kwargs):
+    def handle(self, *args, **kwargs):
 
-#         fake = Faker(["tl_PH"]) 
+        fake = Faker(["tl_PH"]) 
         
-#         for _ in range(10):  
-#             institutionCount = Institution.objects.count()
-#             institution = Institution.objects.get(id=random.randint(1,institutionCount))
+        for _ in range(10):  
+            institutionCount = Institution.objects.count()
+            institution = Institution.objects.get(id=random.randint(1,institutionCount))
 
-#             document
-#             departmentCount = Department.objects.count()
-#             department = Department.objects.get(id=random.randint(1,departmentCount))  
+            document = "userProfile/coverDefault_pdrisr.jpg" 
 
-#             Staff.objects.create(
-#                 user=user, institution=institution, department=department, type=type
-#             ) 
+            InstitutionVerification.objects.create(
+                institution=institution, document=document
+            ) 
 
-#             print(user, institution)  
+            print(institution, document)  
