@@ -18,16 +18,16 @@ def defaultPermission():
 # Base model for all members
 class BaseMember(models.Model):
     options = (("approved", "Approved"), ("pending", "Pending"), ("rejected", "Rejected"))
-    status = models.CharField(max_length=10, choices=options, default="pending")
+    status = models.CharField(max_length=10, choices=options, default="approved")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="%(app_label)s_%(class)s_related",
         related_query_name="%(app_label)s_%(class)ss",
     )
-    # @property
-    # def users(self):
-    #     return self.user.full_name
+
+    def __str__(self):
+        return self.user.full_name
 
     class Meta:
         abstract = True

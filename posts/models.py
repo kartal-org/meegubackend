@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 
 # from institutions.models import Department
-from workspaces.models import WorkspaceFile, Member
+from workspaces.models import WorkspaceFile
 from submissions.models import Submission
 
 # from institutions.models import Institution
@@ -53,7 +53,14 @@ class Publication(models.Model):
         if self.archiveFile:
             return self.archiveAuthors
         if self.submission:
-            return self.submission.file.folder.workspace.members
+            return self.submission.file.file.workspace.members
+
+    @property
+    def file(self):
+        if self.archiveFile:
+            return self.archiveFile
+        if self.submission:
+            return self.submission.file.file
 
     @property
     def rating(self):

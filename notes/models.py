@@ -1,5 +1,7 @@
 from django.db import models
 from users.models import NewUser
+from workspaces.models import Workspace
+from resources.models import InstitutionResource, ClassroomResource
 from django.utils import timezone
 
 # Create your models here.
@@ -8,9 +10,12 @@ from django.utils import timezone
 class Note(models.Model):
     title = models.TextField(max_length=50)
     content = models.TextField(blank=True, null=True)
-    owner = models.ForeignKey(NewUser, related_name="notes_owner", on_delete=models.CASCADE)
-    dateCreated = models.DateTimeField(default=timezone.now)
-    dateUpdated = models.DateTimeField(default=timezone.now)
+    owner = models.ForeignKey(NewUser, on_delete=models.CASCADE)
+    workspace = models.ForeignKey(Workspace, on_delete=models.SET_NULL, null=True, blank=True)
+    institutionResource = models.ForeignKey(InstitutionResource, on_delete=models.SET_NULL, null=True, blank=True)
+    classroomResource = models.ForeignKey(ClassroomResource, on_delete=models.SET_NULL, null=True, blank=True)
+    dateCreated = models.DateTimeField(auto_now_add=True)
+    dateUpdated = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ["owner", "title"]

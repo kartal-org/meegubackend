@@ -127,6 +127,10 @@ class Staff(BaseMember):
     class Meta:
         unique_together = ["user", "institution"]
 
+    @property
+    def institutions(self):
+        return Institution.objects.filter(id=self.institution.id)
+
     def __str__(self):
         return "%s - %s" % (self.user.full_name, self.institution.name)
 

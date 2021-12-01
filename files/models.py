@@ -34,6 +34,8 @@ class File(models.Model):
 
 class Folder(models.Model):
     name = models.CharField(max_length=50)
+    dateCreated = models.DateTimeField(auto_now_add=True)
+    dateUpdated = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ("name",)

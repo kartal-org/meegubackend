@@ -83,6 +83,13 @@ class ClassroomMember(BaseMember):
     class Meta:
         unique_together = ["user", "classroom"]
 
+    @property
+    def classrooms(self):
+        return Classroom.objects.filter(id=self.classroom.id)
+        # .values(
+        #     "id", "name", "description", "code", "cover", "privacy"
+        # )
+
     def __str__(self):
         return "%s - %s" % (self.user.full_name, self.classroom.name)
 

@@ -1,29 +1,36 @@
 from django.db.models import fields
 from rest_framework import serializers
 from .models import *
+from classrooms.models import Classroom
+
+
+class ClassroomOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Classroom
+        fields = ["adviser"]
 
 
 class ClasssroomResourceSerializer(serializers.ModelSerializer):
-    owner = serializers.CharField(source="classroom.owner.full_name", read_only=True)
+    adviser = ClassroomOwnerSerializer(many=False, read_only=True)
 
     class Meta:
         model = ClassroomResource
         fields = "__all__"
-        extra_kwargs = {"classroom": {"read_only": True}, "owner": {"read_only": True}}
+        # extra_kwargs = {"classroom": {"read_only": True}, "owner": {"read_only": True}}
 
 
 class ClasssroomResourceFolderSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassroomResourceFolder
         fields = "__all__"
-        extra_kwargs = {"resource": {"read_only": True}}
+        # extra_kwargs = {"resource": {"read_only": True}}
 
 
 class ClassroomResourceFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassroomResourceFile
         fields = "__all__"
-        extra_kwargs = {"folder": {"read_only": True}}
+        # extra_kwargs = {"folder": {"read_only": True}}
 
 
 class InstitutionResourceSerializer(serializers.ModelSerializer):
