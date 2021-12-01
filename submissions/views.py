@@ -11,9 +11,17 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 # Create your views here.
 class SubmissionList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = SubmissionSerializer
+    serializer_class = SubmissionCreateSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = (["status", "file__folder__workspace__id", "file__folder__workspace__classroom__id"],)
+    search_fields = ["file__folder__workspace__id"]
+    queryset = Submission.objects.all()
+
+
+class ClassroomSubmissionList(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = SubmissionCreateSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ["file__folder__workspace__classroom__id"]
     queryset = Submission.objects.all()
 
 

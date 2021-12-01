@@ -4,6 +4,7 @@ from .views import *
 
 urlpatterns = [
     path("", SubmissionList.as_view()),
+    path("classroom", ClassroomSubmissionList.as_view()),
     path("change/<int:pk>", SubmissionDetail.as_view()),
     path("recommendation", RecommendationList.as_view()),
     path("recommendation/change/<int:pk>", RecommendationDetail.as_view()),

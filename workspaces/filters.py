@@ -3,7 +3,7 @@ from .models import Workspace
 
 
 class WorkspaceFilter(django_filters.FilterSet):
-    cities = django_filters.CharFilter(
+    members = django_filters.NumberFilter(
         name="members",
         lookup_type="contains",
     )
@@ -11,6 +11,6 @@ class WorkspaceFilter(django_filters.FilterSet):
     class Meta:
         model = Workspace
         fields = (
-            "classroom",
+            "classroom__id",
             "members",
         )
