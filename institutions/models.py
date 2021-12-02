@@ -184,9 +184,9 @@ def institution_slug_pre_save(sender, instance, *args, **kwargs):
         instance.slug = slugify(instance.name)
 
 
-# signals
-@receiver(pre_save, sender=Institution)
-def department_slug_pre_save(sender, instance, *args, **kwargs):
+# # signals
+# @receiver(pre_save, sender=Institution)
+# def department_slug_pre_save(sender, instance, *args, **kwargs):
 
-    if not instance.slug:
-        instance.slug = slugify(instance.name)
+#     if not instance.slug:
+#         instance.slug = slugify(instance.name)

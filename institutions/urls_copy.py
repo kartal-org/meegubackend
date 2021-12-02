@@ -17,7 +17,7 @@ urlpatterns = [
     path("verify", InstitutionVerificationView.as_view(), name="institution_verify"),
     path("department/<int:institution>", DepartmentListCreate.as_view(), name="department_list"),
     path("department/change/<int:pk>", DepartmentDetail.as_view(), name="department_detail"),
-    path("department/staff", DepartmentStaffListCreate.as_view()),
+    # path("department/staff", DepartmentStaffListCreate.as_view()),
     # path("staff/list", StaffInstitutionList.as_view(), name="staff_institution_list"),
     # path("moderator/list", ModeratorInstitutionList.as_view(), name="moderator_institution_list"),
     # path("change/<int:pk>", ModeratorInstitutionDetail.as_view(), name="institution_detail"),

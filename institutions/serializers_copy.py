@@ -10,7 +10,7 @@ class InstitutionSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "description",
-            # "owner",
+            "creator",
             "contact",
             "address",
             "website",

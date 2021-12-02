@@ -60,11 +60,11 @@ class ClassroomSubscription(Transaction):
     classroom = models.ForeignKey("classrooms.Classroom", on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.classroom.adviser
+        return self.classroom.creator.full_name
 
 
 class InstitutionSubscription(Transaction):
     institution = models.ForeignKey("institutions.Institution", on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.institution.owner
+        return self.institution.creator.full_name
