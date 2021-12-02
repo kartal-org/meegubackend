@@ -18,11 +18,9 @@ class Command(BaseCommand):
             description = fake.unique.sentence()
  
             fileCount = WorkspaceFile.objects.count()
-            file = WorkspaceFile.objects.get(id=random.randint(1,fileCount)) 
-
-            status = fake.submission_type() 
+            file = WorkspaceFile.objects.get(id=random.randint(1,fileCount))  
 
             Submission.objects.create(
-                title=title, description=description, file=file, status=status, 
+                title=title, description=description, file=file,
             )
-            print(title, status)  
+            print(title)  

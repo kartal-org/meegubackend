@@ -93,10 +93,11 @@ class ClassroomMember(BaseMember):
     def __str__(self):
         return "%s - %s" % (self.user.full_name, self.classroom.name)
 
-
+ 
+# signals 
 @receiver(post_save, sender=Classroom)
 def classroom_create_adviser(created, instance, *args, **kwargs):
     if created:
         breakpoint()
         defaultMember = ClassroomMember.objects.create(classroom=instance, role="adviser", user=instance.creator)
-        defaultMember.save()
+        defaultMember.save() 
