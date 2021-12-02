@@ -13,9 +13,15 @@ class CategorySerializer(serializers.RelatedField):
         model = Category
 
 
+class SubmissionFieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Submission
+        fields = "__all__"
+
+
 class PublicationSerializer(serializers.ModelSerializer):
     # authors = serializers.SerializerMethodField()
-    file = serializers.FileField(source="file.file")
+    submission = SubmissionFieldSerializer(read_only=True)
     category = CategorySerializer(read_only=True, many=True)
     department = serializers.CharField(source="department.name", read_only=True)
 
@@ -25,7 +31,7 @@ class PublicationSerializer(serializers.ModelSerializer):
             "id",
             "authors",
             "title",
-            "file",
+            "submission",
             "abstract",
             "rating",
             "category",
