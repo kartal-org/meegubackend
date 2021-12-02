@@ -36,7 +36,7 @@ class ArticleListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = PublicationSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ["title", "abstract", "department__institution__name", "privacy", "archiveAuthors"]
+    search_fields = ["department__id"]
     queryset = Publication.objects.all()
 
 
