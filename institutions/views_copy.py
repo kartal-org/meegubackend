@@ -91,6 +91,18 @@ class DepartmentListCreate(generics.ListCreateAPIView):
         serializer.save(institution=Institution.objects.get(pk=self.kwargs["institution"]))
 
 
+class DepartmentStaffListCreate(generics.ListCreateAPIView):
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]
+    serializer_class = DepartmentSerializer
+
+    def get_queryset(self):
+        return Department.objects.filter(institution=Institution.objects.get(pk=self.kwargs["institution"]))
+
+    def perform_create(self, serializer):
+        serializer.save(institution=Institution.objects.get(pk=self.kwargs["institution"]))
+
+
 class DepartmentDetail(generics.RetrieveUpdateDestroyAPIView):
     # parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated]
@@ -101,6 +113,21 @@ class DepartmentDetail(generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(self.get_object())
         super().destroy(*args, **kwargs)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DepartmentStaffListCreate(generics.ListCreateAPIView):
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]
+    serializer_class = StaffSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ["department__id"]
+    queryset = Staff.objects.all()
+
+    # def get_queryset(self):
+    #     return Staff.objects.filter(department=Institution.objects.get(pk=self.kwargs["institution"]))
+
+    def perform_create(self, serializer):
+        serializer.save(institution=Institution.objects.get(pk=self.kwargs["institution"]))
 
 
 # Creation of custom staff type for later
