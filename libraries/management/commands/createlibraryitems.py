@@ -24,6 +24,6 @@ class Command(BaseCommand):
             publication = Publication.objects.get(id=random.randint(1,publicationCount)) 
 
             LibraryItem.objects.create(
-                owner=user, content=publication
+                user=user, publication=publication
             )
             print(user, publication)  

@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from faker import Faker
 import faker.providers
 from workspaces.models import WorkspaceFile
-from submissions.models import Submission, InstitutionRecommendationResponse, Recommendation
+from submissions.models import Submission, Response, SubmissionResponse
 from institutions.models import Department  
 import random
 from django.contrib.auth import authenticate, login 
@@ -12,7 +12,6 @@ TYPE = [
     "revise", 
     "rejected", 
     "pending", 
-    "published",
 ]
 
 class Provider(faker.providers.BaseProvider):
@@ -30,11 +29,11 @@ class Command(BaseCommand):
         for _ in range(5): 
             responseStatus = fake.response_type() 
             comment = fake.sentence()  
-            
-            deptCount = Recommendation.objects.count()
-            recommendation = Recommendation.objects.get(id=random.randint(1,deptCount))  
- 
-            InstitutionRecommendationResponse.objects.create(
-                responseStatus=responseStatus, comment=comment, recommendation=recommendation
+
+            fileCount = Submission.objects.count()
+            file = Submission.objects.get(id=random.randint(1,fileCount)) 
+
+            SubmissionResponse.objects.create(
+                responseStatus=responseStatus, comment=comment, submission=file
             )
-            print(responseStatus, recommendation)  
+            print(responseStatus)  

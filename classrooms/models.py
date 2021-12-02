@@ -95,12 +95,12 @@ class ClassroomMember(BaseMember):
 
 
 # signals
-@receiver(post_save, sender=Classroom)
-def classroom_create_owner(created, instance, *args, **kwargs):
+# @receiver(post_save, sender=Classroom)
+# def classroom_create_owner(created, instance, *args, **kwargs):
 
-    if created:
-        user = getattr(instance, "current_authenticated_user", None)
-        print(user)
+#     if created:
+#         user = getattr(instance, "current_authenticated_user", None)
+#         print(user)
 
-        defaultMember = ClassroomMember.objects.create(classroom=instance, role="adviser", user=user)
-        defaultMember.save()
+#         defaultMember = ClassroomMember.objects.create(classroom=instance, role="adviser", user=user)
+#         defaultMember.save()
