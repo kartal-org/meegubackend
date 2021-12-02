@@ -58,7 +58,7 @@ class StaffListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = StaffSerializer
     filter_backends = [SearchFilter]
-    search_fields = ["institution", "department"]
+    search_fields = ["department__id", "institution__name"]
     queryset = Staff.objects.all()
 
 
@@ -66,6 +66,25 @@ class StaffDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = StaffSerializer
     queryset = Staff.objects.all()
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class StaffTypeListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = StaffTypeSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ["custom_Type_For__id"]
+    queryset = StaffType.objects.all()
+
+
+class StaffTypeDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = StaffTypeSerializer
+    queryset = StaffType.objects.all()
 
     def destroy(self, *args, **kwargs):
         serializer = self.get_serializer(self.get_object())
@@ -126,8 +145,8 @@ class DepartmentStaffListCreate(generics.ListCreateAPIView):
     # def get_queryset(self):
     #     return Staff.objects.filter(department=Institution.objects.get(pk=self.kwargs["institution"]))
 
-    def perform_create(self, serializer):
-        serializer.save(institution=Institution.objects.get(pk=self.kwargs["institution"]))
+    # def perform_create(self, serializer):
+    #     serializer.save(institution=Institution.objects.get(pk=self.kwargs["institution"]))
 
 
 # Creation of custom staff type for later

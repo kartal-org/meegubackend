@@ -44,11 +44,11 @@ class Workspace(Package):
     def storageUsed(self):
         return WorkspaceFile.objects.filter(folder__workspace=self).aggregate(Sum("size"))["size__sum"]
 
-    # Hack to pass the user to post save signal.
-    def save(self, *args, **kwargs):
-        # Hack to pass the user to post save signal.
-        self.current_authenticated_user = get_current_authenticated_user()
-        super(Workspace, self).save(*args, **kwargs)
+    # # Hack to pass the user to post save signal.
+    # def save(self, *args, **kwargs):
+    #     # Hack to pass the user to post save signal.
+    #     self.current_authenticated_user = get_current_authenticated_user()
+    #     super(Workspace, self).save(*args, **kwargs)
 
 
 class WorkspaceFolder(Folder):
@@ -74,14 +74,13 @@ class WorkspaceFile(File):
         unique_together = ["name", "folder"]
 
 
-# @receiver(post_save, sender=Workspace)
+@receiver(post_save, sender=Workspace)
 def workspace_create_leader(created, instance, *args, **kwargs):
 
     if created:
-        user = getattr(instance, "current_authenticated_user", None)
-        print(user)
-
+        # user = getattr(instance, "current_authenticated_user", None)
+        # print(user)
+        # breakpoint()
         classroomMember = apps.get_model("classrooms", "ClassroomMember")
-        instance.members.add(classroomMember.objects.get(user=user, classroom=instance.classroom).id)
-        instance.leader = classroomMember.objects.get(user=user, classroom=instance.classroom)
+        instance.members.add(classroomMember.objects.get(user=instance.leader.user, classroom=instance.classroom).id)
         instance.save()

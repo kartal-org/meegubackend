@@ -17,11 +17,12 @@ class Command(BaseCommand):
             fname = fake.unique.first_name()
             lname = fake.unique.last_name()
             uname = "%s%s%d" % (fname.lower(), lname.lower(), random.randint(1000, 9999))
-            email = fake.unique.ascii_safe_email()
+            email = "%s@example.org" % (uname)
+            # email = fake.unique.ascii_safe_email()
             password = "QaxSf96H"
-            about = fake.sentence()  
+            about = fake.sentence()
 
             NewUser.objects.create_user(
-                first_name=fname, last_name=lname, username=uname, email=email, password=password, about=about 
+                first_name=fname, last_name=lname, username=uname, email=email, password=password, about=about
             )
-            print(email, password) 
+            print(email, password)

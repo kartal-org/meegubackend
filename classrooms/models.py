@@ -94,13 +94,9 @@ class ClassroomMember(BaseMember):
         return "%s - %s" % (self.user.full_name, self.classroom.name)
 
 
-# signals
 @receiver(post_save, sender=Classroom)
-def classroom_create_owner(created, instance, *args, **kwargs):
-
+def classroom_create_adviser(created, instance, *args, **kwargs):
     if created:
-        user = getattr(instance, "current_authenticated_user", None)
-        print(user)
-
-        defaultMember = ClassroomMember.objects.create(classroom=instance, role="adviser", user=user)
+        breakpoint()
+        defaultMember = ClassroomMember.objects.create(classroom=instance, role="adviser", user=instance.creator)
         defaultMember.save()

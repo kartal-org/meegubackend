@@ -19,10 +19,10 @@ class ClassroomPlanListView(generics.ListAPIView):
     # queryset = Plan.classroomPlans.all()
 
     def get_queryset(self):
-        # subscriptionList = ClassroomSubscription.objects.filter(classroom__adviser=self.request.user)
-        # if subscriptionList:
-        #     if "Basic Classroom" in [o.plan.name for o in subscriptionList]:
-        #         return Plan.classroomPlans.exclude(name="Basic Classroom")
+        subscriptionList = ClassroomSubscription.objects.filter(classroom__creator=self.request.user)
+        if subscriptionList:
+            if "Basic Classroom" in [o.plan.name for o in subscriptionList]:
+                return Plan.classroomPlans.exclude(name="Basic Classroom")
         return Plan.classroomPlans.all()
 
 
@@ -31,9 +31,9 @@ class InstitutionPlanListView(generics.ListAPIView):
 
     def get_queryset(self):
         print(Plan.institutionPlans.all())
-        # subscriptionList = get_list_or_404(InstitutionSubscription, institution__owner=self.request.user)
-        # if "Basic Institution" in [o.plan.name for o in subscriptionList]:
-        #     return Plan.institutionPlans.exclude(name="Basic Institution")
+        subscriptionList = get_list_or_404(InstitutionSubscription, institution__creator=self.request.user)
+        if "Basic Institution" in [o.plan.name for o in subscriptionList]:
+            return Plan.institutionPlans.exclude(name="Basic Institution")
         return Plan.institutionPlans.all()
 
 
