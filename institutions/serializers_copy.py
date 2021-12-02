@@ -10,7 +10,7 @@ class InstitutionSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "description",
-            "owner",
+            # "owner",
             "contact",
             "address",
             "website",
@@ -44,18 +44,18 @@ class StaffSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-# class InstitutionVerificationSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = InstitutionVerification
-#         fields = "__all__"
-#         extra_kwargs = {"institution": {"read_only": True}, "status": {"read_only": True}}
+class InstitutionVerificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InstitutionVerification
+        fields = "__all__"
+        # extra_kwargs = {"institution": {"read_only": True}, "status": {"read_only": True}}
 
 
-# class DepartmentSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Department
-#         fields = "__all__"
-#         extra_kwargs = {"institution": {"read_only": True}}
+class DepartmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = "__all__"
+        extra_kwargs = {"institution": {"read_only": True}}
 
 
 # class StaffSerializer(serializers.ModelSerializer):

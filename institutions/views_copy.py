@@ -73,6 +73,36 @@ class StaffDetailView(generics.RetrieveUpdateDestroyAPIView):
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class InstitutionVerificationView(generics.CreateAPIView):
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]
+    serializer_class = InstitutionVerificationSerializer
+
+
+class DepartmentListCreate(generics.ListCreateAPIView):
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]
+    serializer_class = DepartmentSerializer
+
+    def get_queryset(self):
+        return Department.objects.filter(institution=Institution.objects.get(pk=self.kwargs["institution"]))
+
+    def perform_create(self, serializer):
+        serializer.save(institution=Institution.objects.get(pk=self.kwargs["institution"]))
+
+
+class DepartmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    # parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]
+    serializer_class = DepartmentSerializer
+    queryset = Department.objects.all()
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+
 # Creation of custom staff type for later
 
 # class ModeratorInstitutionCreate(generics.CreateAPIView):
@@ -148,18 +178,6 @@ class StaffDetailView(generics.RetrieveUpdateDestroyAPIView):
 #         serializer = self.get_serializer(self.get_object())
 #         super().destroy(*args, **kwargs)
 #         return response.Response(serializer.data, status=status.HTTP_200_OK)
-
-
-# class DepartmentListCreate(generics.ListCreateAPIView):
-#     parser_classes = [MultiPartParser, FormParser]
-#     permission_classes = [IsAuthenticated, IsInstitutionOwner]
-#     serializer_class = DepartmentSerializer
-
-#     def get_queryset(self):
-#         return Department.objects.filter(institution=Institution.objects.get(pk=self.kwargs["institution"]))
-
-#     def perform_create(self, serializer):
-#         serializer.save(institution=Institution.objects.get(pk=self.kwargs["institution"]))
 
 
 # class DepartmentDetail(generics.RetrieveUpdateDestroyAPIView):

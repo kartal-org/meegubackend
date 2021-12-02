@@ -40,7 +40,7 @@ class RecommendationList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = RecommendationSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = (["status", "file__folder__workspace__id", "file__folder__workspace__classroom__id"],)
+    search_fields = ["department__id"]
     queryset = Recommendation.objects.all()
 
 
