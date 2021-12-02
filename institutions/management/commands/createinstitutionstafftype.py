@@ -17,8 +17,11 @@ class Command(BaseCommand):
             name = fake.sentence(nb_words=2)
             description = fake.sentence() 
             
+            institutionCount = Institution.objects.count()
+            institution = Institution.objects.get(id=random.randint(1,institutionCount))
+
             StaffType.objects.create(
-                name=name, description=description
+                name=name, description=description, custom_Type_For=institution
             ) 
 
-            print(name)  
+            print(name, institution)  

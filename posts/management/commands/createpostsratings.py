@@ -21,10 +21,10 @@ class Command(BaseCommand):
             rate = random.randint(1, 5)
 
             publicationCount = Publication.objects.count()
-            publication = Publication.objects.get(id=i)
+            publication = Publication.objects.get(id=random.randint(1,publicationCount))
 
             userCount = NewUser.objects.count()
-            user = NewUser.objects.get(id=i)
+            user = NewUser.objects.get(id=random.randint(1,userCount))
 
             Rating.objects.create(publication=publication, rate=rate, user=user)
             print(rate, publication, user)
