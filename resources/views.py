@@ -79,7 +79,15 @@ class InstitutionResourceListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = InstitutionResourceSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ["institution"]
+    search_fields = ["institution__id"]
+    queryset = InstitutionResource.objects.all()
+
+
+class InstitutionDepartmentResourceListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = InstitutionResourceSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ["department__id"]
     queryset = InstitutionResource.objects.all()
 
 

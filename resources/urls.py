@@ -18,4 +18,6 @@ urlpatterns = [
     path("institution/folder/change/<int:pk>", InstitutionResourceFolderDetail.as_view()),
     path("institution/file", InstitutionResourceFileList.as_view()),
     path("institution/file/change/<int:pk>", InstitutionResourceFileDetail.as_view()),
+    # Department
+    path("institution/department", InstitutionDepartmentResourceListCreateView.as_view()),
 ]
