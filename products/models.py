@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
+from users.models import NewUser
+
 
 def upload_to(instance, filename):
     return "products/cover/{filename}".format(filename=filename)
@@ -22,6 +24,7 @@ class Product(models.Model):
     cover = models.ImageField(_("Cover"), upload_to=upload_to, default="userProfile/coverDefault_pdrisr.jpg")
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateUpdated = models.DateTimeField(auto_now=True)
+    creator = models.ForeignKey(NewUser, on_delete=models.CASCADE, null=True, blank=True)
 
     objects = models.Manager()  # default manager
     publicProduct = PublicProductManager()

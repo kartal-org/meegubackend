@@ -19,10 +19,10 @@ class ClassroomPlanListView(generics.ListAPIView):
     # queryset = Plan.classroomPlans.all()
 
     def get_queryset(self):
-        # subscriptionList = ClassroomSubscription.objects.filter(classroom__adviser=self.request.user)
-        # if subscriptionList:
-        #     if "Basic Classroom" in [o.plan.name for o in subscriptionList]:
-        #         return Plan.classroomPlans.exclude(name="Basic Classroom")
+        subscriptionList = ClassroomSubscription.objects.filter(classroom__creator=self.request.user)
+        if subscriptionList:
+            if "Basic Classroom" in [o.plan.name for o in subscriptionList]:
+                return Plan.classroomPlans.exclude(name="Basic Classroom")
         return Plan.classroomPlans.all()
 
 
@@ -30,10 +30,13 @@ class InstitutionPlanListView(generics.ListAPIView):
     serializer_class = PlanSerializer
 
     def get_queryset(self):
-        print(Plan.institutionPlans.all())
-        # subscriptionList = get_list_or_404(InstitutionSubscription, institution__owner=self.request.user)
-        # if "Basic Institution" in [o.plan.name for o in subscriptionList]:
-        #     return Plan.institutionPlans.exclude(name="Basic Institution")
+        # print(Plan.institutionPlans.all())
+        # breakpoint()
+        # subscriptionList = get_list_or_404(InstitutionSubscription, institution__creator=self.request.user)
+        if "Institution Basic" in [
+            o.plan.name for o in InstitutionSubscription.objects.filter(institution__creator=self.request.user)
+        ]:
+            return Plan.institutionPlans.exclude(name="Institution Basic")
         return Plan.institutionPlans.all()
 
 

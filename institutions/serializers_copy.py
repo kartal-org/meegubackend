@@ -10,7 +10,7 @@ class InstitutionSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "description",
-            # "owner",
+            "creator",
             "contact",
             "address",
             "website",
@@ -36,11 +36,11 @@ class InstitutionListSerializer(serializers.ModelSerializer):
         fields = ["institutions"]
 
 
-class StaffSerializer(serializers.ModelSerializer):
-    type = serializers.CharField(source="type.name")
+class StaffTypeSerializer(serializers.ModelSerializer):
+    # type = serializers.CharField(source="type.name")
 
     class Meta:
-        model = Staff
+        model = StaffType
         fields = "__all__"
 
 
@@ -62,6 +62,8 @@ class StaffSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source="user.full_name", read_only=True)
     image = serializers.FileField(source="user.profileImage", read_only=True)
     username = serializers.CharField(source="user.username", read_only=True)
+    user = serializers.SlugRelatedField(slug_field="username", queryset=NewUser.objects.all())
+    type = serializers.SlugRelatedField(slug_field="name", queryset=StaffType.objects.all())
 
     class Meta:
         model = Staff

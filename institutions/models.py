@@ -15,6 +15,8 @@ from django.db.models.signals import post_save, pre_save
 from django_currentuser.middleware import get_current_authenticated_user
 from posts.models import Publication
 
+from django.utils.text import slugify
+
 
 def upload_to(instance, filename):
     return "products/image/{filename}".format(filename=filename)
@@ -36,6 +38,7 @@ class Institution(Product):
     contact = models.CharField(max_length=20)
     email = models.EmailField()
     website = models.URLField(null=True, blank=True)
+    slug = models.SlugField(unique=True, null=True, blank=True)
 
     # staff =
 
@@ -166,10 +169,24 @@ class InstitutionVerification(models.Model):
 def institution_create_owner(created, instance, *args, **kwargs):
 
     if created:
-        user = getattr(instance, "current_authenticated_user", None)
-        print(user)
 
         defaultMember = Staff.objects.create(
-            institution=instance, type=StaffType.objects.get(name="Creator"), user=user
+            institution=instance, type=StaffType.objects.get(name="Admin"), user=instance.creator
         )
         defaultMember.save()
+
+
+# signals
+@receiver(pre_save, sender=Institution)
+def institution_slug_pre_save(sender, instance, *args, **kwargs):
+
+    if not instance.slug:
+        instance.slug = slugify(instance.name)
+
+
+# # signals
+# @receiver(pre_save, sender=Institution)
+# def department_slug_pre_save(sender, instance, *args, **kwargs):
+
+#     if not instance.slug:
+#         instance.slug = slugify(instance.name)
