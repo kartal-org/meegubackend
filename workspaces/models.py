@@ -29,13 +29,7 @@ class Workspace(Package):
 
     classroom = models.ForeignKey("classrooms.Classroom", on_delete=models.CASCADE, null=True, blank=True)
     code = models.CharField(unique=True, max_length=8)
-    members = models.ManyToManyField(
-        "classrooms.ClassroomMember",
-        blank=True,
-        help_text="Members of this workspace.",
-        related_name="workspace_members",
-    )
-    leader = models.ForeignKey("classrooms.ClassroomMember", blank=True, null=True, on_delete=models.SET_NULL)
+    creator = models.ForeignKey("classrooms.ClassroomMember", blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         unique_together = ["name", "classroom"]
@@ -49,6 +43,19 @@ class Workspace(Package):
     #     # Hack to pass the user to post save signal.
     #     self.current_authenticated_user = get_current_authenticated_user()
     #     super(Workspace, self).save(*args, **kwargs)
+
+
+class Member(BaseMember):
+    options = (("leader", "Leader"), ("member", "Member"))
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
+    role = models.CharField(max_length=10, choices=options, default="member")
+    user = models.ForeignKey("classrooms.ClassroomMember", on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ["user", "workspace"]
+
+    def __str__(self):
+        return "%s - %s" % (self.user.user.full_name, self.workspace.name)
 
 
 class WorkspaceFolder(Folder):
@@ -78,9 +85,10 @@ class WorkspaceFile(File):
 def workspace_create_leader(created, instance, *args, **kwargs):
 
     if created:
-        # user = getattr(instance, "current_authenticated_user", None)
-        # print(user)
-        # breakpoint()
         classroomMember = apps.get_model("classrooms", "ClassroomMember")
-        instance.members.add(classroomMember.objects.get(user=instance.leader.user, classroom=instance.classroom).id)
-        instance.save()
+        Member.objects.create(
+            user=classroomMember.objects.get(user=instance.creator.user, classroom=instance.classroom),
+            workspace=instance,
+        )
+        # instance.members.add(classroomMember.objects.get(user=instance.leader.user, classroom=instance.classroom).id)
+        # instance.save()

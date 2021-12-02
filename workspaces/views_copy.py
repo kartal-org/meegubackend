@@ -20,6 +20,8 @@ def get_code():
 
 
 class AdviserWorkspaceList(generics.ListAPIView):
+    """List of workspace in a classroom"""
+
     permission_classes = [IsAuthenticated]
     serializer_class = WorkspaceListSerializer
     filter_backends = [SearchFilter]
@@ -28,6 +30,8 @@ class AdviserWorkspaceList(generics.ListAPIView):
 
 
 class StudentWorkspaceList(generics.ListCreateAPIView):
+    """List and Create view of workspace in a classroom relevant to a student"""
+
     parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated]
     serializer_class = WorkspaceListSerializer
@@ -44,6 +48,7 @@ class StudentWorkspaceList(generics.ListCreateAPIView):
 
 
 class WorkspaceDetail(generics.RetrieveUpdateDestroyAPIView):
+
     permission_classes = [IsAuthenticated]
     serializer_class = WorkspaceSerializer
     queryset = Workspace.objects.all()
@@ -91,6 +96,20 @@ class WorkspaceFileDetail(generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(self.get_object())
         super().destroy(*args, **kwargs)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class WorkspaceMemberList(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = WorkspaceMemberSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ["id"]
+    queryset = Workspace.objects.all()
+
+
+class WorkspaceMemberCreate(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = WorkspaceMemberSerializer
+    queryset = Workspace.objects.all()
 
 
 # class QuillFileList(generics.ListCreateAPIView):

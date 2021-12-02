@@ -14,7 +14,18 @@ class ClassroomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Classroom
-        fields = ["id", "name", "description", "adviser", "cover", "code", "subject", "privacy", "storage_left"]
+        fields = [
+            "id",
+            "name",
+            "description",
+            "adviser",
+            "creator",
+            "cover",
+            "code",
+            "subject",
+            "privacy",
+            "storage_left",
+        ]
         extra_kwargs = {"code": {"read_only": True}}
 
 

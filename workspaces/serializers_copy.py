@@ -6,10 +6,10 @@ from classrooms.models import ClassroomMember
 
 
 class ClassroomMemberFieldSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source="user.full_name")
-    username = serializers.CharField(source="user.username")
-    userId = serializers.CharField(source="user.id")
-    profileImage = serializers.FileField(source="user.profileImage")
+    name = serializers.CharField(source="user.full_name", read_only=True)
+    username = serializers.CharField(source="user.username", read_only=True)
+    userId = serializers.CharField(source="user.id", read_only=True)
+    profileImage = serializers.FileField(source="user.profileImage", read_only=True)
 
     class Meta:
         model = ClassroomMember
@@ -17,13 +17,14 @@ class ClassroomMemberFieldSerializer(serializers.ModelSerializer):
 
 
 class WorkspaceSerializer(serializers.ModelSerializer):
-    members = ClassroomMemberFieldSerializer(many=True, read_only=True)
+    # serializers.SlugRelatedField()
+    members = ClassroomMemberFieldSerializer(many=True)
     cover = serializers.FileField()
 
     class Meta:
         model = Workspace
-        fields = "__all__"
-        # fields = ["id", "name", "description", "members", "classroom", "cover", "code"]
+        # fields = "__all__"
+        fields = ["id", "name", "description", "members", "classroom", "cover", "code"]
 
 
 class WorkspaceListSerializer(serializers.ModelSerializer):
@@ -45,6 +46,45 @@ class WorkspaceFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkspaceFile
         fields = "__all__"
+
+
+class MemberFieldSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="user.id")
+    full_name = serializers.CharField(source="user.full_name")
+    username = serializers.CharField(source="user.username")
+    profileImage = serializers.FileField(source="user.profileImage")
+
+    class Meta:
+        model = ClassroomMember
+        fields = ["id", "full_name", "username", "profileImage"]
+
+
+class WorkspaceMemberSerializer(serializers.ModelSerializer):
+    # members = MemberFieldSerializer(many=True)
+
+    class Meta:
+        model = Member
+        fields = ["id"]
+
+
+# class WorkspaceMemberSerializer(serializers.ModelSerializer):
+#     name = serializers.CharField(source="members.user.full_name", read_only=True)
+#     username = serializers.CharField(source="members.user.username", read_only=True)
+#     userId = serializers.CharField(source="members.user.id", read_only=True)
+#     profileImage = serializers.FileField(source="members.user.profileImage", read_only=True)
+
+#     class Meta:
+#         model = Workspace
+#         fields = [
+#             "id",
+#             "members",
+#             "name",
+#             "username",
+#             "userId",
+#             "profileImage",
+#         ]
+# extra_kwargs = {"workspace": {"read_only": True}}
+# read_only_fields = ["id", "first_name", "last_name", "username", "cover"]
 
 
 # class WorkspaceSerializer(serializers.ModelSerializer):
@@ -99,17 +139,3 @@ class WorkspaceFileSerializer(serializers.ModelSerializer):
 #         model = Member
 #         fields = ["id", "name", "description", "cover", "classroom"]
 #         extra_kwargs = {"classroom": {"read_only": True}}
-
-
-# class WorkspacMemberSerializer(serializers.ModelSerializer):
-#     name = serializers.CharField(source="user.full_name", read_only=True)
-
-#     username = serializers.CharField(source="user.username", read_only=True)
-#     image = serializers.FileField(source="user.image", read_only=True)
-#     role = serializers.CharField(source="role.name", read_only=True)
-
-#     class Meta:
-#         model = Member
-#         fields = "__all__"
-#         extra_kwargs = {"workspace": {"read_only": True}}
-#         # read_only_fields = ["id", "first_name", "last_name", "username", "cover"]
