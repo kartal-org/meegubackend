@@ -8,6 +8,7 @@ import shortuuid
 from users.models import NewUser
 from rest_framework.parsers import JSONParser
 from rest_framework.filters import SearchFilter, OrderingFilter
+from .pusher import pusher_client
 
 
 class ChatRoomList(generics.ListCreateAPIView):
@@ -27,6 +28,15 @@ class ChatRoomList(generics.ListCreateAPIView):
         serializer.save(members=userIds)
 
 
+class ChatRoomMemberList(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ChatRoomGetMembersSerializer
+    queryset = ChatRoom.objects.all()
+
+    # def get_queryset(self):
+    #     return ChatRoom.objects.filter(members__in=[self.request.user])
+
+
 class ChatRoomDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ChatRoomSerializer
@@ -42,7 +52,41 @@ class ChatMessageListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ChatMessageSerializer
     filter_backends = [SearchFilter]
-    search_fields = ["room"]
+    search_fields = ["room__id"]
+    queryset = ChatMessage.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(sender=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        roomChannel = ChatRoom.objects.get(id=self.request.data["room"]).code
+        # send sender data other than id
+        pusher_client.trigger(
+            roomChannel,
+            "message",
+            {
+                "sender": {
+                    "id": self.request.user.id,
+                    "username": self.request.user.username,
+                    "full_name": self.request.user.full_name,
+                    "profileImage": self.request.user.profileImage.url,
+                },
+                "content": self.request.data["content"],
+                "room": self.request.data["room"],
+            },
+        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class ChatMessageDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ChatMessageSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ["room__id"]
     queryset = ChatMessage.objects.all()
 
     def perform_create(self, serializer):

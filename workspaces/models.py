@@ -54,6 +54,10 @@ class Member(BaseMember):
     class Meta:
         unique_together = ["user", "workspace"]
 
+    @property
+    def username(self):
+        return self.user.user.username
+
     def __str__(self):
         return "%s - %s" % (self.user.user.full_name, self.workspace.name)
 

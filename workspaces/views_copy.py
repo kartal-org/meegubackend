@@ -50,7 +50,7 @@ class StudentWorkspaceList(generics.ListCreateAPIView):
 class WorkspaceDetail(generics.RetrieveUpdateDestroyAPIView):
 
     permission_classes = [IsAuthenticated]
-    serializer_class = WorkspaceSerializer
+    serializer_class = WorkspaceListSerializer
     queryset = Workspace.objects.all()
 
     def destroy(self, *args, **kwargs):
@@ -98,18 +98,20 @@ class WorkspaceFileDetail(generics.RetrieveUpdateDestroyAPIView):
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class WorkspaceMemberList(generics.ListAPIView):
+class WorkspaceMemberList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = WorkspaceMemberSerializer
+    serializer_class = AddWorkspaceMemberSerializer
     filter_backends = [SearchFilter]
-    search_fields = ["id"]
-    queryset = Workspace.objects.all()
+    search_fields = ["workspace__id"]
+    queryset = Member.objects.all()
 
 
-class WorkspaceMemberCreate(generics.UpdateAPIView):
+class WorkspaceMemberCreate(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = WorkspaceMemberSerializer
-    queryset = Workspace.objects.all()
+    serializer_class = AddWorkspaceMemberSerializer
+    # filter_backends = [SearchFilter]
+    # search_fields = ["workspace__id"]
+    # queryset = Member.objects.all()
 
 
 # class QuillFileList(generics.ListCreateAPIView):

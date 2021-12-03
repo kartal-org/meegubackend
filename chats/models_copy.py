@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+
 from workspaces.models import Workspace
 from classrooms.models import Classroom
 from institutions.models import Institution, Department
@@ -9,6 +10,7 @@ from django.db.models.signals import post_save, pre_save
 from django_currentuser.middleware import get_current_authenticated_user
 from django.db.models import F
 from django.conf import settings
+import shortuuid
 
 
 class ChatRoom(models.Model):
@@ -20,6 +22,7 @@ class ChatRoom(models.Model):
     admins = models.ManyToManyField(NewUser, blank=True, help_text="Admins of this chat.", related_name="admins")
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateModified = models.DateTimeField(auto_now=True)
+    code = models.CharField(max_length=8, unique=True, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -44,9 +47,32 @@ class ChatMessage(models.Model):
     content = models.TextField()
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateModified = models.DateTimeField(auto_now=True)
+    is_readBy = models.ManyToManyField(
+        NewUser, blank=True, help_text="Members who read the chat.", related_name="read_by"
+    )
 
     class Meta:
         ordering = ("dateModified",)
 
     def __str__(self):
         return self.sender.full_name
+
+
+def get_code():
+    codeID = shortuuid.ShortUUID().random(length=8)
+    return codeID
+
+
+# # signals
+# @receiver(post_save, sender=ChatRoom)
+# def classroom_create_adviser(created, instance, *args, **kwargs):
+#     if created:
+#         breakpoint()
+#         instance.code = get_code()
+
+
+@receiver(pre_save, sender=ChatRoom)
+def slug_pre_save(sender, instance, *args, **kwargs):
+
+    if not instance.code:
+        instance.code = get_code()
