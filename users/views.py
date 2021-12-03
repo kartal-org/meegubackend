@@ -45,12 +45,30 @@ class CustomUserCreate(generics.GenericAPIView):
         user_data = serializer.data
         user = NewUser.objects.get(email=user_data["email"])
         token = RefreshToken.for_user(user).access_token
+
         absurl = "http://" + "localhost:3000/email-verify" + "?token=" + str(token)
         email_body = "Hi " + user.username + " Use the link below to verify your email \n" + absurl
         data = {"email_body": email_body, "to_email": user.email, "email_subject": "Verify your email"}
 
         Util.send_email(data)
         return Response(user_data, status=status.HTTP_201_CREATED)
+
+        # current_site = get_current_site(request)
+        # email_subject = 'Activate your account'
+        # email_body = render_to_string('authentication/activate.html', {
+        #     'user': user,
+        #     'domain': absurl,
+        #     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        #     'token': token
+        # })
+
+        # data = EmailMessage(subject=email_subject, body=email_body,
+        #                     from_email=settings.EMAIL_FROM_USER,
+        #                     to=[user.email]
+        #                     )
+
+        # if not settings.TESTING:
+        #     EmailThread(email).start()
 
 
 class VerifyEmail(APIView):
