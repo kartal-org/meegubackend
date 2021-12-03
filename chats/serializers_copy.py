@@ -8,7 +8,7 @@ class ChatRoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ChatRoom
-        fields = ["id", "name", "members", "latest_message"]
+        fields = ["id", "name", "members", "latest_message", "code"]
 
 
 class UserChatSerializer(serializers.ModelSerializer):
@@ -28,6 +28,8 @@ class ChatRoomGetMembersSerializer(serializers.ModelSerializer):
 
 
 class ChatMessageSerializer(serializers.ModelSerializer):
+    room = serializers.SlugRelatedField(slug_field="code", queryset=ChatRoom.objects.all())
+
     class Meta:
         model = ChatMessage
         fields = "__all__"

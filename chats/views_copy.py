@@ -20,9 +20,11 @@ class ChatRoomList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         userData = self.request.data.get("members")
+
         userIds = []
         for x in userData:
             print(x)
+            # breakpoint()
             userIds.append(NewUser.objects.get(username=x).id)
 
         serializer.save(members=userIds)
@@ -52,7 +54,7 @@ class ChatMessageListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ChatMessageSerializer
     filter_backends = [SearchFilter]
-    search_fields = ["room__id"]
+    search_fields = ["room__code"]
     queryset = ChatMessage.objects.all()
 
     def perform_create(self, serializer):
@@ -63,7 +65,7 @@ class ChatMessageListCreate(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        roomChannel = ChatRoom.objects.get(id=self.request.data["room"]).code
+        roomChannel = ChatRoom.objects.get(code=self.request.data["room"]).code
         # send sender data other than id
         pusher_client.trigger(
             roomChannel,
