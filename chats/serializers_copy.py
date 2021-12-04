@@ -3,6 +3,14 @@ from .models_copy import *
 from users.models import NewUser
 
 
+class UserChatSerializer(serializers.ModelSerializer):
+    profileImage = serializers.FileField()
+
+    class Meta:
+        model = NewUser
+        fields = ["id", "username", "full_name", "profileImage"]
+
+
 class ChatRoomSerializer(serializers.ModelSerializer):
     members = serializers.SlugRelatedField(slug_field="username", many=True, queryset=NewUser.objects.all())
 
@@ -10,13 +18,11 @@ class ChatRoomSerializer(serializers.ModelSerializer):
         model = ChatRoom
         fields = ["id", "name", "members", "latest_message", "code"]
 
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
 
-class UserChatSerializer(serializers.ModelSerializer):
-    profileImage = serializers.FileField()
-
-    class Meta:
-        model = NewUser
-        fields = ["id", "username", "full_name", "profileImage"]
+        rep["members"] = UserChatSerializer(instance.members.all(), many=True).data
+        return rep
 
 
 class ChatRoomGetMembersSerializer(serializers.ModelSerializer):

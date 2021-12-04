@@ -25,8 +25,5 @@ class Command(BaseCommand):
 
         for x in STAFF_TYPES:
 
-            # # name = fake.sentence(nb_words=2)
-            # # description = fake.sentence()
-
             StaffType.objects.create(name=x["name"], description=x["description"])
             print(x["name"])

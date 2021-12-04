@@ -6,5 +6,5 @@ urlpatterns = [
     path("", ChatMessageDetail.as_view()),
     path("members/<int:pk>", ChatRoomMemberList.as_view()),
     path("room", ChatRoomList.as_view()),
-    path("room/change/<int:pk>", ChatRoomDetail.as_view()),
+    path("room/change/<str:code>", ChatRoomDetail.as_view()),
 ]

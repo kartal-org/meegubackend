@@ -29,10 +29,10 @@ class ChatRoom(models.Model):
 
     @property
     def latest_message(self):
-        return ChatMessage.objects.filter(room=self.id).values("sender__username", "content").earliest("dateModified")
+        return ChatMessage.objects.filter(room=self.id).values("sender__username", "content").earliest("-dateModified")
 
     class Meta:
-        ordering = ("dateModified",)
+        ordering = ("-dateModified",)
 
     # # Hack to pass the user to post save signal.
     # def save(self, *args, **kwargs):

@@ -42,7 +42,12 @@ class ChatRoomMemberList(generics.RetrieveAPIView):
 class ChatRoomDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ChatRoomSerializer
-    queryset = ChatRoom.objects.all()
+    # queryset = ChatRoom.objects.all()
+    lookup_field = "code"
+
+    def get_queryset(self):
+        # breakpoint()
+        return ChatRoom.objects.filter(code=self.kwargs.get("code"))
 
     def destroy(self, *args, **kwargs):
         serializer = self.get_serializer(self.get_object())
@@ -65,11 +70,11 @@ class ChatMessageListCreate(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        roomChannel = ChatRoom.objects.get(code=self.request.data["room"]).code
+        roomChannel = self.request.data["room"]
         # send sender data other than id
         pusher_client.trigger(
+            "chat",
             roomChannel,
-            "message",
             {
                 "sender": {
                     "id": self.request.user.id,
