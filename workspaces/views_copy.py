@@ -32,19 +32,23 @@ class AdviserWorkspaceList(generics.ListAPIView):
 class StudentWorkspaceList(generics.ListCreateAPIView):
     """List and Create view of workspace in a classroom relevant to a student"""
 
-    parser_classes = [MultiPartParser, FormParser]
+    # parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated]
-    serializer_class = WorkspaceListSerializer
+    serializer_class = WorkspaceForStudentListSerializer
     # filter_fields = ("classroom__id", "members")
     # filter_class = WorkspaceFilter
-    queryset = Workspace.objects.all()
+    # queryset = Member.objects.all()
 
     def get_queryset(self):
-        member = ClassroomMember.objects.filter(user=self.request.user, classroom=self.kwargs.get("classroom"))
-        return Workspace.objects.filter(members__in=member)
+        # given is user, classroom
+        # member = ClassroomMember.objects.filter(user=self.request.user, classroom=self.kwargs.get("classroom"))
+        return Member.objects.filter(user__user=self.request.user, workspace__classroom=self.kwargs.get("classroom"))
 
     def perform_create(self, serializer):
-        serializer.save(classroom=Classroom.objects.get(id=self.kwargs.get("classroom")), code=get_code())
+        classmember = get_object_or_404(
+            ClassroomMember, user=self.request.user, classroom__id=self.kwargs.get("classroom")
+        )
+        serializer.save(user=classmember)
 
 
 class WorkspaceDetail(generics.RetrieveUpdateDestroyAPIView):

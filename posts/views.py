@@ -11,7 +11,7 @@ from .permissions import *
 from rest_framework.response import Response
 from django.db.models import Avg
 from workspaces.models import Workspace
-from rest_framework.decorators import api_view, parser_classes
+from rest_framework.decorators import api_view, parser_classes, permission_classes
 from django.db.models import F
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -99,9 +99,14 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class CategoryList(generics.ListAPIView):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+
 # class InstitutionArticleListCreate(generics.ListCreateAPIView):
 #     permission_classes = [permissions.IsAuthenticated]
-#     serializer_class = ArticleListSerializer
 #     parser_classes = [MultiPartParser, FormParser]
 
 #     def get_queryset(self):

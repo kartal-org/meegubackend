@@ -9,4 +9,5 @@ urlpatterns = [
     path("rating/change/<int:pk>", RatingDetail.as_view()),
     path("comment", CommentListCreate.as_view()),
     path("comment/change/<int:pk>", CommentDetail.as_view()),
+    path("category", CategoryList.as_view()),
 ]

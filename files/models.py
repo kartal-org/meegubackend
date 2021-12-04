@@ -59,7 +59,7 @@ class Package(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ("-dateUpdated",)
+        ordering = ("dateUpdated",)
 
     def __str__(self):
         return self.name

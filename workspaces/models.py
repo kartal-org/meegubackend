@@ -19,6 +19,7 @@ from django.db.models import Sum, IntegerField
 from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from django.apps import apps
 from users.models import NewUser
+import shortuuid
 
 
 def upload_to(instance, filename):
@@ -28,11 +29,12 @@ def upload_to(instance, filename):
 class Workspace(Package):
 
     classroom = models.ForeignKey("classrooms.Classroom", on_delete=models.CASCADE, null=True, blank=True)
-    code = models.CharField(unique=True, max_length=8)
+    code = models.CharField(unique=True, max_length=8, null=True, blank=True)
     creator = models.ForeignKey("classrooms.ClassroomMember", blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         unique_together = ["name", "classroom"]
+        # ordering = ("-dateModified",)
 
     @property
     def storageUsed(self):
@@ -57,6 +59,10 @@ class Member(BaseMember):
     @property
     def username(self):
         return self.user.user.username
+
+    # @property
+    # def workspaces(self):
+    #     return Workspace.objects.filter(id=self.workspace.id).values("id")
 
     def __str__(self):
         return "%s - %s" % (self.user.user.full_name, self.workspace.name)
@@ -94,5 +100,15 @@ def workspace_create_leader(created, instance, *args, **kwargs):
             user=classroomMember.objects.get(user=instance.creator.user, classroom=instance.classroom),
             workspace=instance,
         )
-        # instance.members.add(classroomMember.objects.get(user=instance.leader.user, classroom=instance.classroom).id)
-        # instance.save()
+
+
+def get_code():
+    codeID = shortuuid.ShortUUID().random(length=8)
+    return codeID
+
+
+@receiver(pre_save, sender=Workspace)
+def slug_pre_save(sender, instance, *args, **kwargs):
+
+    if not instance.code:
+        instance.code = get_code()

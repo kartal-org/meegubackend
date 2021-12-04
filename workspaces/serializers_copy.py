@@ -25,6 +25,29 @@ class WorkspaceListSerializer(serializers.ModelSerializer):
         extra_kwargs = {"classroom": {"read_only": True}}
 
 
+class WorkspaceForStudentListSerializer(serializers.ModelSerializer):
+    # workspaces = WorkspaceListSerializer(many=True, read_only=True)
+    workspace = serializers.SlugRelatedField(slug_field="code", queryset=Workspace.objects.all())
+    # user = serializers.IntegerField(source="user.user.id")
+
+    # Problem need to be solve:
+    # user can be added through their username, ==> have only the user can join their selves and just filter the workspace in their
+    # flattening the list
+
+    # Joining Workspace:
+    # Requirements: classroommemberID
+
+    class Meta:
+        model = Member
+        fields = ["id", "workspace", "user"]
+        extra_kwargs = {"user": {"read_only": True}}
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["workspace"] = WorkspaceListSerializer(instance.workspace).data
+        return response
+
+
 class WorkspaceFieldSerializer(serializers.ModelSerializer):
     # serializers.SlugRelatedField()
     # members = ClassroomMemberFieldSerializer(many=True)

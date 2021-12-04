@@ -77,3 +77,9 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = "__all__"
         extra_kwargs = {"user": {"read_only": True}}
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"

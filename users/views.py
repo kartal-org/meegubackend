@@ -54,6 +54,21 @@ class CustomUserCreate(generics.GenericAPIView):
         Util.send_email(data)
         return Response(user_data, status=status.HTTP_201_CREATED)
 
+
+class ResendActivationLink(generics.GenericAPIView):
+    # serializer_class = CustomUserSerializer
+
+    def get(self, request):
+
+        if not request.user.is_verified:
+            token = RefreshToken.for_user(request.user).access_token
+            absurl = "http://" + "localhost:3000/email-verify" + "?token=" + str(token)
+            email_body = "Hi " + request.user.username + " Use the link below to verify your email \n" + absurl
+            data = {"email_body": email_body, "to_email": request.user.email, "email_subject": "Verify your email"}
+            Util.send_email(data)
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)
+
         # current_site = get_current_site(request)
         # email_subject = 'Activate your account'
         # email_body = render_to_string('authentication/activate.html', {
