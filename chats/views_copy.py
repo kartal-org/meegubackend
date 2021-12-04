@@ -8,7 +8,23 @@ import shortuuid
 from users.models import NewUser
 from rest_framework.parsers import JSONParser
 from rest_framework.filters import SearchFilter, OrderingFilter
-from .pusher import pusher_client
+from rest_framework.pagination import PageNumberPagination
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+    max_page_size = 10
+
+    def get_paginated_response(self, data):
+        return Response(
+            {
+                "links": {"next": self.get_next_link(), "previous": self.get_previous_link()},
+                "count": self.page.paginator.count,
+                "total_pages": self.page.paginator.num_pages,
+                "results": data,
+            }
+        )
 
 
 class ChatRoomList(generics.ListCreateAPIView):
@@ -60,6 +76,7 @@ class ChatMessageListCreate(generics.ListCreateAPIView):
     serializer_class = ChatMessageSerializer
     filter_backends = [SearchFilter]
     search_fields = ["room__code"]
+    # pagination_class = StandardResultsSetPagination
     queryset = ChatMessage.objects.all()
 
     def perform_create(self, serializer):

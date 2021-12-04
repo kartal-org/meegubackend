@@ -59,6 +59,8 @@ class GetUserSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField("get_user_full_name")
+    profileImage = serializers.FileField("profileImage")
+    profileCover = serializers.FileField("profileCover")
 
     def get_user_full_name(self, obj):
         request = self.context["request"]
