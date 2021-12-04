@@ -10,21 +10,32 @@ import decimal
 from django.contrib.auth import authenticate, login
 
 
+PUBLICATIONS = Publication.objects.values_list("id", flat=True)
+
+
+class Provider(faker.providers.BaseProvider):
+    def publications(self):
+        return self.random_element(PUBLICATIONS)
+
+
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
         fake = Faker(["tl_PH"])
+        fake.add_provider(Provider)
 
-        for i in range(6):
-            rate = random.randint(1, 5)
+        # breakpoint()
+        # # Create 50 ratings for all Publication
+        # for i in range(51):
+        #     rate = random.randint(1, 5)
 
-            publicationCount = Publication.objects.count()
-            publication = Publication.objects.get(id=random.randint(1,publicationCount))
+        #     publication = fake.publications()
+        #     publication = Publication.objects.get(id=random.randint(1, publicationCount))
 
-            userCount = NewUser.objects.count()
-            user = NewUser.objects.get(id=random.randint(1,userCount))
+        #     userCount = NewUser.objects.count()
+        #     user = NewUser.objects.get(id=random.randint(1, userCount))
 
-            Rating.objects.create(publication=publication, rate=rate, user=user)
-            print(rate, publication, user)
+        #     Rating.objects.create(publication=publication, rate=rate, user=user)
+        #     print(rate, publication, user)

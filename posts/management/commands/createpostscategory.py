@@ -1,20 +1,16 @@
 from django.core.management.base import BaseCommand
-from faker import Faker
-import faker.providers
-from posts.models import Category 
-from django.contrib.auth import authenticate, login 
+from posts.models import Category
+
+
+CATEGORY_DEFAULTS = ["Sciences", "Technology", "Politics"]
+
 
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"]) 
-        
-        for _ in range(5):
-            name = fake.unique.sentence(nb_words=2) 
+        for x in CATEGORY_DEFAULTS:
 
-            Category.objects.create(
-                name=name
-            )
-            print(name)  
+            Category.objects.create(name=x)
+            print(x)
