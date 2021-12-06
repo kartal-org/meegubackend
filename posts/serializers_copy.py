@@ -30,6 +30,7 @@ class PublicationSerializer(serializers.ModelSerializer):
     # authors = serializers.SerializerMethodField()
     submission = SubmissionFieldSerializer(read_only=True)
     category = CategorySerializer(read_only=True, many=True)
+    institution = serializers.CharField(source="department.institution.name", read_only=True)
     archiveFile = serializers.FileField()
 
     class Meta:
@@ -40,6 +41,7 @@ class PublicationSerializer(serializers.ModelSerializer):
             "title",
             "archiveFile",
             "submission",
+            "institution",
             "abstract",
             "rating",
             "category",
