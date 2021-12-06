@@ -54,6 +54,8 @@ class RecommendationSerializer(serializers.ModelSerializer):
 
 
 class SubmissionResponseSerializer(serializers.ModelSerializer):
+    department = serializers.IntegerField(required=False)
+
     class Meta:
         model = SubmissionResponse
         fields = "__all__"

@@ -1,3 +1,4 @@
+from django.db.models import fields
 from rest_framework import serializers
 from .models import *
 from users.models import NewUser
@@ -29,11 +30,11 @@ class InstitutionFieldSerializer(serializers.ModelSerializer):
 
 
 class InstitutionListSerializer(serializers.ModelSerializer):
-    institutions = InstitutionFieldSerializer(read_only=True, many=True)
+    institution = InstitutionFieldSerializer(read_only=True, many=False)
 
     class Meta:
         model = Staff
-        fields = ["institutions"]
+        fields = ["institution"]
 
 
 class StaffTypeSerializer(serializers.ModelSerializer):
@@ -69,6 +70,20 @@ class StaffSerializer(serializers.ModelSerializer):
         model = Staff
         fields = "__all__"
         # extra_kwargs = {"institution": {"read_only": True}, "user": {"read_only": True}}
+
+
+class DepartmentFieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = ["id", "name"]
+
+
+class StaffsDepartmentSerializer(serializers.ModelSerializer):
+    department = DepartmentFieldSerializer(read_only=True)
+
+    class Meta:
+        model = Staff
+        fields = ["id", "department"]
 
 
 # class StaffTypeSerializer(serializers.ModelSerializer):

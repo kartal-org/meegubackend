@@ -108,6 +108,16 @@ class DepartmentListCreate(generics.ListCreateAPIView):
         serializer.save(institution=Institution.objects.get(pk=self.kwargs["institution"]))
 
 
+class DepartmentWhereStaffList(generics.ListAPIView):
+    """List of Department relevant to staff"""
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = StaffsDepartmentSerializer
+
+    def get_queryset(self):
+        return Staff.objects.filter(user=self.request.user)
+
+
 # class DepartmentStaffListCreate(generics.ListCreateAPIView):
 #     parser_classes = [MultiPartParser, FormParser]
 #     permission_classes = [IsAuthenticated]
