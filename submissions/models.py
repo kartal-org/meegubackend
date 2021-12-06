@@ -38,6 +38,7 @@ class Submission(models.Model):
     @property
     def responseStatus(self):
         # return the latest response of this
+
         return SubmissionResponse.objects.filter(submission=self).earliest("dateModified").values("responseStatus")
 
 

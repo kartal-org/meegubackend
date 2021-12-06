@@ -16,6 +16,7 @@ class InstitutionSerializer(serializers.ModelSerializer):
             "address",
             "website",
             "cover",
+            "slug",
             "privacy",
             "storage_left",
             "is_Verified",

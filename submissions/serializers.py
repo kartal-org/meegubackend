@@ -34,6 +34,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
 class SubmissionCreateSerializer(serializers.ModelSerializer):
     # file = WorkspaceFileFieldSerializer(source="file.name", read_only=True)
     isPdf = serializers.SerializerMethodField()
+    workspaceName = serializers.CharField(source="file.folder.workspace.name")
 
     def get_isPdf(self, obj):
         if obj.file.file:
@@ -42,7 +43,7 @@ class SubmissionCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Submission
-        fields = "__all__"
+        fields = ["id", "title", "description", "status", "workspaceName", "responseStatus", "isPdf"]
 
 
 class RecommendationSerializer(serializers.ModelSerializer):

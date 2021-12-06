@@ -10,7 +10,7 @@ urlpatterns = [
     path("admin", OwnerInstitutionListView.as_view()),
     path("staff", StaffInstitutionListView.as_view()),
     path("change/<int:pk>", InstitutionDetailView.as_view()),
-    path("staff", StaffListCreateView.as_view()),
+    path("staff-list", StaffListCreateView.as_view()),
     path("staff/change/<int:pk>", StaffDetailView.as_view()),
     path("staff-type", StaffTypeListCreateView.as_view()),
     path("staff-type/change/<int:pk>", StaffTypeDetailView.as_view()),
