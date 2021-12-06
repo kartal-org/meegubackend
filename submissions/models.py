@@ -39,7 +39,7 @@ class Submission(models.Model):
     def responseStatus(self):
         # return the latest response of this
 
-        return SubmissionResponse.objects.filter(submission=self).earliest("dateModified").values("responseStatus")
+        return SubmissionResponse.objects.filter(submission=self).earliest("dateModified").responseStatus
 
 
 class Recommendation(models.Model):
@@ -54,9 +54,7 @@ class Recommendation(models.Model):
     @property
     def responseStatus(self):
         # return the latest response of this
-        return (
-            RecommendationResponse.objects.filter(recommendation=self).earliest("dateModified").values("responseStatus")
-        )
+        return RecommendationResponse.objects.filter(recommendation=self).earliest("dateModified").responseStatus
 
 
 class Response(models.Model):

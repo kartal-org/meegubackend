@@ -47,11 +47,16 @@ class SubmissionCreateSerializer(serializers.ModelSerializer):
 
 
 class RecommendationSerializer(serializers.ModelSerializer):
-    submission = SubmissionSerializer()
+    # submission = SubmissionSerializer()
 
     class Meta:
         model = Recommendation
         fields = ["id", "submission", "responseStatus", "department"]
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["submission"] = SubmissionSerializer(instance.submission).data
+        return response
 
 
 class SubmissionResponseSerializer(serializers.ModelSerializer):
