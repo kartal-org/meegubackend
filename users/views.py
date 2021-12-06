@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import *
 from rest_framework import generics
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from rest_framework_simplejwt.tokens import RefreshToken
 from .permissions import IsOwner
 
@@ -16,19 +16,27 @@ from .utils import Util
 from django.urls import reverse
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
+from django.utils.encoding import smart_str, force_str, smart_bytes,  force_bytes, force_text, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from rest_framework.fields import CurrentUserDefault
 from django.contrib.sites.shortcuts import get_current_site
 import jwt
 from django.conf import settings
-from django.http import HttpResponsePermanentRedirect
+from django.http import HttpResponsePermanentRedirect, HttpResponse, HttpResponseRedirect
 import os
 
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
 
+#email
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode  
+from django.contrib import messages 
+from django.core.mail import EmailMultiAlternatives,EmailMessage, BadHeaderError, send_mail
+from django.template.loader import get_template 
+from django.template import Context
+from django.conf import settings
 
 class CustomRedirect(HttpResponsePermanentRedirect):
 
@@ -48,10 +56,15 @@ class CustomUserCreate(generics.GenericAPIView):
         token = RefreshToken.for_user(user).access_token
 
         absurl = "http://" + "localhost:3000/email-verify" + "?token=" + str(token)
-        email_body = "Hi " + user.username + " Use the link below to verify your email \n" + absurl
-        data = {"email_body": email_body, "to_email": user.email, "email_subject": "Verify your email"}
-
-        Util.send_email(data)
+        email_body = "Hi " + request.user.username + "\n\nUse the link below to verify your email\n" + absurl
+        html_content = render_to_string('authentication/activate.html', {
+            'user': request.user,
+            'domain': absurl, 
+        }) 
+        email = EmailMultiAlternatives('Verify your email', email_body, settings.EMAIL_HOST_USER, [request.user.email])
+             
+        email.attach_alternative(html_content, "text/html")
+        email.send()
         return Response(user_data, status=status.HTTP_201_CREATED)
 
 
@@ -62,30 +75,21 @@ class ResendActivationLink(generics.GenericAPIView):
 
         if not request.user.is_verified:
             token = RefreshToken.for_user(request.user).access_token
-            absurl = "http://" + "localhost:3000/email-verify" + "?token=" + str(token)
-            email_body = "Hi " + request.user.username + " Use the link below to verify your email \n" + absurl
-            data = {"email_body": email_body, "to_email": request.user.email, "email_subject": "Verify your email"}
-            Util.send_email(data)
+            absurl = "http://" + "localhost:3000/email-verify" + "?token=" + str(token) 
+              
+            email_body = "Hi " + request.user.username + "\n\nUse the link below to verify your email\n" + absurl
+            html_content = render_to_string('authentication/activate.html', {
+                'user': request.user,
+                'domain': absurl, 
+            }) 
+            email = EmailMultiAlternatives('Verify your email', email_body, settings.EMAIL_HOST_USER, [request.user.email])
+             
+            email.attach_alternative(html_content, "text/html")
+            email.send() 
+
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_200_OK)
-
-        # current_site = get_current_site(request)
-        # email_subject = 'Activate your account'
-        # email_body = render_to_string('authentication/activate.html', {
-        #     'user': user,
-        #     'domain': absurl,
-        #     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-        #     'token': token
-        # })
-
-        # data = EmailMessage(subject=email_subject, body=email_body,
-        #                     from_email=settings.EMAIL_FROM_USER,
-        #                     to=[user.email]
-        #                     )
-
-        # if not settings.TESTING:
-        #     EmailThread(email).start()
-
+        
 
 class VerifyEmail(APIView):
     serializer_class = EmailVerificationSerializer
