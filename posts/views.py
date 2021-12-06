@@ -34,9 +34,10 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class ArticleListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
     serializer_class = PublicationSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ["department__id"]
+    search_fields = ["department__id", "department__institution__name"]
     queryset = Publication.objects.all()
 
 

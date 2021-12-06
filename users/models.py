@@ -45,10 +45,10 @@ class NewUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("email address"), unique=True)
     about = models.TextField(_("about"), max_length=500, blank=True)
     profileImage = models.ImageField(
-        _("Profile"), upload_to=upload_to, default="userProfile/default_egry2i.jpg", blank=True, null=True
+        _("ProfileImage"), upload_to=upload_to, default="userProfile/default_egry2i.jpg", blank=True, null=True
     )
     profileCover = models.ImageField(
-        _("Cover"), upload_to=upload_to, default="userProfile/coverDefault_pdrisr.jpg", blank=True, null=True
+        _("ProfileCover"), upload_to=upload_to, default="userProfile/coverDefault_pdrisr.jpg", blank=True, null=True
     )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

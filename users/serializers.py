@@ -59,8 +59,39 @@ class GetUserSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField("get_user_full_name")
-    profileImage = serializers.FileField("profileImage")
-    profileCover = serializers.FileField("profileCover")
+    profileImage = serializers.FileField()
+    profileCover = serializers.FileField()
+
+    def get_user_full_name(self, obj):
+        request = self.context["request"]
+        user = request.user
+        name = user.first_name + " " + user.last_name
+        return name
+
+    class Meta:
+        model = NewUser
+        fields = (
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "about",
+            "name",
+            "email",
+            "profileImage",
+            "profileCover",
+            "is_verified",
+        )
+        extra_kwargs = {
+            "first_name": {"required": True},
+            "last_name": {"required": True},
+        }
+
+
+class UserProfileSerializer2(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField("get_user_full_name")
+    profileImage = serializers.FileField()
+    profileCover = serializers.FileField()
 
     def get_user_full_name(self, obj):
         request = self.context["request"]

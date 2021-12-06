@@ -102,6 +102,13 @@ def workspace_create_leader(created, instance, *args, **kwargs):
         )
 
 
+@receiver(post_save, sender=Workspace)
+def workspace_create_resource_folder(created, instance, *args, **kwargs):
+
+    if created:
+        WorkspaceFolder.objects.create(workspace=instance, name="Resources")
+
+
 def get_code():
     codeID = shortuuid.ShortUUID().random(length=8)
     return codeID

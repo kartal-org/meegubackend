@@ -7,7 +7,7 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 import shortuuid
 from rest_framework.parsers import MultiPartParser, FormParser
 from classrooms.models import ClassroomMember
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, parser_classes
 from itertools import chain
 from django.db.models import F
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -19,18 +19,26 @@ def get_code():
     return codeID
 
 
-class AdviserWorkspaceList(generics.ListAPIView):
+class WorkspaceList(generics.ListCreateAPIView):
     """List of workspace in a classroom"""
 
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
     serializer_class = WorkspaceListSerializer
     filter_backends = [SearchFilter]
     search_fields = ["classroom__id"]
     queryset = Workspace.objects.all()
 
+    def perform_create(self, serializer):
 
-class StudentWorkspaceList(generics.ListCreateAPIView):
-    """List and Create view of workspace in a classroom relevant to a student"""
+        classmember = get_object_or_404(
+            ClassroomMember, user=self.request.user, classroom__id=self.request.data.get("classroom")
+        )
+        serializer.save(creator=classmember)
+
+
+class StudentWorkspaceList(generics.ListAPIView):
+    """List view of workspace in a classroom relevant to a student"""
 
     # parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated]
@@ -43,12 +51,6 @@ class StudentWorkspaceList(generics.ListCreateAPIView):
         # given is user, classroom
         # member = ClassroomMember.objects.filter(user=self.request.user, classroom=self.kwargs.get("classroom"))
         return Member.objects.filter(user__user=self.request.user, workspace__classroom=self.kwargs.get("classroom"))
-
-    def perform_create(self, serializer):
-        classmember = get_object_or_404(
-            ClassroomMember, user=self.request.user, classroom__id=self.kwargs.get("classroom")
-        )
-        serializer.save(user=classmember)
 
 
 class WorkspaceDetail(generics.RetrieveUpdateDestroyAPIView):

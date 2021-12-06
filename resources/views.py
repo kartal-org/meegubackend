@@ -9,9 +9,9 @@ from .permissions import *
 from classrooms.models import Classroom
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.parsers import MultiPartParser, FormParser
-from workspaces.models import WorkspaceFile
+from workspaces.models import WorkspaceFile, WorkspaceFolder
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 
 
 # CLassroom Resources
@@ -143,21 +143,24 @@ class InstitutionResourceFileDetail(generics.RetrieveUpdateDestroyAPIView):
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view()
-def importClassroomResourceToWorkspace(request):
-    # What about folder? also pass that
-    if request.method == "POST":
+class ImportResourceClass(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
         files = ClassroomResourceFile.objects.filter(folder__resource=request.data.get("resource"))
+        # breakpoint()
 
         for x in files:
-            WorkspaceFile.objects.create(
-                folder=request.data.get("resource"),
-                resource=request.data.get("to_resource"),
+            hello = WorkspaceFile.objects.create(
+                folder=WorkspaceFolder.objects.get(id=request.data.get("folder")),
+                # resource=request.data.get("to_resource"),
                 name=x.name,
                 tags=x.tags,
                 file=x.file,
                 content=x.content,
                 size=x.size,
             )
+            hello.save()
+            print(hello.name)
 
         return response.Response(status=status.HTTP_200_OK)

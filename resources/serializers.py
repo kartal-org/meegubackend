@@ -2,6 +2,7 @@ from django.db.models import fields
 from rest_framework import serializers
 from .models import *
 from classrooms.models import Classroom
+from workspaces.models import WorkspaceFile
 
 
 class ClassroomOwnerSerializer(serializers.ModelSerializer):
@@ -59,5 +60,15 @@ class InstitutionResourceFolderSerializer(serializers.ModelSerializer):
 class InstitutionResourceFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstitutionResourceFile
+        fields = "__all__"
+        extra_kwargs = {"folder": {"read_only": True}}
+
+
+class ImportResourceClassSerializer(serializers.ModelSerializer):
+
+    name = serializers.CharField(required=False)
+
+    class Meta:
+        model = WorkspaceFile
         fields = "__all__"
         extra_kwargs = {"folder": {"read_only": True}}

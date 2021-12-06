@@ -17,12 +17,12 @@ class ClassroomMemberFieldSerializer(serializers.ModelSerializer):
 
 
 class WorkspaceListSerializer(serializers.ModelSerializer):
-    cover = serializers.FileField(read_only=True)
+    cover = serializers.FileField()
 
     class Meta:
         model = Workspace
-        fields = ["id", "name", "description", "cover", "classroom"]
-        extra_kwargs = {"classroom": {"read_only": True}}
+        fields = ["id", "name", "description", "cover", "classroom", "creator"]
+        extra_kwargs = {"creator": {"read_only": True}}
 
 
 class WorkspaceForStudentListSerializer(serializers.ModelSerializer):

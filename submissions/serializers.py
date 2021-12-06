@@ -14,14 +14,31 @@ class WorkspaceFileFieldSerializer(serializers.ModelSerializer):
 
 class SubmissionSerializer(serializers.ModelSerializer):
     file = WorkspaceFileFieldSerializer(read_only=True)
+    isPdf = serializers.SerializerMethodField()
+
+    def get_isPdf(self, obj):
+        if obj.file.file:
+            return True
+        return False
+
+    # authors = serializers.SerializerMethodField()
+
+    # def get_authors(self, obj):
+    #     return
 
     class Meta:
         model = Submission
-        fields = ["id", "file", "title", "description", "authors", "responseStatus", "status"]
+        fields = ["id", "file", "title", "description", "authors", "responseStatus", "status", "isPdf"]
 
 
 class SubmissionCreateSerializer(serializers.ModelSerializer):
     # file = WorkspaceFileFieldSerializer(source="file.name", read_only=True)
+    isPdf = serializers.SerializerMethodField()
+
+    def get_isPdf(self, obj):
+        if obj.file.file:
+            return True
+        return False
 
     class Meta:
         model = Submission

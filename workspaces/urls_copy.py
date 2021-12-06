@@ -6,7 +6,7 @@ from .views_copy import *
 app_name = "workspaces"
 
 urlpatterns = [
-    path("adviser", AdviserWorkspaceList.as_view()),
+    path("", WorkspaceList.as_view()),
     path("student/<int:classroom>", StudentWorkspaceList.as_view()),
     path("change/<int:pk>", WorkspaceDetail.as_view()),
     path("folder", WorkspaceFolderList.as_view()),

@@ -1,7 +1,8 @@
 from django.db import models
 
 # from institutions.models import Department
-from workspaces.models import Workspace, WorkspaceFile
+from workspaces.models import Workspace, WorkspaceFile, Member
+from django.db.models import F
 
 # from institutions.models import Institution
 from django.db.models import F
@@ -32,7 +33,7 @@ class Submission(models.Model):
 
         workspace = self.file.folder.workspace.id
 
-        return Workspace.objects.filter(id=workspace).values("members")
+        return Member.objects.filter(workspace=workspace).values("user__user__first_name")
 
     @property
     def responseStatus(self):

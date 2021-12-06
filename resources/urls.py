@@ -20,5 +20,5 @@ urlpatterns = [
     path("institution/file/change/<int:pk>", InstitutionResourceFileDetail.as_view()),
     # Department
     path("institution/department", InstitutionDepartmentResourceListCreateView.as_view()),
-    path("import-classroom", importClassroomResourceToWorkspace, name="import_classroom_resource"),
+    path("import-classroom", ImportResourceClass.as_view(), name="import_classroom_resource"),
 ]

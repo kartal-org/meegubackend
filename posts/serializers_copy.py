@@ -1,5 +1,6 @@
 from django.db.models import fields
 from rest_framework import serializers
+from institutions.models import Department
 from workspaces.models import *
 from .models import *
 from django.db.models import F
@@ -19,11 +20,17 @@ class SubmissionFieldSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class DepartmentFieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = ["name"]
+
+
 class PublicationSerializer(serializers.ModelSerializer):
     # authors = serializers.SerializerMethodField()
     submission = SubmissionFieldSerializer(read_only=True)
     category = CategorySerializer(read_only=True, many=True)
-    department = serializers.CharField(source="department.name", read_only=True)
+    archiveFile = serializers.FileField()
 
     class Meta:
         model = Publication
@@ -31,6 +38,7 @@ class PublicationSerializer(serializers.ModelSerializer):
             "id",
             "authors",
             "title",
+            "archiveFile",
             "submission",
             "abstract",
             "rating",
@@ -42,12 +50,18 @@ class PublicationSerializer(serializers.ModelSerializer):
             "is_featured",
         ]
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["department"] = DepartmentFieldSerializer(instance.department).data
+        return response
+
 
 class PublicationDetailSerializer(serializers.ModelSerializer):
     # authors = serializers.SerializerMethodField()
-    file = serializers.FileField(source="file.file", read_only=True)
+    # file = serializers.FileField(source="file.file", read_only=True)
     category = CategorySerializer(read_only=True, many=True)
     department = serializers.CharField(source="department.name", read_only=True)
+    archiveFile = serializers.FileField()
 
     class Meta:
         model = Publication
@@ -55,8 +69,8 @@ class PublicationDetailSerializer(serializers.ModelSerializer):
             "id",
             "authors",
             "title",
-            "file",
             "abstract",
+            "archiveFile",
             "category",
             "authors",
             "department",

@@ -182,14 +182,19 @@ class UserRetrieve(generics.RetrieveUpdateDestroyAPIView):
         return obj
 
 
-class UserUpdateDestroy(generics.UpdateAPIView):
+class UserUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated]
     queryset = NewUser.objects.all()
     serializer_class = UserProfileSerializer
 
+    def update(self, request, *args, **kwargs):
+        print(request.data)
+        return super().update(request, *args, **kwargs)
+
 
 class UpdateImg(generics.UpdateAPIView):
+    parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated]
     queryset = NewUser.objects.all()
     serializer_class = UserProfileSerializer
