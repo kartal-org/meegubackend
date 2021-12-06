@@ -17,7 +17,7 @@ class ClassroomMemberFieldSerializer(serializers.ModelSerializer):
 
 
 class WorkspaceListSerializer(serializers.ModelSerializer):
-    cover = serializers.FileField()
+    cover = serializers.FileField(required=False)
 
     class Meta:
         model = Workspace
