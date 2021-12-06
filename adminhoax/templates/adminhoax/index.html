@@ -96,7 +96,7 @@
                                     role="tab"
                                     aria-controls="ex1-tabs-1"
                                     aria-selected="true"
-                                    >Subscriptions</a
+                                    >Verification</a
                                   >
                                 </li>
                                 <li class="nav-item" role="presentation">
@@ -132,23 +132,21 @@
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
-                                                <th>Plan</th>
-                                                <th>Price</th>
+                                                <th>Institution</th> 
                                                 <th>Status</th>
-                                                <th>Type</th> 
-                                                <th>Date Created</th>   
+                                                <th>Date Created</th> 
+                                                <th>View</th>   
                                             </tr>
                                         </thead>
                                         
                     
-                                        {% for tran in subscriptionList %} 
+                                        {% for verif in institutionVerification %} 
                                         <tr>
-                                            <td> {{ tran.id }} </td> 
-                                            <td> {{ tran.name }} </td>
-                                            <td> {{ tran.price }} </td>
-                                            <td> {{ tran.status }} </td>
-                                            <td> {{ tran.type }} </td>
-                                            <td> {{ tran.dateCreated }} </td>    
+                                            <td> {{ verif.institution }} </td> 
+                                            <td> {{ verif.name }} </td>
+                                            <td> {{ verif.status }} </td>
+                                            <td> {{ verif.dateCreated }} </td>
+                                            <td> <button class="btn btn-sm btn-primary"> View </button></td>   
                                         </tr>
                                         {% endfor %}
                                         
@@ -191,7 +189,7 @@
                                                 <th>Email</th>
                                                 <th>Name</th>
                                                 <th>Plan</th>
-                                                <th>Classroom ID</th> 
+                                                <th>Institution ID</th> 
                                                 <th>Date Created</th>   
                                             </tr>
                                         </thead> 

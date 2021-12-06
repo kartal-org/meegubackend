@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect  
- 
+import datetime
 from .models import *
 from users.models import *
 from subscriptions.models import *
@@ -18,20 +18,27 @@ def home(request):
     transactionsInstituion = InstitutionSubscription.objects.all()
 
     subscription = Plan.objects.all()
+ 
+    today = datetime.date.today()
 
-
-    #monthly nga query dre dapit start
-    #plan = Plan.objects.filter(name=transactionsClassroom)
-    planCount = ClassroomSubscription.objects.filter(plan=subscription).count()
-    total = Plan.price * planCount
-    #end
+    monthlyClassroomSubscriptionCount = ClassroomSubscription.objects.filter(dateCreated__month=today.month, dateCreated__year=today.year).count()
+    monthlyInstitutionSubscriptionCount = InstitutionSubscription.objects.filter(dateCreated__month=today.month, dateCreated__year=today.year).count()
     
+    totalMonthlyClassroomSubscriptionCount = Plan.objects.get(pk=ClassroomSubscription.objects.filter(dateCreated__month=today.month, dateCreated__year=today.year))
+    totalMonthlyInstitutionSubscriptionCount = Plan.objects.get(pk=InstitutionSubscription.objects.filter(dateCreated__month=today.month, dateCreated__year=today.year))
+
+    total = monthlyClassroomSubscriptionCount + monthlyInstitutionSubscriptionCount 
+    
+    institutionVerification = InstitutionVerification.objects.all()
+
     contain = {'userslist':users, 'usersCount':usersCount,
                 'transactionlistClassroom':transactionsClassroom,  
                 'transactionlistInsitution':transactionsInstituion,
                 'classroomsCount':classroomsCount,
-                'instituionsCount':instituionsCount,
+                'institutionsCount':instituionsCount,
                 'subscriptionList':subscription,
-                'subscriptionTotal':total,}         #'subscriptionTotal':total nga variable para ma pass sa html
+                'subscriptionTotal':total,
+                'institutionVerification':institutionVerification,
+            }         
 
     return render(request, 'adminhoax/index.html', contain)
