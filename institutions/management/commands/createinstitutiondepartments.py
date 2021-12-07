@@ -31,7 +31,7 @@ class Command(BaseCommand):
         fake = Faker(["en_US"])  
         fake.add_provider(Provider)
          
-        for x in DEPARTMENTS:  
+        for x in INSTITUTIONS:  
             name = fake.unique.departments()
             description = fake.sentence() 
 
