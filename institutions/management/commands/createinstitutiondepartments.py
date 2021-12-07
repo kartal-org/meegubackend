@@ -5,20 +5,37 @@ from institutions.models import Institution, Department
 from users.models import NewUser
 import random
 
+INSTITUTIONS = Institution.objects.all() 
+DEPARTMENTS = [
+    "College of Arts and Sciences", 
+    "College of Engineering",
+    "College of Business",
+    "College of Fine Arts and Communication",
+    "College of Education",
+]
+
+class Provider(faker.providers.BaseProvider): 
+
+    def institutions(self):
+        return self.random_element(INSTITUTIONS)
+
+    def departments(self):
+        return self.random_element(DEPARTMENTS)
+    
 
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"])  
+        fake = Faker(["en_US"])  
+        fake.add_provider(Provider)
+         
+        for x in DEPARTMENTS:  
+            name = fake.unique.departments()
+            description = fake.sentence() 
 
-        for _ in range(10):  
-            name = fake.unique.sentence(nb_words=2)
-            description = fake.unique.sentence()
-
-            institutionCount = Institution.objects.count()
-            institution = Institution.objects.get(id=random.randint(1,institutionCount)) 
+            institution = fake.institutions() 
 
             Department.objects.create(
                 name=name, description=description, institution=institution

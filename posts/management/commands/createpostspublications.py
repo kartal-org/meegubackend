@@ -9,6 +9,9 @@ import random
 import decimal
 from django.contrib.auth import authenticate, login
 
+DEPARTMENTS = Department.objects.all()
+USERS = NewUser.objects.all()
+SUBMISSIONS = Submission.objects.all()
 TYPE = [
     "uploadedFiles/The_Image_of_The_Philippines_as_a_Tourism_Destination_in_Finland_xai3e0.pdf",
     "uploadedFiles/Mother_Tongue-Based_Multilingual_Education_in_the_Philippines_apkzwn.pdf",
@@ -21,6 +24,15 @@ TYPE = [
 class Provider(faker.providers.BaseProvider):
     def file_name(self):
         return self.random_element(TYPE)
+    
+    def department(self):
+        return self.random_element(DEPARTMENTS)
+    
+    def user(self):
+        return self.random_element(USERS)
+    
+    def submission(self):
+        return self.random_element(SUBMISSIONS)
 
 
 class Command(BaseCommand):
@@ -28,40 +40,24 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"])
+        fake = Faker(["en_US"])
         fake.add_provider(Provider)
 
-        for _ in range(5):
+        for _ in SUBMISSIONS:
+
             title = fake.unique.sentence(nb_words=random.randint(1, 6))
-            abstract = fake.unique.sentence()
-
-            deptCount = Department.objects.count()
-            department = Department.objects.get(id=random.randint(1, deptCount))
-
-            # # start category pending
-            # deptCount = Category.objects.count()
-            # category = Category.objects.get(id=random.randint(1, deptCount))
-            # category.save()
-            # category.name.add(category)
-            # # end
-
-            userCount = NewUser.objects.count()
-            user = NewUser.objects.get(id=random.randint(1, userCount))
-
-            content = fake.unique.sentence()
-
+            abstract = fake.unique.sentence() 
+            department = fake.department()  
+            user = fake.user()  
             archiveFile = fake.file_name()
             archiveAuthors = fake.unique.name()
-
-            submissionCount = Submission.objects.count()
-            submission = Submission.objects.get(id=random.randint(1, submissionCount))
+ 
+            submission = fake.submission()
 
             Publication.objects.create(
                 title=title,
                 abstract=abstract,
-                department=department,
-                # user=user,
-                # content=content,
+                department=department, 
                 archiveFile=archiveFile,
                 archiveAuthors=archiveAuthors,
                 submission=submission,

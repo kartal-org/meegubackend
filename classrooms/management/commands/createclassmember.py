@@ -5,23 +5,30 @@ from classrooms.models import Classroom, ClassroomMember
 from users.models import NewUser
 import random
 
+USERS = NewUser.objects.all() 
+CLASSROOMS = Classroom.objects.all()
+
+class Provider(faker.providers.BaseProvider):
+    def users(self):
+        return self.random_element(USERS)
+    
+    def classrooms(self):
+        return self.random_element(CLASSROOMS)
 
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"]) 
+        fake = Faker(["en_US"])
+        fake.add_provider(Provider) 
         
-        for _ in range(10):  
-            userCount = NewUser.objects.count()
-            member = NewUser.objects.get(id=random.randint(1,userCount))
-
-            classCount = Classroom.objects.count()
-            classroom = Classroom.objects.get(id=random.randint(1,classCount)) 
+        for x in CLASSROOMS:  
+            member = fake.unique.users() 
+            classroom = fake.unique.classrooms()  
 
             ClassroomMember.objects.create(
                 user=member, classroom=classroom
             ) 
-
+ 
             print(member, classroom)  

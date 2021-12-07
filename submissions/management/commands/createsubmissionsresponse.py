@@ -7,6 +7,7 @@ from institutions.models import Department
 import random
 from django.contrib.auth import authenticate, login 
  
+SUBMISSIONFILE = Submission.objects.all()
 TYPE = [
     "accepted",
     "revise", 
@@ -17,6 +18,9 @@ TYPE = [
 class Provider(faker.providers.BaseProvider):
     def response_type(self):
         return self.random_element(TYPE) 
+    
+    def file_name(self):
+        return self.random_element(SUBMISSIONFILE) 
 
 class Command(BaseCommand):
     help = "Command Information"
@@ -26,12 +30,10 @@ class Command(BaseCommand):
         fake = Faker(["tl_PH"]) 
         fake.add_provider(Provider) 
         
-        for _ in range(5): 
+        for _ in SUBMISSIONFILE: 
             responseStatus = fake.response_type() 
-            comment = fake.sentence()  
-
-            fileCount = Submission.objects.count()
-            file = Submission.objects.get(id=random.randint(1,fileCount)) 
+            comment = fake.sentence()   
+            file = fake.unique.file_name()  
 
             SubmissionResponse.objects.create(
                 responseStatus=responseStatus, comment=comment, submission=file

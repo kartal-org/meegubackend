@@ -6,20 +6,29 @@ import random
 import decimal
 from django.contrib.auth import authenticate, login  
 
+INSTITUTIONSRESOURCE = InstitutionResource.objects.all()
+
+class Provider(faker.providers.BaseProvider): 
+    
+    def institution_resource(self):
+        return self.random_element(INSTITUTIONSRESOURCE)
+
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"])  
-        
-        for _ in range(5): 
-            name = fake.unique.bs()  
+        fake = Faker(["en_US"])  
+        fake.add_provider(Provider)
 
-            resourceCount = InstitutionResource.objects.count()
-            resource = InstitutionResource.objects.get(id=random.randint(1,resourceCount)) 
+        for _ in range(5): 
+
+            name = fake.unique.bs()   
+            resource = fake.institution_resource()   
 
             InstitutionResourceFolder.objects.create(
                 name=name, resource=resource
             )
             print(name, resource)  
+
+            

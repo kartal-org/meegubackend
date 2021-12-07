@@ -8,19 +8,27 @@ import random
 import decimal
 from django.contrib.auth import authenticate, login 
 
+CLASSROOMMEMBER = ClassroomMember.objects.all()
+WORKSPACE = Workspace.objects.all()
+
+class Provider(faker.providers.BaseProvider):
+    def workspace(self):
+        return self.random_element(WORKSPACE) 
+
+    def classroommember(self):
+        return self.random_element(CLASSROOMMEMBER) 
+
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"])  
+        fake = Faker(["en_US"])  
+        fake.add_provider(Provider)
         
-        for _ in range(5):   
-            classmemberCount = ClassroomMember.objects.count()
-            member = ClassroomMember.objects.get(id=random.randint(1,classmemberCount)) 
-
-            wrkspaceCount = Workspace.objects.count()
-            workspace = Workspace.objects.get(id=random.randint(1,wrkspaceCount))  
+        for _ in CLASSROOMMEMBER:    
+            member = fake.unique.classroommember() 
+            workspace = fake.unique.workspace()
 
             Member.objects.create(
                 user=member, workspace=workspace
