@@ -59,7 +59,7 @@ class Recommendation(models.Model):
 
 class Response(models.Model):
     options = (("accepted", "Accepted"), ("revise", "Revise"), ("rejected", "Rejected"), ("pending", "Pending"))
-    responseStatus = models.CharField(choices=options, max_length=20)
+    responseStatus = models.CharField(choices=options, max_length=20, default="pending")
     comment = models.TextField(null=True, blank=True)
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateModified = models.DateTimeField(auto_now=True)

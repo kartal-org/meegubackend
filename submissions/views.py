@@ -45,7 +45,7 @@ class RecommendationList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
 
-        breakpoint()
+        # breakpoint()
         serializer.save()
 
 
