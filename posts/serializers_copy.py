@@ -46,6 +46,7 @@ class PublicationSerializer(serializers.ModelSerializer):
             "rating",
             "category",
             "authors",
+            "size",
             "privacy",
             "department",
             "dateModified",

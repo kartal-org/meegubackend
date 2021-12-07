@@ -14,6 +14,7 @@ from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from subscriptions.models import ClassroomSubscription, InstitutionSubscription
 from resources.models import ClassroomResourceFile
 from django.core.exceptions import ObjectDoesNotExist
+from institutions.models import Institution
 
 from django.apps import apps
 
@@ -36,11 +37,13 @@ class Classroom(Product):
     @property
     def storage_Limit(self):
         # returns all storage bought through subscription
-        return (
+        institutionStorageLeft = Institution.objects.get(id=self.institution).storage_left
+        classroom = (
             ClassroomSubscription.objects.filter(classroom=self.id)
             .annotate(storage_limit=Cast(KeyTextTransform("storage", "plan__limitations"), IntegerField()))
             .aggregate(Sum("storage_limit"))["storage_limit__sum"]
         )
+        return classroom + institutionStorageLeft
 
     @property
     def storage_used(self):

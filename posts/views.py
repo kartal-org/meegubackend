@@ -33,7 +33,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class ArticleListCreate(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, PublicationFileLimit]
     parser_classes = [MultiPartParser, FormParser]
     serializer_class = PublicationSerializer
     filter_backends = [SearchFilter, OrderingFilter]

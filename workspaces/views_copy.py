@@ -3,6 +3,7 @@ from .models import *
 from .serializers_copy import *
 from rest_framework.permissions import IsAuthenticated
 from .permissions import *
+from .permissions_copy import *
 from django.shortcuts import get_list_or_404, get_object_or_404
 import shortuuid
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -12,6 +13,7 @@ from itertools import chain
 from django.db.models import F
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .filters import *
+
 
 # Create your views here.
 def get_code():
@@ -86,7 +88,7 @@ class WorkspaceFolderDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class WorkspaceFileList(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, WorkspaceFileStorageLimit]
     serializer_class = WorkspaceFileSerializer
     queryset = WorkspaceFile.objects.all()
     filter_backends = [SearchFilter]

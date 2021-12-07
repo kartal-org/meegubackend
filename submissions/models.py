@@ -26,7 +26,7 @@ class Submission(models.Model):
         ordering = ["-dateUpdated"]
 
     def __str__(self):
-        return "%s - (%s)" % (self.title, self.file.folder.workspace.name)
+        return self.title
 
     @property
     def authors(self):
