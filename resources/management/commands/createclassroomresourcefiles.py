@@ -15,7 +15,16 @@ TYPE = [
     "uploadedFiles/The_Impact_of_Peer_Binging_on_College_Student_brkxap.pdf", 
 ]
 
+USERS = NewUser.objects.all()
+CLASSROOMRESOURCEFOLDER = ClassroomResourceFolder.objects.all()
+
 class Provider(faker.providers.BaseProvider):
+    def user(self):
+        return self.random_element(USERS)
+    
+    def classroomresource_folder(self):
+        return self.random_element(CLASSROOMRESOURCEFOLDER)
+         
     def file_name(self):
         return self.random_element(TYPE) 
 
@@ -24,22 +33,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"])  
+        fake = Faker(["en_US"])  
         fake.add_provider(Provider)
         
         for _ in range(5): 
+
             name = fake.unique.bs()  
-            
-            tags = fake.unique.sentence(nb_words=2) 
-
-            userCount = NewUser.objects.count()
-            user = NewUser.objects.get(id=random.randint(1,userCount)) 
-            
+            tags = fake.unique.sentence(nb_words=1)  
+            user = fake.user()   
             file = fake.file_name() 
-            content = fake.unique.sentence() 
-
-            resourceCount = ClassroomResourceFolder.objects.count()
-            resource = ClassroomResourceFolder.objects.get(id=random.randint(1,resourceCount)) 
+            content = fake.unique.sentence()  
+            resource = fake.classroomresource_folder() 
 
             ClassroomResourceFile.objects.create(
                 name=name, tags=tags, assignee=user, file=file, content=content, folder=resource

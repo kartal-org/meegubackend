@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from faker import Faker
-import faker.providers
+import faker.providers 
 from institutions.models import Department
 from posts.models import Category, Publication, Comment, Rating
 from users.models import NewUser
@@ -10,12 +10,15 @@ import decimal
 from django.contrib.auth import authenticate, login
 
 
-PUBLICATIONS = Publication.objects.values_list("id", flat=True)
-
+PUBLICATIONS = Publication.objects.all()
+USERS = NewUser.objects.all()
 
 class Provider(faker.providers.BaseProvider):
     def publications(self):
         return self.random_element(PUBLICATIONS)
+    
+    def user(self):
+        return self.random_element(USERS)
 
 
 class Command(BaseCommand):
@@ -25,17 +28,11 @@ class Command(BaseCommand):
 
         fake = Faker(["tl_PH"])
         fake.add_provider(Provider)
+ 
+        for i in USERS:
+            rate = random.randint(1, 5) 
+            publication = fake.publications()   
+            user = fake.unique.user() 
 
-        # breakpoint()
-        # # Create 50 ratings for all Publication
-        # for i in range(51):
-        #     rate = random.randint(1, 5)
-
-        #     publication = fake.publications()
-        #     publication = Publication.objects.get(id=random.randint(1, publicationCount))
-
-        #     userCount = NewUser.objects.count()
-        #     user = NewUser.objects.get(id=random.randint(1, userCount))
-
-        #     Rating.objects.create(publication=publication, rate=rate, user=user)
-        #     print(rate, publication, user)
+            Rating.objects.create(publication=publication, rate=rate, user=user)
+            print(rate, publication, user)

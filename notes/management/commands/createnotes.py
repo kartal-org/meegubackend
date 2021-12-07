@@ -5,20 +5,24 @@ from notes.models import Note
 from users.models import NewUser
 import random
 
+USERS = NewUser.objects.all()  
 
+class Provider(faker.providers.BaseProvider):
+    def users(self):
+        return self.random_element(USERS)  
+    
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"]) 
-        
-        for _ in range(10):  
-            title = fake.sentence(nb_words=4)
-            content = fake.sentence()
+        fake = Faker(["en_US"]) 
+        fake.add_provider(Provider)
 
-            userCount = NewUser.objects.count()
-            user = NewUser.objects.get(id=random.randint(1,userCount)) 
+        for _ in range(10):  
+            title = fake.unique.sentence(nb_words=4)
+            content = fake.sentence() 
+            user = fake.users() 
 
             Note.objects.create(
                 title=title, content=content, owner=user

@@ -12,8 +12,16 @@ TYPE = [
     "published",
     "draft", 
 ]
+CLASSROOMS = Classroom.objects.all()
+INSTITUTIONS = Institution.objects.all()
 
 class Provider(faker.providers.BaseProvider):
+    def classroom(self):
+        return self.random_element(CLASSROOMS)
+    
+    def institution(self):
+        return self.random_element(INSTITUTIONS)
+ 
     def workspace_type(self):
         return self.random_element(TYPE) 
 
@@ -22,19 +30,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"]) 
+        fake = Faker(["en_US"]) 
         fake.add_provider(Provider)
         
         for _ in range(5): 
             name = fake.unique.bs() 
             description = fake.unique.sentence() 
-            status = fake.workspace_type() 
-
-            classCount = Classroom.objects.count()
-            classroom = Classroom.objects.get(id=random.randint(1,classCount)) 
-
-            institutionCount = Institution.objects.count()
-            institution = Institution.objects.get(id=random.randint(1,institutionCount)) 
+            status = fake.workspace_type()  
+            classroom = fake.classroom()  
+            institution = fake.institution() 
 
             ClassroomResource.objects.create(
                 name=name, description=description, status=status, classroom=classroom, institution=institution

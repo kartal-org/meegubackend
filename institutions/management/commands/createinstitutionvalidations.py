@@ -5,18 +5,24 @@ from institutions.models import Institution, Department, StaffType, Staff, Insti
 from users.models import NewUser
 import random
 
+INSTITUTIONS = Institution.objects.all() 
+
+class Provider(faker.providers.BaseProvider): 
+
+    def institutions(self):
+        return self.random_element(INSTITUTIONS)
+
 
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"]) 
+        fake = Faker(["en_US"]) 
+        fake.add_provider(Provider)
         
-        for _ in range(10):  
-            institutionCount = Institution.objects.count()
-            institution = Institution.objects.get(id=random.randint(1,institutionCount))
-
+        for x in INSTITUTIONS:   
+            institution = fake.unique.institutions() 
             document = "userProfile/coverDefault_pdrisr.jpg" 
 
             InstitutionVerification.objects.create(

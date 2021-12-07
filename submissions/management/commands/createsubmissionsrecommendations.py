@@ -6,20 +6,28 @@ from submissions.models import Submission, Recommendation
 from institutions.models import Department  
 import random
 from django.contrib.auth import authenticate, login 
- 
+
+SUBMISSIONFILE = Submission.objects.all()
+DEPARTMENT = Department.objects.all()
+
+class Provider(faker.providers.BaseProvider):
+    def file_name(self):
+        return self.random_element(SUBMISSIONFILE) 
+
+    def department(self):
+        return self.random_element(DEPARTMENT) 
+
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"])  
-        
-        for _ in range(5): 
-            fileCount = Submission.objects.count()
-            file = Submission.objects.get(id=random.randint(1,fileCount)) 
+        fake = Faker(["en_US"])  
+        fake.add_provider(Provider)
 
-            deptCount = Department.objects.count()
-            department = Department.objects.get(id=random.randint(1,deptCount)) 
+        for _ in SUBMISSIONFILE:  
+            file = fake.unique.file_name() 
+            department = fake.department()
 
             Recommendation.objects.create(
                 submission=file, department=department, 

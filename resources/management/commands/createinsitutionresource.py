@@ -11,8 +11,16 @@ TYPE = [
     "published",
     "draft", 
 ]
+DEPARTMENT = Department.objects.all()
+INSTITUTIONS = Institution.objects.all()
 
 class Provider(faker.providers.BaseProvider):
+    def department(self):
+        return self.random_element(DEPARTMENT)
+    
+    def institution(self):
+        return self.random_element(INSTITUTIONS)
+        
     def workspace_type(self):
         return self.random_element(TYPE) 
 
@@ -21,19 +29,16 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"]) 
+        fake = Faker(["en_US"]) 
         fake.add_provider(Provider)
         
         for _ in range(5): 
+
             name = fake.unique.bs() 
             description = fake.unique.sentence() 
-            status = fake.workspace_type() 
-
-            institutionCount = Institution.objects.count()
-            institution = Institution.objects.get(id=random.randint(1,institutionCount)) 
-
-            deptCount = Department.objects.count()
-            department = Department.objects.get(id=random.randint(1,deptCount)) 
+            status = fake.workspace_type()  
+            institution = fake.institution()  
+            department = fake.department()  
  
 
             InstitutionResource.objects.create(

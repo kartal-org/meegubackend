@@ -6,25 +6,59 @@ from institutions.models import Institution, Department, StaffType, Staff
 from users.models import NewUser
 import random
 
+USERS = NewUser.objects.all() 
+INSTITUTIONS = Institution.objects.all()
+SUBJECTS = [
+    "Biology",
+    "Chemistry and Biochemistry",
+    "Computer Science",
+    "Earth and Space Sciences",
+    "English and Modern Languages",
+    "History",
+    "Mathematics",
+    "Physics",
+    "Political Science",
+    "Psychology",
+]
+
+class Provider(faker.providers.BaseProvider):
+    def users(self):
+        return self.random_element(USERS) 
+
+    def institutions(self):
+        return self.random_element(INSTITUTIONS) 
+
+    def subjects(self):
+        return self.random_element(SUBJECTS) 
+    
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"]) 
+        fake = Faker(["en_US"]) 
+        fake.add_provider(Provider)
 
-        for _ in range(10):
+        for _ in SUBJECTS:
             name = fake.unique.bs() 
             description = fake.unique.sentence() 
-            code = fake.unique.postcode() 
-            subject = fake.unique.company()  
-
-            institutionCount = Institution.objects.count()
-            institution = Institution.objects.get(id=random.randint(1,institutionCount))
+            code = fake.password(length=8, special_chars=False)
+            subject = fake.unique.subjects()  
+ 
+            institution = fake.institutions()
+            user = fake.unique.users()  
 
             Classroom.objects.create(
-                name=name, description=description, code=code, subject=subject, institution=institution
+                name=name, description=description, code=code, subject=subject, institution=institution, creator=user
             )  
             print(code, subject)  
 
-#note: need to comment out the classroom creator signal in models  
+            member = fake.unique.users() 
+            classroom = Classroom.objects.get(name=name)   
+
+            ClassroomMember.objects.create(
+                user=member, classroom=classroom
+            ) 
+
+            print(member, classroom)  
+         
