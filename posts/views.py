@@ -40,6 +40,11 @@ class ArticleListCreate(generics.ListCreateAPIView):
     search_fields = ["department__id", "department__institution__name"]
     queryset = Publication.objects.all()
 
+    def perform_create(self, serializer):
+        if self.request.data.get("submission"):
+            serializer.save(submission=Submission.objects.get(pk=self.request.data.get("submission")))
+        serializer.save()
+
 
 class ArticleDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]

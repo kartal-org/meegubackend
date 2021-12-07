@@ -144,15 +144,19 @@ class InstitutionResourceFileDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ImportResourceClass(generics.CreateAPIView):
+
+    """provide"""
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        # breakpoint()
         files = ClassroomResourceFile.objects.filter(folder__resource=request.data.get("resource"))
         # breakpoint()
 
         for x in files:
             hello = WorkspaceFile.objects.create(
-                folder=WorkspaceFolder.objects.get(id=request.data.get("folder")),
+                folder=WorkspaceFolder.objects.get(name="Resources", workspace__id=request.data.get("workspace")),
                 # resource=request.data.get("to_resource"),
                 name=x.name,
                 tags=x.tags,

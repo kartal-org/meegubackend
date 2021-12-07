@@ -1,44 +1,54 @@
-from django.shortcuts import render, redirect  
+from django.shortcuts import render, redirect
 import datetime
 from .models import *
 from users.models import *
 from subscriptions.models import *
 from classrooms.models import *
-from institutions.models import * 
+from institutions.models import *
 
-# Create your views here.  
+# Create your views here.
 def home(request):
     users = NewUser.objects.all()
-    usersCount = users.count() 
+    usersCount = users.count()
 
     classroomsCount = Classroom.objects.count()
-    instituionsCount = Institution.objects.count() 
+    instituionsCount = Institution.objects.count()
 
     transactionsClassroom = ClassroomSubscription.objects.all()
     transactionsInstituion = InstitutionSubscription.objects.all()
 
     subscription = Plan.objects.all()
- 
+
     today = datetime.date.today()
 
-    monthlyClassroomSubscriptionCount = ClassroomSubscription.objects.filter(dateCreated__month=today.month, dateCreated__year=today.year).count()
-    monthlyInstitutionSubscriptionCount = InstitutionSubscription.objects.filter(dateCreated__month=today.month, dateCreated__year=today.year).count()
-    
-    totalMonthlyClassroomSubscriptionCount = Plan.objects.get(pk=ClassroomSubscription.objects.filter(dateCreated__month=today.month, dateCreated__year=today.year))
-    totalMonthlyInstitutionSubscriptionCount = Plan.objects.get(pk=InstitutionSubscription.objects.filter(dateCreated__month=today.month, dateCreated__year=today.year))
+    monthlyClassroomSubscriptionCount = ClassroomSubscription.objects.filter(
+        dateCreated__month=today.month, dateCreated__year=today.year
+    ).count()
+    monthlyInstitutionSubscriptionCount = InstitutionSubscription.objects.filter(
+        dateCreated__month=today.month, dateCreated__year=today.year
+    ).count()
 
-    total = monthlyClassroomSubscriptionCount + monthlyInstitutionSubscriptionCount 
-    
+    totalMonthlyClassroomSubscriptionCount = Plan.objects.filter(
+        pk=ClassroomSubscription.objects.filter(dateCreated__month=today.month, dateCreated__year=today.year)
+    )
+    totalMonthlyInstitutionSubscriptionCount = Plan.objects.filter(
+        pk=InstitutionSubscription.objects.filter(dateCreated__month=today.month, dateCreated__year=today.year)
+    )
+
+    total = monthlyClassroomSubscriptionCount + monthlyInstitutionSubscriptionCount
+
     institutionVerification = InstitutionVerification.objects.all()
 
-    contain = {'userslist':users, 'usersCount':usersCount,
-                'transactionlistClassroom':transactionsClassroom,  
-                'transactionlistInsitution':transactionsInstituion,
-                'classroomsCount':classroomsCount,
-                'institutionsCount':instituionsCount,
-                'subscriptionList':subscription,
-                'subscriptionTotal':total,
-                'institutionVerification':institutionVerification,
-            }         
+    contain = {
+        "userslist": users,
+        "usersCount": usersCount,
+        "transactionlistClassroom": transactionsClassroom,
+        "transactionlistInsitution": transactionsInstituion,
+        "classroomsCount": classroomsCount,
+        "institutionsCount": instituionsCount,
+        "subscriptionList": subscription,
+        "subscriptionTotal": total,
+        "institutionVerification": institutionVerification,
+    }
 
-    return render(request, 'adminhoax/index.html', contain)
+    return render(request, "adminhoax/index.html", contain)

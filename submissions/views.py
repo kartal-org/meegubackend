@@ -43,6 +43,11 @@ class RecommendationList(generics.ListCreateAPIView):
     search_fields = ["department__id", "submission__file__folder__workspace__classroom__code"]
     queryset = Recommendation.objects.all()
 
+    def perform_create(self, serializer):
+
+        breakpoint()
+        serializer.save()
+
 
 class RecommendationDetail(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]

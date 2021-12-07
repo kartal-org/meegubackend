@@ -28,10 +28,10 @@ class DepartmentFieldSerializer(serializers.ModelSerializer):
 
 class PublicationSerializer(serializers.ModelSerializer):
     # authors = serializers.SerializerMethodField()
-    submission = SubmissionFieldSerializer(read_only=True)
+    # submission = serializers.RelatedField(required=False)
     category = CategorySerializer(read_only=True, many=True)
     institution = serializers.CharField(source="department.institution.name", read_only=True)
-    archiveFile = serializers.FileField()
+    archiveFile = serializers.FileField(required=False)
 
     class Meta:
         model = Publication
@@ -51,6 +51,7 @@ class PublicationSerializer(serializers.ModelSerializer):
             "dateModified",
             "is_featured",
         ]
+        extra_kwargs = {"submission": {"required": False}}
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
