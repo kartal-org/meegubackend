@@ -39,7 +39,7 @@ class Command(BaseCommand):
         fake = Faker(["en_US"]) 
         fake.add_provider(Provider)
 
-        for _ in SUBJECTS:
+        for _ in USERS:
             name = fake.unique.bs() 
             description = fake.unique.sentence() 
             code = fake.password(length=8, special_chars=False)
@@ -53,11 +53,11 @@ class Command(BaseCommand):
             )  
             print(code, subject)  
 
-            member = fake.unique.users() 
+            # member = fake.unique.users() 
             classroom = Classroom.objects.get(name=name)   
 
             ClassroomMember.objects.create(
-                user=member, classroom=classroom
+                user=user, classroom=name, role="adviser"
             ) 
 
             print(member, classroom)  
