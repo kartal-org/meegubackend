@@ -52,3 +52,9 @@ def home(request):
     }
 
     return render(request, "adminhoax/index.html", contain)
+
+def institutionVerify(request, pk_instv):
+    institutionVerification = InstitutionVerification.objects.get(id=pk_instv)
+
+    contain = {'data':institutionVerification, }
+    return render(request, "adminhoax/verifyPage.html", contain)
