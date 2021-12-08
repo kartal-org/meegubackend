@@ -125,9 +125,20 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             # relativeLink = reverse("password-reset-confirm", kwargs={"uidb64": uidb64, "token": token})
 
             absurl = "http://localhost:3000/password-reset-confirm?uidb64=" + uidb64 + "&token=" + token
-            email_body = "Hello, \n Use link below to reset your password  \n" + absurl
-            data = {"email_body": email_body, "to_email": user.email, "email_subject": "Reset your passsword"}
-            Util.send_email(data)
+            # email_body = "Hello, \n Use link below to reset your password  \n" + absurl
+            # data = {"email_body": email_body, "to_email": user.email, "email_subject": "Reset your passsword"}
+            # Util.send_email(data)
+
+            email_body = "Hello " + request.user.username + "\n\nUse link below to reset your password\n" + absurl
+            html_content = render_to_string('authentication/resetpass.html', {
+                'user': request.user,
+                'domain': absurl, 
+            }) 
+            email = EmailMultiAlternatives('Reset your passsword', email_body, settings.EMAIL_HOST_USER, [request.user.email])
+             
+            email.attach_alternative(html_content, "text/html")
+            email.send() 
+
         return Response({"success": "We have sent you a link to reset your password"}, status=status.HTTP_200_OK)
 
 
