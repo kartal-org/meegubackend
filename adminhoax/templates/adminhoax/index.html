@@ -141,12 +141,12 @@
                                         
                     
                                         {% for verif in institutionVerification %} 
-                                        <tr>
+                                        <tr> 
+                                            <td> {{ verif.id }} </td>
                                             <td> {{ verif.institution }} </td> 
-                                            <td> {{ verif.name }} </td>
                                             <td> {{ verif.status }} </td>
                                             <td> {{ verif.dateCreated }} </td>
-                                            <td> <button class="btn btn-sm btn-primary"> View </button></td>   
+                                            <td> <button href="{% url 'verifyPage' verif.id %}" class="btn btn-sm btn-primary"> View </button></td>   
                                         </tr>
                                         {% endfor %}
                                         
