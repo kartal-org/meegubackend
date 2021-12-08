@@ -34,7 +34,7 @@ class Publication(models.Model):
     slug = models.SlugField(max_length=250, null=True, blank=True)
     privacy = models.CharField(choices=options, default="public", max_length=10)
     department = models.ForeignKey("institutions.Department", on_delete=models.CASCADE, null=True, blank=True)
-    category = models.ManyToManyField(Category, blank=True, related_name="categories")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     is_featured = models.BooleanField(default=False)
     publishedDate = models.DateTimeField(auto_now_add=True)
     dateModified = models.DateTimeField(auto_now=True)

@@ -37,7 +37,7 @@ class ArticleListCreate(generics.ListCreateAPIView):
     parser_classes = [MultiPartParser, FormParser]
     serializer_class = PublicationSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ["department__id", "department__institution__name"]
+    search_fields = ["department__id", "department__institution__name", "category__name"]
     queryset = Publication.objects.all()
 
     def perform_create(self, serializer):

@@ -29,7 +29,6 @@ class DepartmentFieldSerializer(serializers.ModelSerializer):
 class PublicationSerializer(serializers.ModelSerializer):
     # authors = serializers.SerializerMethodField()
     # submission = serializers.RelatedField(required=False)
-    category = CategorySerializer(read_only=True, many=True)
     institution = serializers.CharField(source="department.institution.name", read_only=True)
     archiveFile = serializers.FileField(required=False)
 
@@ -59,12 +58,17 @@ class PublicationSerializer(serializers.ModelSerializer):
         response["department"] = DepartmentFieldSerializer(instance.department).data
         return response
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["category"] = CategorySerializer(instance.category).data
+        return response
+
 
 class PublicationDetailSerializer(serializers.ModelSerializer):
     # authors = serializers.SerializerMethodField()
     # file = serializers.FileField(source="file.file", read_only=True)
-    category = CategorySerializer(read_only=True, many=True)
-    department = serializers.CharField(source="department.name", read_only=True)
+    # category = serializers.CharField(source="category.name", read_only=True)
+    # department = serializers.CharField(source="department.name", read_only=True)
     archiveFile = serializers.FileField()
 
     class Meta:
@@ -81,6 +85,16 @@ class PublicationDetailSerializer(serializers.ModelSerializer):
             "dateModified",
             "is_featured",
         ]
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["department"] = DepartmentFieldSerializer(instance.department).data
+        return response
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["category"] = CategorySerializer(instance.category).data
+        return response
 
 
 class RatingSerializer(serializers.ModelSerializer):
