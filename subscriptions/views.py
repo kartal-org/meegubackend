@@ -21,8 +21,8 @@ class ClassroomPlanListView(generics.ListAPIView):
     def get_queryset(self):
         subscriptionList = ClassroomSubscription.objects.filter(classroom__creator=self.request.user)
         if subscriptionList:
-            if "Basic Classroom" in [o.plan.name for o in subscriptionList]:
-                return Plan.classroomPlans.exclude(name="Basic Classroom")
+            if "Classroom Basic" in [o.plan.name for o in subscriptionList]:
+                return Plan.classroomPlans.exclude(name="Classroom Basic")
         return Plan.classroomPlans.all()
 
 
