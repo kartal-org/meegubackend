@@ -5,27 +5,38 @@ from institutions.models import Institution, Department, StaffType, Staff
 from users.models import NewUser
 import random
 
+USERS = NewUser.objects.all()
+INSTITUTIONS = Institution.objects.all() 
+DEPARTMENTS = Department.objects.all()
+STAFFTYPE = StaffType.objects.all() 
 
+class Provider(faker.providers.BaseProvider):
+    def users(self):
+        return self.random_element(USERS)
+
+    def institutions(self):
+        return self.random_element(INSTITUTIONS)
+    
+    def departments(self):
+        return self.random_element(DEPARTMENTS)
+    
+    def stafftype(self):
+        return self.random_element(STAFFTYPE)
+          
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"]) 
+        fake = Faker(["en_US"]) 
+        fake.add_provider(Provider)
         
-        for _ in range(10): 
-
-            userCount = NewUser.objects.count()
-            user = NewUser.objects.get(id=random.randint(1,userCount))   
-
-            institutionCount = Institution.objects.count()
-            institution = Institution.objects.get(id=random.randint(1,institutionCount))
-
-            departmentCount = Department.objects.count()
-            department = Department.objects.get(id=random.randint(1,departmentCount))   
-
-            staffTypeCount = StaffType.objects.count()
-            type = StaffType.objects.get(id=random.randint(1,staffTypeCount))  
+        for x in USERS: 
+ 
+            user = fake.users()     
+            institution = fake.unique.institutions()   
+            department = fake.unique.departments()   
+            type = fake.stafftype()  
 
             Staff.objects.create(
                 user=user, institution=institution, department=department, type=type

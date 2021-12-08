@@ -7,6 +7,7 @@ from institutions.models import Department
 import random
 from django.contrib.auth import authenticate, login 
  
+RECCOMENDATION = Recommendation.objects.all()
 TYPE = [
     "accepted",
     "revise", 
@@ -18,21 +19,23 @@ TYPE = [
 class Provider(faker.providers.BaseProvider):
     def response_type(self):
         return self.random_element(TYPE) 
+    
+    def recommendation(self):
+        return self.random_element(RECCOMENDATION) 
 
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"]) 
+        fake = Faker(["en_US"]) 
         fake.add_provider(Provider) 
         
         for _ in range(5): 
+            
             responseStatus = fake.response_type() 
-            comment = fake.sentence()   
-
-            deptCount = Recommendation.objects.count()
-            recommendation = Recommendation.objects.get(id=random.randint(1,deptCount))   
+            comment = fake.sentence()    
+            recommendation = fake.recommendation()  
 
             RecommendationResponse.objects.create(
                 responseStatus=responseStatus, comment=comment, recommendation=recommendation

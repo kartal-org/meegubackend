@@ -1,9 +1,23 @@
 from django.core.management.base import BaseCommand
 from faker import Faker
 import faker.providers
-from institutions.models import Institution, StaffType 
+from institutions.models import Institution, StaffType
 from users.models import NewUser
 import random
+
+STAFF_TYPES = [
+    {"name": "Admin", "description": "Institution Page's Owner. Has all the rights to manage the Page"},
+    {
+        "name": "Department Head",
+        "description": "Institution Department's Head. Has all the rights to manage the department",
+    },
+    {"name": "Adviser", "description": "Has the right to make recommendations"},
+    {"name": "Publisher", "description": "Has the right to make publication in the department"}, 
+]
+
+class Provider(faker.providers.BaseProvider):
+    def staff_types(self):
+        return self.random_element(STAFF_TYPES)
 
 
 class Command(BaseCommand):
@@ -11,17 +25,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"]) 
-        
-        for _ in range(10):  
-            name = fake.sentence(nb_words=2)
-            description = fake.sentence() 
-            
-            institutionCount = Institution.objects.count()
-            institution = Institution.objects.get(id=random.randint(1,institutionCount))
+        fake = Faker(["tl_PH"])
+        fake.add_provider(Provider)
 
-            StaffType.objects.create(
-                name=name, description=description, custom_Type_For=institution
-            ) 
+        for x in STAFF_TYPES:
 
-            print(name, institution)  
+            StaffType.objects.create(name=x["name"], description=x["description"])
+            print(x["name"])

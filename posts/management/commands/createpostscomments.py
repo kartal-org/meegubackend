@@ -9,21 +9,29 @@ import random
 import decimal
 from django.contrib.auth import authenticate, login  
  
+USERS = NewUser.objects.all()
+PUBLICATION = Publication.objects.all()
+
+class Provider(faker.providers.BaseProvider):  
+    def user(self):
+        return self.random_element(USERS)
+    
+    def publication(self):
+        return self.random_element(PUBLICATION)
+
 class Command(BaseCommand):
     help = "Command Information"
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"])   
-        
-        for _ in range(5):  
-            publicationCount = Publication.objects.count()
-            publication = Publication.objects.get(id=random.randint(1,publicationCount)) 
+        fake = Faker(["en_US"])   
+        fake.add_provider(Provider)
 
-            content = fake.unique.sentence() 
+        for _ in PUBLICATION:   
 
-            userCount = NewUser.objects.count()
-            user = NewUser.objects.get(id=random.randint(1,userCount))  
+            publication = fake.publication()   
+            content = fake.sentence()  
+            user = fake.user()  
 
             Comment.objects.create(
                 publication=publication, content=content, user=user
