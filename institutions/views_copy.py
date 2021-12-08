@@ -4,6 +4,7 @@ from .models import *
 from .serializers_copy import *
 from rest_framework.permissions import IsAuthenticated
 from .permissions import *
+from .permissions_copy import *
 from rest_framework import generics
 from django.shortcuts import get_list_or_404, get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -42,7 +43,7 @@ class StaffInstitutionListView(generics.ListAPIView):
 
 
 class InstitutionDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsInstitutionCreator]
     serializer_class = InstitutionSerializer
     queryset = Institution.objects.all()
 
@@ -61,7 +62,7 @@ class StaffListCreateView(generics.ListCreateAPIView):
 
 
 class StaffDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsPermitStaffEdit]
     serializer_class = StaffSerializer
     queryset = Staff.objects.all()
 

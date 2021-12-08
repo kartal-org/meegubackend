@@ -11,9 +11,9 @@ from django.contrib.postgres.fields.jsonb import KeyTextTransform
 
 
 class WorkspaceFileStorageLimit(BasePermission):
-    message = "Editing posts is restricted to the author only."
+    message = "Sorry the Classroom of this Workspace reached its limit."
 
-    def haspermission(self, request, view):
+    def has_permission(self, request, view):
 
         if request.method in SAFE_METHODS:
             return True
@@ -25,3 +25,25 @@ class WorkspaceFileStorageLimit(BasePermission):
             return False
         return True
         # WorkspaceFolder.objects.get(id=10).workspace.classroom
+
+
+class IsWorkspaceCreator(BasePermission):
+    message = "Managing workspace detail is restricted to the creator only."
+
+    def has_object_permission(self, request, view, obj):
+
+        if request.method in SAFE_METHODS:
+            return True
+
+        return obj.creator.user == request.user
+
+
+class IsMemberEditPermission(BasePermission):
+    message = "Managing workspace member is restricted to the creator only."
+
+    def has_object_permission(self, request, view, obj):
+
+        if request.method in SAFE_METHODS:
+            return True
+
+        return obj.workspace.creator.user == request.user

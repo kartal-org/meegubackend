@@ -57,7 +57,7 @@ class StudentWorkspaceList(generics.ListAPIView):
 
 class WorkspaceDetail(generics.RetrieveUpdateDestroyAPIView):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsWorkspaceCreator]
     serializer_class = WorkspaceListSerializer
     queryset = Workspace.objects.all()
 
@@ -111,6 +111,12 @@ class WorkspaceMemberList(generics.ListCreateAPIView):
     serializer_class = AddWorkspaceMemberSerializer
     filter_backends = [SearchFilter]
     search_fields = ["workspace__id"]
+    queryset = Member.objects.all()
+
+
+class WorkspaceMemberDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, IsMemberEditPermission]
+    serializer_class = AddWorkspaceMemberSerializer
     queryset = Member.objects.all()
 
 

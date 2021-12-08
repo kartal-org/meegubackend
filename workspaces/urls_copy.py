@@ -15,7 +15,7 @@ urlpatterns = [
     path("file/<int:pk>", WorkspaceFileDetail.as_view()),
     path("member", WorkspaceMemberList.as_view()),
     path("member/create", WorkspaceMemberCreate.as_view()),
-    # path("member/<int:pk>", WorkspaceMemberCreate.as_view()),
+    path("member/<int:pk>", WorkspaceMemberDetail.as_view()),
     # path("member/change/<int:pk>", WorkspaceMemberDetail.as_view()),
     # path("change/<int:pk>", WorkspaceDetail.as_view(), name="workspace_detail"),
     # path("folder/<int:workspace>", WorkspaceFolderList.as_view(), name="folder_list"),
