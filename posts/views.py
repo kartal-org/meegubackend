@@ -9,7 +9,7 @@ from .serializers_copy import *
 from .models import *
 from .permissions import *
 from rest_framework.response import Response
-from django.db.models import Avg
+from django.db.models import Avg, OuterRef, Subquery
 from workspaces.models import Workspace
 from rest_framework.decorators import api_view, parser_classes, permission_classes
 from django.db.models import F
@@ -38,7 +38,9 @@ class ArticleListCreate(generics.ListCreateAPIView):
     serializer_class = PublicationSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["department__id", "department__institution__name", "category__name"]
-    queryset = Publication.objects.all()
+    ratings = Rating.objects.filter(publication=OuterRef("pk"))
+    queryset = Publication.objects.annotate(rating_you=Subquery(ratings.values("rate"))).order_by("-rating_you")
+    # .annotate(num_authors=Count('authors')).order_by('num_authors')
 
     def perform_create(self, serializer):
         if self.request.data.get("submission"):
