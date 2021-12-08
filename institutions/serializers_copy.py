@@ -21,6 +21,7 @@ class InstitutionSerializer(serializers.ModelSerializer):
             "storage_left",
             "is_Verified",
             "storage_used",
+            "storage_Limit",
         ]
 
 

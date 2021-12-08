@@ -55,11 +55,14 @@ class Institution(Product):
     @property
     def storage_Limit(self):
         # returns all storage bought through subscription
-        return (
+        limit = (
             InstitutionSubscription.objects.filter(institution=self.id)
             .annotate(storage_limit=Cast(KeyTextTransform("storage", "plan__limitations"), IntegerField()))
             .aggregate(Sum("storage_limit"))["storage_limit__sum"]
         )
+        if limit == None:
+            limit = 0
+        return limit
 
     @property
     def storage_used(self):
@@ -80,15 +83,19 @@ class Institution(Product):
     @property
     def storage_left(self):
         # returns all storage bought through subscription
-        institution = (
-            InstitutionSubscription.objects.filter(institution=self)
-            .annotate(storage_limit=Cast(KeyTextTransform("storage", "plan__limitations"), IntegerField()))
-            .aggregate(Sum("storage_limit"))["storage_limit__sum"]
-        )
-        if institution == None:
-            institution = 0
+        # institution = (
+        #     InstitutionSubscription.objects.filter(institution=self)
+        #     .annotate(storage_limit=Cast(KeyTextTransform("storage", "plan__limitations"), IntegerField()))
+        #     .aggregate(Sum("storage_limit"))["storage_limit__sum"]
+        # )
+        limit = self.storage_Limit
+        if limit == None:
+            limit = 0
+        used = self.storage_used
+        if used == None:
+            used = 0
 
-        return institution - self.storage_used
+        return limit - used
 
     @property
     def owner(self):

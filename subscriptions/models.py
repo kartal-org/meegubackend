@@ -15,7 +15,7 @@ class Plan(models.Model):
     statusOptions = (("active", "Active"), ("inactive", "Inactive"))
 
     def storageSizeDefault():
-        return {"storage": 5000000}
+        return {"storage": 5000000000}
 
     class ClassroomPlans(models.Manager):
         def get_queryset(self):

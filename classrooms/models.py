@@ -41,7 +41,9 @@ class Classroom(Product):
     @property
     def storage_Limit(self):
         # returns all storage bought through subscription
-        institutionStorageLeft = Institution.objects.get(id=self.institution).storage_left
+        institutionStorageLeft = 0
+        if self.institution:
+            institutionStorageLeft = Institution.objects.get(id=self.institution).storage_left
         classroom = (
             ClassroomSubscription.objects.filter(classroom=self.id)
             .annotate(storage_limit=Cast(KeyTextTransform("storage", "plan__limitations"), IntegerField()))

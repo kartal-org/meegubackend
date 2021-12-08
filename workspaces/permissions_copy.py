@@ -17,7 +17,7 @@ class WorkspaceFileStorageLimit(BasePermission):
 
         if request.method in SAFE_METHODS:
             return True
-
+        # breakpoint()
         classroomLimit = WorkspaceFolder.objects.get(id=request.data.get("folder")).workspace.classroom.storage_Limit
         classroomUsage = WorkspaceFolder.objects.get(id=request.data.get("folder")).workspace.classroom.storage_used
         size = int(request.data["size"])
