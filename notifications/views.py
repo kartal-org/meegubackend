@@ -9,7 +9,8 @@ class NotificationList(generics.ListAPIView):
     serializer_class = NotificationSerializer
 
     def get_queryset(self):
-        return Notification.unread.filter(receiver=self.request.user)
+        # members__in=[self.request.user]
+        return Notification.unread.filter(receiver__in=[self.request.user])
 
 
 class NotificationModify(generics.UpdateAPIView):

@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from institutions.models import InstitutionVerification
 from users.models import NewUser
+from .pusher import pusher_client
 
 
 class Notification(models.Model):
@@ -36,28 +37,47 @@ class Notification(models.Model):
         return "%s  (%s)" % (self.sender.username, self.dateModified)
 
 
-# @receiver(post_save, sender=InstitutionVerification)
-# def apply_verification_handler(created, instance, *args, **kwargs):
-#     if created:  # if a verification is created
-#         notif = Notification.objects.create(sender=instance.institution.owner, type="verification")
+@receiver(post_save, sender=InstitutionVerification)
+def apply_verification_handler(created, instance, *args, **kwargs):
+    # if created:  # if a verification is created
+    #     notif = Notification.objects.create(sender=instance.institution.owner, type="verification")
 
-#         notif.receiver.add(NewUser.objects.get(pk=1).id)
-#         notif.save()
-#     if instance.status == "approved":
-#         notif = Notification.objects.create(
-#             sender=NewUser.objects.get(pk=1),
-#             type="verification",
-#             message="Your verification application is accepted!",
-#         )
+    #     notif.receiver.add(NewUser.objects.get(pk=1).id)
+    #     notif.save()
+    print(instance.status)
+    if instance.status == "approved":
+        pusher_client.trigger(
+            "notification",
+            instance.institution.creator.username,
+            {
+                "type": "verification",
+                "message": "Your verification application is accepted!",
+                # "room": self.request.data["room"],
+            },
+        )
+        notif = Notification.objects.create(
+            sender=NewUser.objects.get(pk=1),
+            type="verification",
+            message="Your verification application is accepted!",
+        )
 
-#         notif.receiver.add(instance.institution.owner)
-#         notif.save()
-#     if instance.status == "disapproved":
-#         notif = Notification.objects.create(
-#             sender=NewUser.objects.get(pk=1),
-#             type="verification",
-#             message="Your verification application is disapproved!",
-#         )
+        notif.receiver.add(instance.institution.creator)
+        notif.save()
+    if instance.status == "disapproved":
+        pusher_client.trigger(
+            "notification",
+            instance.institution.creator.username,
+            {
+                "type": "verification",
+                "message": "Your verification application is disapproved!",
+                # "room": self.request.data["room"],
+            },
+        )
+        notif = Notification.objects.create(
+            sender=NewUser.objects.get(pk=1),
+            type="verification",
+            message="Your verification application is disapproved!",
+        )
 
-#         notif.receiver.add(instance.institution.owner)
-#         notif.save()
+        notif.receiver.add(instance.institution.creator)
+        notif.save()
