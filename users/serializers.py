@@ -123,6 +123,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
     # password = serializers.CharField(write_only=True, required=True)
     profileImage = serializers.FileField(required=False)
+    profileCover = serializers.FileField(required=False)
     name = serializers.SerializerMethodField("get_user_full_name")
 
     def get_user_full_name(self, obj):

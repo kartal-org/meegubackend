@@ -16,7 +16,7 @@ from .utils import Util
 from django.urls import reverse
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.encoding import smart_str, force_str, smart_bytes,  force_bytes, force_text, DjangoUnicodeDecodeError
+from django.utils.encoding import smart_str, force_str, smart_bytes, force_bytes, force_text, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from rest_framework.fields import CurrentUserDefault
@@ -29,14 +29,15 @@ import os
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-#email
+# email
 from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode  
-from django.contrib import messages 
-from django.core.mail import EmailMultiAlternatives,EmailMessage, BadHeaderError, send_mail
-from django.template.loader import get_template 
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib import messages
+from django.core.mail import EmailMultiAlternatives, EmailMessage, BadHeaderError, send_mail
+from django.template.loader import get_template
 from django.template import Context
 from django.conf import settings
+
 
 class CustomRedirect(HttpResponsePermanentRedirect):
 
@@ -57,12 +58,15 @@ class CustomUserCreate(generics.GenericAPIView):
 
         absurl = "http://" + "localhost:3000/email-verify" + "?token=" + str(token)
         email_body = "Hi " + request.user.username + "\n\nUse the link below to verify your email\n" + absurl
-        html_content = render_to_string('authentication/activate.html', {
-            'user': request.user,
-            'domain': absurl, 
-        }) 
-        email = EmailMultiAlternatives('Verify your email', email_body, settings.EMAIL_HOST_USER, [request.user.email])
-             
+        html_content = render_to_string(
+            "authentication/activate.html",
+            {
+                "user": request.user,
+                "domain": absurl,
+            },
+        )
+        email = EmailMultiAlternatives("Verify your email", email_body, settings.EMAIL_HOST_USER, [request.user.email])
+
         email.attach_alternative(html_content, "text/html")
         email.send()
         return Response(user_data, status=status.HTTP_201_CREATED)
@@ -75,21 +79,26 @@ class ResendActivationLink(generics.GenericAPIView):
 
         if not request.user.is_verified:
             token = RefreshToken.for_user(request.user).access_token
-            absurl = "http://" + "localhost:3000/email-verify" + "?token=" + str(token) 
-              
+            absurl = "http://" + "localhost:3000/email-verify" + "?token=" + str(token)
+
             email_body = "Hi " + request.user.username + "\n\nUse the link below to verify your email\n" + absurl
-            html_content = render_to_string('authentication/activate.html', {
-                'user': request.user,
-                'domain': absurl, 
-            }) 
-            email = EmailMultiAlternatives('Verify your email', email_body, settings.EMAIL_HOST_USER, [request.user.email])
-             
+            html_content = render_to_string(
+                "authentication/activate.html",
+                {
+                    "user": request.user,
+                    "domain": absurl,
+                },
+            )
+            email = EmailMultiAlternatives(
+                "Verify your email", email_body, settings.EMAIL_HOST_USER, [request.user.email]
+            )
+
             email.attach_alternative(html_content, "text/html")
-            email.send() 
+            email.send()
 
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_200_OK)
-        
+
 
 class VerifyEmail(APIView):
     serializer_class = EmailVerificationSerializer
@@ -190,11 +199,11 @@ class UserUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated]
     queryset = NewUser.objects.all()
-    serializer_class = UserProfileSerializer
+    serializer_class = UserProfileSerializer2
 
-    def update(self, request, *args, **kwargs):
-        print(request.data)
-        return super().update(request, *args, **kwargs)
+    # def update(self, request, *args, **kwargs):
+    #     print(request.data)
+    #     return super().update(request, *args, **kwargs)
 
 
 class UpdateImg(generics.UpdateAPIView):
@@ -210,7 +219,7 @@ class UpdateUserProfileView(APIView):
 
     def patch(self, request, format=None):
         print(request.data)
-        serializer = UserProfileSerializer(data=request.data)
+        serializer = UpdateUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
