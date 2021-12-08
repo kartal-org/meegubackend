@@ -138,12 +138,11 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             # data = {"email_body": email_body, "to_email": user.email, "email_subject": "Reset your passsword"}
             # Util.send_email(data)
 
-            email_body = "Hello " + request.user.username + "\n\nUse link below to reset your password\n" + absurl
-            html_content = render_to_string('authentication/resetpass.html', {
-                'user': request.user,
+            email_body = "Hello, \n\nUse the link below to reset your password\n" + absurl
+            html_content = render_to_string('authentication/resetpass.html', { 
                 'domain': absurl, 
             }) 
-            email = EmailMultiAlternatives('Reset your passsword', email_body, settings.EMAIL_HOST_USER, [request.user.email])
+            email = EmailMultiAlternatives('Reset your passsword', email_body, settings.EMAIL_HOST_USER, [email])
              
             email.attach_alternative(html_content, "text/html")
             email.send() 

@@ -23,8 +23,8 @@ class Command(BaseCommand):
         fake = Faker(["en_US"]) 
         fake.add_provider(Provider)
         
-        for x in USERS:  
-            name = fake.company()
+        for _ in range(5):  
+            name = fake.unique.company()
             address = fake.address()
             contact = fake.numerify(text='############')
             email = fake.unique.ascii_company_email()

@@ -176,9 +176,9 @@ class InstitutionVerification(models.Model):
 def institution_create_owner(created, instance, *args, **kwargs):
 
     if created:
-
+        breakpoint()
         defaultMember = Staff.objects.create(
-            institution=instance, type=StaffType.objects.get(name="Admin"), user=instance.creator
+            institution=instance, type=StaffType.objects.get(name="Creator"), user=instance.creator
         )
         defaultMember.save()
 
