@@ -31,6 +31,10 @@ class Classroom(Product):
         super(Classroom, self).save(*args, **kwargs)
 
     @property
+    def subscriptions(self):
+        return ClassroomSubscription.objects.filter(classroom=self.id).values("id")
+
+    @property
     def adviser(self):
         return ClassroomMember.objects.get(classroom=self.id, role="adviser").user.full_name
 

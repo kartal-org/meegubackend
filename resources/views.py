@@ -144,7 +144,7 @@ class InstitutionResourceFileDetail(generics.RetrieveUpdateDestroyAPIView):
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ImportResourceClass(generics.CreateAPIView):
+class ImportResourceClass(generics.GenericAPIView):
 
     """provide"""
 

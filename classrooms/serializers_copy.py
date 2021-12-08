@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 from users.models import NewUser
+from subscriptions.models import ClassroomSubscription
 
 
 class ClassroomFieldSerializer(serializers.ModelSerializer):
@@ -9,8 +10,15 @@ class ClassroomFieldSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ClassroomSubscriptionFieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClassroomSubscription
+        fields = ["id", "payer_FullName"]
+
+
 class ClassroomSerializer(serializers.ModelSerializer):
     cover = serializers.FileField(read_only=True)
+    # subscriptions = ClassroomSubscriptionFieldSerializer(many=True, read_only=True)
 
     class Meta:
         model = Classroom
@@ -25,6 +33,8 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "subject",
             "privacy",
             "storage_left",
+            "storage_used",
+            # "subscriptions",
         ]
         extra_kwargs = {"code": {"read_only": True}}
 

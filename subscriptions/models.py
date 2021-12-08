@@ -54,6 +54,7 @@ class Transaction(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ("-dateCreated",)
 
 
 class ClassroomSubscription(Transaction):

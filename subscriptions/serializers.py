@@ -14,6 +14,11 @@ class BuySubscriptionSerializer(serializers.ModelSerializer):
         fields = "__all__"
         extra_kwargs = {"classroom": {"read_only": True}}
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["plan"] = PlanSerializer(instance.plan).data
+        return response
+
 
 class InstitutionSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
