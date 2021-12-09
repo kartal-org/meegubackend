@@ -69,6 +69,9 @@ class Publication(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        ordering = ("-publishedDate",)
+
 
 @receiver(pre_save, sender=Publication)
 def slug_pre_save(sender, instance, *args, **kwargs):

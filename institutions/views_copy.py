@@ -10,6 +10,7 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
+from django.db.models import Q
 
 
 class InstitutionCreateView(generics.CreateAPIView):
@@ -78,6 +79,11 @@ class StaffTypeListCreateView(generics.ListCreateAPIView):
     filter_backends = [SearchFilter]
     search_fields = ["custom_Type_For__id"]
     queryset = StaffType.objects.all()
+
+    def get_queryset(self):
+        return StaffType.objects.filter(
+            Q(custom_Type_For=self.kwargs.get("institution")) | Q(custom_Type_For__isnull=True)
+        )
 
 
 class StaffTypeDetailView(generics.RetrieveUpdateDestroyAPIView):

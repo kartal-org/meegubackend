@@ -44,13 +44,13 @@ class ClassroomResourceFile(File):
 
 
 class InstitutionResource(Package):
-    institution = models.ForeignKey("institutions.Institution", on_delete=models.CASCADE, null=True, blank=True)
+    # institution = models.ForeignKey("institutions.Institution", on_delete=models.CASCADE, null=True, blank=True)
     department = models.ForeignKey("institutions.Department", on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         unique_together = (
             "name",
-            "institution",
+            "department",
         )
 
 

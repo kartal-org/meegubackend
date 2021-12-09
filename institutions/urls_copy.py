@@ -12,7 +12,7 @@ urlpatterns = [
     path("change/<int:pk>", InstitutionDetailView.as_view()),
     path("staff-list", StaffListCreateView.as_view()),
     path("staff/change/<int:pk>", StaffDetailView.as_view()),
-    path("staff-type", StaffTypeListCreateView.as_view()),
+    path("staff-type/<int:institution>", StaffTypeListCreateView.as_view()),
     path("staff-type/change/<int:pk>", StaffTypeDetailView.as_view()),
     path("verify", InstitutionVerificationView.as_view(), name="institution_verify"),
     path("department/<int:institution>", DepartmentListCreate.as_view(), name="department_list"),

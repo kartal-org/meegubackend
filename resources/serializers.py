@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import *
 from classrooms.models import Classroom
 from workspaces.models import WorkspaceFile
+from institutions.models import Department
 
 
 class ClassroomOwnerSerializer(serializers.ModelSerializer):
@@ -43,11 +44,21 @@ class ClassroomResourceFileSerializer(serializers.ModelSerializer):
         # extra_kwargs = {"folder": {"read_only": True}}
 
 
+class DepartmentFieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = "__all__"
+
+
 class InstitutionResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstitutionResource
         fields = "__all__"
-        extra_kwargs = {"institution": {"read_only": True}, "department": {"read_only": True}}
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["department"] = DepartmentFieldSerializer(instance.department, many=False).data
+        return response
 
 
 class InstitutionResourceFolderSerializer(serializers.ModelSerializer):
