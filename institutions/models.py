@@ -71,9 +71,9 @@ class Institution(Product):
         if publication == None:
             publication = 0
 
-        resource = InstitutionResourceFile.objects.filter(folder__resource__institution=self).aggregate(Sum("size"))[
-            "size__sum"
-        ]
+        resource = InstitutionResourceFile.objects.filter(folder__resource__department__institution=self).aggregate(
+            Sum("size")
+        )["size__sum"]
 
         if resource == None:
             resource = 0
