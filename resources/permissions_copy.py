@@ -22,10 +22,10 @@ class InstitutionResoureStorageLimit(BasePermission):
 
         institutionLimit = InstitutionResourceFolder.objects.get(
             id=request.data.get("folder")
-        ).resource.institution.storage_Limit
+        ).resource.department.institution.storage_Limit
         institutionUsage = InstitutionResourceFolder.objects.get(
             id=request.data.get("folder")
-        ).resource.institution.storage_used
+        ).resource.department.institution.storage_used
         # Department.objects.get(id = 12).institution.storage_used
         size = int(request.data["size"])
         if institutionUsage + size >= institutionLimit:
@@ -40,7 +40,7 @@ class ClassroomResourceStorageLimit(BasePermission):
 
         if request.method in SAFE_METHODS:
             return True
-
+        breakpoint()
         classroomLimit = ClassroomResourceFolder.objects.get(
             id=request.data.get("folder")
         ).resource.classroom.storage_Limit

@@ -17,7 +17,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 # CLassroom Resources
 class ResourceListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, ClassroomResourceStorageLimit]
+    permission_classes = [IsAuthenticated]
     serializer_class = ClasssroomResourceSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = [
@@ -57,7 +57,7 @@ class ResourceFolderDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ClassroomResourceFileList(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ClassroomResourceStorageLimit]
     parser_classes = [MultiPartParser, FormParser]
     serializer_class = ClassroomResourceFileSerializer
     filter_backends = [SearchFilter, OrderingFilter]
