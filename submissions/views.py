@@ -25,7 +25,7 @@ class ClassroomSubmissionList(generics.ListAPIView):
     queryset = Submission.objects.all()
 
 
-class SubmissionDetail(generics.RetrieveUpdateAPIView):
+class SubmissionDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = SubmissionSerializer
     queryset = Submission.objects.all()
