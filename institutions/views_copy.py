@@ -32,7 +32,7 @@ class OwnerInstitutionListView(generics.ListAPIView):
     serializer_class = InstitutionListSerializer
 
     def get_queryset(self):
-        return Staff.objects.filter(user=self.request.user, type__name="Admin")
+        return Staff.objects.filter(user=self.request.user, type__name="Creator")
 
 
 class StaffInstitutionListView(generics.ListAPIView):
@@ -40,7 +40,7 @@ class StaffInstitutionListView(generics.ListAPIView):
     serializer_class = InstitutionListSerializer
 
     def get_queryset(self):
-        return Staff.objects.filter(user=self.request.user).exclude(type__name="Admin")
+        return Staff.objects.filter(user=self.request.user).exclude(type__name="Creator")
 
 
 class InstitutionDetailView(generics.RetrieveUpdateDestroyAPIView):
