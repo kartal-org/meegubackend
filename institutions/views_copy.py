@@ -13,10 +13,25 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django.db.models import Q
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+    max_page_size = 10
+
+
 class InstitutionCreateView(generics.CreateAPIView):
     parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticated]
     serializer_class = InstitutionSerializer
+
+
+class InstitutionSearchView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = InstitutionFieldSerializer
+    filter_backends = [SearchFilter]
+    pagination_class = StandardResultsSetPagination
+    search_fields = ["name"]
+    queryset = Institution.objects.all()
 
 
 class InstitutionListView(generics.ListAPIView):

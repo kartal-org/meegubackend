@@ -6,6 +6,7 @@ app_name = "institutions"
 
 urlpatterns = [
     path("", InstitutionListView.as_view()),
+    path("search", InstitutionSearchView.as_view()),
     path("create", InstitutionCreateView.as_view()),
     path("admin", OwnerInstitutionListView.as_view()),
     path("staff", StaffInstitutionListView.as_view()),
