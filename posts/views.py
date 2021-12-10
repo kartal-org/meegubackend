@@ -33,12 +33,23 @@ class StandardResultsSetPagination(PageNumberPagination):
         )
 
 
+class ArticleSearch(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, PublicationFileLimit]
+    parser_classes = [MultiPartParser, FormParser]
+    serializer_class = PublicationSerializer
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ["title"]
+    ratings = Rating.objects.filter(publication=OuterRef("pk"))
+    queryset = Publication.objects.annotate(rating_you=Subquery(ratings.values("rate"))).order_by("-rating_you")
+
+
 class ArticleListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated, PublicationFileLimit]
     parser_classes = [MultiPartParser, FormParser]
     serializer_class = PublicationSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ["department__id", "department__institution__name", "category__name"]
+    search_fields = ["^title", "department__id", "department__institution__name", "category__name"]
     ratings = Rating.objects.filter(publication=OuterRef("pk"))
     queryset = Publication.objects.annotate(rating_you=Subquery(ratings.values("rate"))).order_by("-rating_you")
     # .annotate(num_authors=Count('authors')).order_by('num_authors')
