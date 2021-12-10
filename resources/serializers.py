@@ -65,14 +65,14 @@ class InstitutionResourceFolderSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstitutionResourceFolder
         fields = "__all__"
-        extra_kwargs = {"resource": {"read_only": True}}
+        # extra_kwargs = {"resource": {"read_only": True}}
 
 
 class InstitutionResourceFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstitutionResourceFile
         fields = "__all__"
-        extra_kwargs = {"folder": {"read_only": True}}
+        # extra_kwargs = {"folder": {"read_only": True}}
 
 
 class ImportResourceClassSerializer(serializers.ModelSerializer):
