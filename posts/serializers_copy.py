@@ -104,11 +104,24 @@ class RatingSerializer(serializers.ModelSerializer):
         extra_kwargs = {"user": {"read_only": True}}
 
 
+class UserFieldSerializer(serializers.ModelSerializer):
+    profileImage = serializers.FileField()
+
+    class Meta:
+        model = NewUser
+        fields = ["id", "full_name", "profileImage"]
+
+
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = "__all__"
         extra_kwargs = {"user": {"read_only": True}}
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["user"] = UserFieldSerializer(instance.user).data
+        return response
 
 
 class CategorySerializer(serializers.ModelSerializer):

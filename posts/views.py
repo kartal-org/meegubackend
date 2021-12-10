@@ -14,6 +14,7 @@ from workspaces.models import Workspace
 from rest_framework.decorators import api_view, parser_classes, permission_classes
 from django.db.models import F
 from rest_framework.parsers import MultiPartParser, FormParser
+from django_filters import rest_framework as filters
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -62,8 +63,9 @@ class ArticleDetailView(generics.RetrieveUpdateDestroyAPIView):
 class RatingListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = RatingSerializer
-    filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ["publication", "user", "rating"]
+    filter_backends = (filters.DjangoFilterBackend,)
+    # search_fields = ["publication__id", "user__id"]
+    filterset_fields = ("publication__id", "user__id")
     queryset = Rating.objects.all()
 
     def perform_create(self, serializer):
@@ -87,7 +89,7 @@ class CommentListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CommentSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ["publication", "user"]
+    search_fields = ["publication__id"]
     queryset = Comment.objects.all()
 
     def perform_create(self, serializer):

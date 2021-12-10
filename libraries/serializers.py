@@ -11,11 +11,14 @@ class PublicationFieldSerializer(serializers.ModelSerializer):
 
 
 class LibraryItemSerializer(serializers.ModelSerializer):
-    publication = PublicationFieldSerializer(read_only=True, many=True)
-
     class Meta:
         model = LibraryItem
         fields = "__all__"
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["publication"] = PublicationFieldSerializer(instance.publication).data
+        return response
 
 
 # class AddLibraryItemSerializer(serializers.ModelSerializer):

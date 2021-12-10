@@ -12,15 +12,15 @@ from .permissions import *
 # Create your views here.
 
 
-class LibraryListCreateView(generics.ListAPIView):
+class LibraryListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LibraryItemSerializer
 
     def get_queryset(self):
         return LibraryItem.objects.filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
 
 
 class LibraryDetailView(generics.RetrieveUpdateDestroyAPIView):
