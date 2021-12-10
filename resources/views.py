@@ -110,7 +110,7 @@ class InstitutionResourceFolderList(generics.ListCreateAPIView):
     serializer_class = InstitutionResourceFolderSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ["resource"]
+    search_fields = ["resource__id"]
     queryset = InstitutionResourceFolder.objects.all()
 
 
@@ -129,7 +129,7 @@ class InstitutionResourceFileList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, InstitutionResoureStorageLimit]
     serializer_class = InstitutionResourceFileSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ["folder"]
+    search_fields = ["folder__id"]
     queryset = InstitutionResourceFile.objects.all()
 
 

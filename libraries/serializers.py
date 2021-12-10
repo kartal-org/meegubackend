@@ -5,9 +5,12 @@ from posts.models import Publication
 
 
 class PublicationFieldSerializer(serializers.ModelSerializer):
+    department = serializers.CharField(source="department.name", read_only=True)
+    category = serializers.CharField(source="category.name", read_only=True)
+
     class Meta:
         model = Publication
-        fields = "__all__"
+        fields = ["title", "department", "category", "publishedDate", "rating"]
 
 
 class LibraryItemSerializer(serializers.ModelSerializer):
