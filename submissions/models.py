@@ -10,6 +10,7 @@ from django.db.models import F
 
 # Create your models here.
 class Submission(models.Model):
+
     options = (("draft", "Draft"), ("submit", "Submit"))
 
     title = models.CharField(max_length=255)

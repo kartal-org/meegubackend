@@ -39,6 +39,10 @@ class Classroom(Product):
         return ClassroomMember.objects.get(classroom=self.id, role="adviser").user.full_name
 
     @property
+    def adviserInstance(self):
+        return ClassroomMember.objects.get(classroom=self.id, role="adviser").user
+
+    @property
     def storage_Limit(self):
         # returns all storage bought through subscription
         institutionStorageLeft = 0

@@ -10,7 +10,7 @@ class PublicationFieldSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Publication
-        fields = ["title", "department", "category", "publishedDate", "rating"]
+        fields = ["id", "title", "department", "category", "publishedDate", "rating"]
 
 
 class LibraryItemSerializer(serializers.ModelSerializer):
