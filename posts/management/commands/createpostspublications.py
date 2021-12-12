@@ -13,7 +13,8 @@ DEPARTMENTS = Department.objects.all()
 USERS = NewUser.objects.all()
 SUBMISSIONS = Submission.objects.all()
 TYPE = [
-    "uploadedFiles/The_Image_of_The_Philippines_as_a_Tourism_Destination_in_Finland_xai3e0.pdf",
+    {"file": "uploadedFiles/The_Image_of_The_Philippines_as_a_Tourism_Destination_in_Finland_xai3e0.pdf", "title":  "The Image of The Philippines_as_a_Tourism_Destination_in_Finland"}
+    ,
     "uploadedFiles/Mother_Tongue-Based_Multilingual_Education_in_the_Philippines_apkzwn.pdf",
     "uploadedFiles/Difficulties_in_Remote_Learning_f7uwsx.pdf",
     "uploadedFiles/Issues_and_Challenges_in_Open_and_Distance_e-Learning_nmast7.pdf",
