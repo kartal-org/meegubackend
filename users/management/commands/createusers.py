@@ -6,7 +6,7 @@ import random
 from django.contrib.auth import authenticate, login
 
 PROFILE_PICS = [
-    "pexels-amir-esrafili-6274712_txxmxu",
+    "userProfile/pexels-amir-esrafili-6274712_txxmxu",
     "pexels-italo-melo-2379004_rz7vkx",
     "pexels-pixabay-220453_glwq6b",
     "pexels-andrea-piacquadio-774909_hkdg3j",
