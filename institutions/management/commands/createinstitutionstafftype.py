@@ -6,14 +6,16 @@ from users.models import NewUser
 import random
 
 STAFF_TYPES = [
+    {"name": "Creator", "description": "Institution Page's Owner. Has all the rights to manage the Page"},
     {"name": "Admin", "description": "Institution Page's Owner. Has all the rights to manage the Page"},
     {
         "name": "Department Head",
         "description": "Institution Department's Head. Has all the rights to manage the department",
     },
     {"name": "Adviser", "description": "Has the right to make recommendations"},
-    {"name": "Publisher", "description": "Has the right to make publication in the department"}, 
+    {"name": "Publisher", "description": "Has the right to make publication in the department"},
 ]
+
 
 class Provider(faker.providers.BaseProvider):
     def staff_types(self):

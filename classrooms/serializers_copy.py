@@ -18,6 +18,7 @@ class ClassroomSubscriptionFieldSerializer(serializers.ModelSerializer):
 
 class ClassroomSerializer(serializers.ModelSerializer):
     cover = serializers.FileField(read_only=True)
+    # institution = serializers.SlugRelatedField(slug_field="id", queryset=Institution.objects.all())
     # subscriptions = ClassroomSubscriptionFieldSerializer(many=True, read_only=True)
 
     class Meta:
@@ -34,6 +35,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "privacy",
             "storage_left",
             "storage_used",
+            "institution"
             # "subscriptions",
         ]
         extra_kwargs = {"code": {"read_only": True}}

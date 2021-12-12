@@ -22,7 +22,7 @@ from django.apps import apps
 class Classroom(Product):
     code = models.CharField(max_length=8, unique=True)
     subject = models.CharField(max_length=255, null=True, blank=True)
-    institution = models.ForeignKey("institutions.Institution", null=True, blank=True, on_delete=models.SET_NULL)
+    institution = models.ForeignKey(Institution, null=True, blank=True, on_delete=models.SET_NULL)
 
     # Hack to pass the user to post save signal.
     def save(self, *args, **kwargs):
@@ -47,12 +47,14 @@ class Classroom(Product):
         # returns all storage bought through subscription
         institutionStorageLeft = 0
         if self.institution:
-            institutionStorageLeft = Institution.objects.get(id=self.institution).storage_left
+            institutionStorageLeft = self.institution.storage_left
         classroom = (
             ClassroomSubscription.objects.filter(classroom=self.id)
             .annotate(storage_limit=Cast(KeyTextTransform("storage", "plan__limitations"), IntegerField()))
             .aggregate(Sum("storage_limit"))["storage_limit__sum"]
         )
+        if not classroom:
+            classroom = 0
         return classroom + institutionStorageLeft
 
     @property
@@ -82,8 +84,7 @@ class Classroom(Product):
             classroom = 0
         institution = 0
         if self.institution:
-            Institution = apps.get_model("institutions", "Institution")
-            institution = Institution.objects.get(id=self.institution).storage_left
+            institution = self.institution.storage_left
 
         return classroom + institution - self.storage_used
 

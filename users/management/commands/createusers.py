@@ -5,6 +5,16 @@ from users.models import NewUser
 import random
 from django.contrib.auth import authenticate, login
 
+PROFILE_PICS = [
+    "pexels-amir-esrafili-6274712_txxmxu",
+    "pexels-italo-melo-2379004_rz7vkx",
+    "pexels-pixabay-220453_glwq6b",
+    "pexels-andrea-piacquadio-774909_hkdg3j",
+    "pexels-arthouse-studio-4571943_trdoog",
+    "pexels-cottonbro-6195663_btbmtz",
+    "pexels-pixabay-415829_gc8zlx",
+]
+
 
 class Command(BaseCommand):
     help = "Command Information"

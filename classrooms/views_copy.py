@@ -35,6 +35,7 @@ class ClassroomCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        # institution = Institution.objects.get(id=self.request.data.get("institution")).id
         serializer.save(code=get_classroom_code())
 
 
@@ -53,6 +54,10 @@ class ClassroomDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ClassroomSerializer
     permission_classes = [IsAuthenticated, IsClassroomCreator]  # add is classroom adviser unya ha
     queryset = Classroom.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        breakpoint()
+        return super().update(request, *args, **kwargs)
 
 
 class MemberCreateView(generics.ListCreateAPIView):

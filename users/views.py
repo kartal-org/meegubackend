@@ -48,6 +48,7 @@ class CustomUserCreate(generics.GenericAPIView):
     serializer_class = CustomUserSerializer
 
     def post(self, request):
+
         user = request.data
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
@@ -55,17 +56,18 @@ class CustomUserCreate(generics.GenericAPIView):
         user_data = serializer.data
         user = NewUser.objects.get(email=user_data["email"])
         token = RefreshToken.for_user(user).access_token
+        # breakpoint()
 
         absurl = "http://" + "localhost:3000/email-verify" + "?token=" + str(token)
-        email_body = "Hi " + request.user.username + "\n\nUse the link below to verify your email\n" + absurl
+        email_body = "Hi " + user.full_name + "\n\nUse the link below to verify your email\n" + absurl
         html_content = render_to_string(
             "authentication/activate.html",
             {
-                "user": request.user,
+                "user": user.full_name,
                 "domain": absurl,
             },
         )
-        email = EmailMultiAlternatives("Verify your email", email_body, settings.EMAIL_HOST_USER, [request.user.email])
+        email = EmailMultiAlternatives("Verify your email", email_body, settings.EMAIL_HOST_USER, [user.email])
 
         email.attach_alternative(html_content, "text/html")
         email.send()
@@ -139,13 +141,16 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             # Util.send_email(data)
 
             email_body = "Hello, \n\nUse the link below to reset your password\n" + absurl
-            html_content = render_to_string('authentication/resetpass.html', { 
-                'domain': absurl, 
-            }) 
-            email = EmailMultiAlternatives('Reset your passsword', email_body, settings.EMAIL_HOST_USER, [email])
-             
+            html_content = render_to_string(
+                "authentication/resetpass.html",
+                {
+                    "domain": absurl,
+                },
+            )
+            email = EmailMultiAlternatives("Reset your passsword", email_body, settings.EMAIL_HOST_USER, [email])
+
             email.attach_alternative(html_content, "text/html")
-            email.send() 
+            email.send()
 
         return Response({"success": "We have sent you a link to reset your password"}, status=status.HTTP_200_OK)
 

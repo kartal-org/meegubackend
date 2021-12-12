@@ -13,7 +13,7 @@ class Notification(models.Model):
         def get_queryset(self):
             return super().get_queryset().filter(isRead=False)
 
-    options = (("verification", "verification"), ("submission", "submission"), ("invitation", "invitation"))
+    options = (("verification", "verification"), ("submission", "submission"), ("recommendation", "recommendation"))
     type = models.CharField(choices=options, max_length=20)
     receiver = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
@@ -34,7 +34,7 @@ class Notification(models.Model):
         ordering = ["-dateModified"]
 
     def __str__(self) -> str:
-        return "%s  (%s)" % (self.sender.username, self.dateModified)
+        return self.message
 
 
 @receiver(post_save, sender=InstitutionVerification)
@@ -90,7 +90,7 @@ def apply_verification_handler(created, instance, *args, **kwargs):
 
 
 @receiver(post_save, sender=Submission)
-def submission_create_handler(created, instance, *args, **kwargs):
+def submission_created_handler(created, instance, *args, **kwargs):
     if created:
         # breakpoint()
         pusher_client.trigger(
@@ -105,11 +105,36 @@ def submission_create_handler(created, instance, *args, **kwargs):
         )
         notif = Notification.objects.create(
             # sender=NewUser.objects.get(pk=1),
-            type="verification",
+            type="submission",
             message="A submission is created at %s" % instance.file.folder.workspace.classroom.name,
             redirectID=instance.file.folder.workspace.classroom.id,
         )
         # adviserInstance
         notif.receiver.add(instance.file.folder.workspace.classroom.adviserInstance)
+        notif.save()
+        pass
+
+
+@receiver(post_save, sender=Recommendation)
+def recommendation_created_handler(created, instance, *args, **kwargs):
+    if created:
+
+        pusher_client.trigger(
+            "notification",
+            instance.department.institution.creator.username,
+            {
+                "type": "recommendation",
+                "message": "A recommendation is created at %s" % instance.department.name,
+                "redirectID": instance.department.id,
+                # "room": self.request.data["room"],
+            },
+        )
+        notif = Notification.objects.create(
+            # sender=NewUser.objects.get(pk=1),
+            type="recommendation",
+            message="A recommendation is created at %s" % instance.department.name,
+            redirectID=instance.department.id,
+        )
+        notif.receiver.add(instance.department.institution.creator)
         notif.save()
         pass
