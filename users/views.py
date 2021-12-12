@@ -81,7 +81,7 @@ class ResendActivationLink(generics.GenericAPIView):
 
         if not request.user.is_verified:
             token = RefreshToken.for_user(request.user).access_token
-            absurl = "http://" + "localhost:3000/email-verify" + "?token=" + str(token)
+            absurl = "https://" + "meegufrontend.herokuapp.com/email-verify" + "?token=" + str(token)
 
             email_body = "Hi " + request.user.username + "\n\nUse the link below to verify your email\n" + absurl
             html_content = render_to_string(
@@ -135,7 +135,7 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             # current_site = get_current_site(request=request).domain
             # relativeLink = reverse("password-reset-confirm", kwargs={"uidb64": uidb64, "token": token})
 
-            absurl = "http://localhost:3000/password-reset-confirm?uidb64=" + uidb64 + "&token=" + token
+            absurl = "https://meegufrontend.herokuapp.com/password-reset-confirm?uidb64=" + uidb64 + "&token=" + token
             # email_body = "Hello, \n Use link below to reset your password  \n" + absurl
             # data = {"email_body": email_body, "to_email": user.email, "email_subject": "Reset your passsword"}
             # Util.send_email(data)
