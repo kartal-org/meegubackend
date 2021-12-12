@@ -67,15 +67,17 @@ class Institution(Product):
     @property
     def storage_used(self):
         # how to compute? publication + resource
-        publication = Publication.objects.filter(department__institution=self).aggregate(Sum("size"))["size__sum"]
-        if publication == None:
+        try:
+            publication = Publication.objects.filter(department__institution=self).aggregate(Sum("size"))["size__sum"]
+        except ObjectDoesNotExist:
+            # if publication == None:
             publication = 0
-
-        resource = InstitutionResourceFile.objects.filter(folder__resource__department__institution=self).aggregate(
-            Sum("size")
-        )["size__sum"]
-
-        if resource == None:
+        try:
+            resource = InstitutionResourceFile.objects.filter(folder__resource__department__institution=self).aggregate(
+                Sum("size")
+            )["size__sum"]
+        except ObjectDoesNotExist:
+            # if resource == None:
             resource = 0
 
         return publication + resource
@@ -116,6 +118,10 @@ class Department(models.Model):
     institution = models.ForeignKey(Institution, on_delete=CASCADE)
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateModified = models.DateTimeField(auto_now=True)
+
+    @property
+    def owner(self):
+        pass
 
     class Meta:
         ordering = ("-dateModified",)

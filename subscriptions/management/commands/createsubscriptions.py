@@ -27,7 +27,7 @@ class Command(BaseCommand):
         fake = Faker(["tl_PH"])
         fake.add_provider(Provider)
         # {"storage": 5000000}
-
+        # pictures
         Plan.objects.create(
             name="Classroom Basic", description="Free One Time Subscription Plan For Classroom.", type="classroom"
         )
