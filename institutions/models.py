@@ -5,7 +5,7 @@ from resources.models import InstitutionResourceFile
 from products.models import Product
 from members.models import BaseMember, BaseMemberType
 from django.shortcuts import get_object_or_404, get_list_or_404
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, EmptyResultSet
 from subscriptions.models import InstitutionSubscription
 from django.db.models.functions import Cast
 from django.db.models import Sum, IntegerField
@@ -57,7 +57,7 @@ class Institution(Product):
         # returns all storage bought through subscription
         limit = (
             InstitutionSubscription.objects.filter(institution=self.id)
-            .annotate(storage_limit=Cast(KeyTextTransform("storage", "plan__limitations"), IntegerField()))
+            .annotate(storage_limit=Cast("plan__limitations", IntegerField()))
             .aggregate(Sum("storage_limit"))["storage_limit__sum"]
         )
         if limit == None:
@@ -67,17 +67,19 @@ class Institution(Product):
     @property
     def storage_used(self):
         # how to compute? publication + resource
-        try:
-            publication = Publication.objects.filter(department__institution=self).aggregate(Sum("size"))["size__sum"]
-        except ObjectDoesNotExist:
-            # if publication == None:
+
+        publication = Publication.objects.filter(department__institution=self).aggregate(Sum("size"))["size__sum"]
+
+        if publication == None:
+            print("none publication")
             publication = 0
-        try:
-            resource = InstitutionResourceFile.objects.filter(folder__resource__department__institution=self).aggregate(
-                Sum("size")
-            )["size__sum"]
-        except ObjectDoesNotExist:
-            # if resource == None:
+        # try:
+        resource = InstitutionResourceFile.objects.filter(folder__resource__department__institution=self).aggregate(
+            Sum("size")
+        )["size__sum"]
+
+        if resource == None:
+            print("none resource")
             resource = 0
 
         return publication + resource
