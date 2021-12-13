@@ -29,7 +29,7 @@ class InstitutionSearchView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = InstitutionFieldSerializer
     filter_backends = [SearchFilter]
-    pagination_class = StandardResultsSetPagination
+    # pagination_class = StandardResultsSetPagination
     search_fields = ["name"]
     queryset = Institution.objects.all()
 

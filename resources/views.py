@@ -26,6 +26,16 @@ class ResourceListCreateView(generics.ListCreateAPIView):
     queryset = ClassroomResource.objects.all()
 
 
+class ResourceListRelevant(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ClasssroomResourceSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = [
+        "classroom__creator",
+    ]
+    queryset = ClassroomResource.objects.all()
+
+
 class ResourceDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ClasssroomResourceSerializer
@@ -181,6 +191,8 @@ class ImportResourceDepartment(generics.GenericAPIView):
         # breakpoint()
         files = InstitutionResourceFile.objects.filter(folder__resource=request.data.get("resource"))
         # breakpoint()
+
+        # Step 1 get relevant classroom resources for the user
 
         for x in files:
             hello = ClassroomResourceFile.objects.create(

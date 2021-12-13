@@ -22,7 +22,7 @@ class NotesRetrieve(generics.RetrieveUpdateDestroyAPIView):
     This view allows the student modify his notes
     """
 
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated]
     serializer_class = NotesSerializer
     queryset = Note.objects.all()
 

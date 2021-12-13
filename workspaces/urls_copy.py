@@ -8,6 +8,7 @@ app_name = "workspaces"
 urlpatterns = [
     path("", WorkspaceList.as_view()),
     path("student/<int:classroom>", StudentWorkspaceList.as_view()),
+    path("join/", JoinWorkspaceView.as_view()),
     path("change/<int:pk>", WorkspaceDetail.as_view()),
     path("folder", WorkspaceFolderList.as_view()),
     path("folder/<int:pk>", WorkspaceFolderDetail.as_view()),
