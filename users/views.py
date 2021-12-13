@@ -252,6 +252,6 @@ class SearchPeople(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = SearchUserSerializer
     queryset = NewUser.objects.all()
-    pagination_class = StandardResultsSetPagination
+
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["first_name", "last_name", "username"]

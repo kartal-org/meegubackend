@@ -37,7 +37,7 @@ class ArticleSearch(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, PublicationFileLimit]
     parser_classes = [MultiPartParser, FormParser]
     serializer_class = PublicationSerializer
-    pagination_class = StandardResultsSetPagination
+
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["title"]
     ratings = Rating.objects.filter(publication=OuterRef("pk"))
