@@ -29,7 +29,7 @@ class Plan(models.Model):
     description = models.TextField()
     status = models.CharField(choices=statusOptions, default="active", max_length=10)
     price = models.DecimalField(max_digits=7, decimal_places=2, default=0.00)
-    limitations = models.JSONField(null=True, blank=True, default=storageSizeDefault)
+    limitations = models.BigIntegerField(null=True, blank=True, default=5000000000)
     type = models.CharField(max_length=20, choices=options)
     cover = models.ImageField(_("Cover"), upload_to=upload_to, default="userProfile/coverDefault_pdrisr.jpg")
     dateCreated = models.DateTimeField(auto_now_add=True)

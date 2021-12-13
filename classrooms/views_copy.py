@@ -56,7 +56,6 @@ class ClassroomDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Classroom.objects.all()
 
     def update(self, request, *args, **kwargs):
-        breakpoint()
         return super().update(request, *args, **kwargs)
 
 

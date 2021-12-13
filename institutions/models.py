@@ -5,10 +5,10 @@ from resources.models import InstitutionResourceFile
 from products.models import Product
 from members.models import BaseMember, BaseMemberType
 from django.shortcuts import get_object_or_404, get_list_or_404
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, EmptyResultSet
 from subscriptions.models import InstitutionSubscription
 from django.db.models.functions import Cast
-from django.db.models import Sum, IntegerField
+from django.db.models import Sum, IntegerField, BigIntegerField
 from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
@@ -55,11 +55,10 @@ class Institution(Product):
     @property
     def storage_Limit(self):
         # returns all storage bought through subscription
-        limit = (
-            InstitutionSubscription.objects.filter(institution=self.id)
-            .annotate(storage_limit=Cast(KeyTextTransform("storage", "plan__limitations"), IntegerField()))
-            .aggregate(Sum("storage_limit"))["storage_limit__sum"]
-        )
+        limit = InstitutionSubscription.objects.filter(institution=self.id).aggregate(
+            storage_limit=Sum("plan__limitations")
+        )["storage_limit"]
+
         if limit == None:
             limit = 0
         return limit
@@ -67,15 +66,19 @@ class Institution(Product):
     @property
     def storage_used(self):
         # how to compute? publication + resource
-        publication = Publication.objects.filter(department__institution=self).aggregate(Sum("size"))["size__sum"]
-        if publication == None:
-            publication = 0
 
+        publication = Publication.objects.filter(department__institution=self).aggregate(Sum("size"))["size__sum"]
+
+        if publication == None:
+            print("none publication")
+            publication = 0
+        # try:
         resource = InstitutionResourceFile.objects.filter(folder__resource__department__institution=self).aggregate(
             Sum("size")
         )["size__sum"]
 
         if resource == None:
+            print("none resource")
             resource = 0
 
         return publication + resource
@@ -116,6 +119,10 @@ class Department(models.Model):
     institution = models.ForeignKey(Institution, on_delete=CASCADE)
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateModified = models.DateTimeField(auto_now=True)
+
+    @property
+    def owner(self):
+        pass
 
     class Meta:
         ordering = ("-dateModified",)

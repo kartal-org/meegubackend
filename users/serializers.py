@@ -216,4 +216,4 @@ class SetNewPasswordSerializer(serializers.Serializer):
 class SearchUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewUser
-        fields = ["username", "full_name", "profileImage"]
+        fields = ["username", "full_name", "profileImage", "about"]

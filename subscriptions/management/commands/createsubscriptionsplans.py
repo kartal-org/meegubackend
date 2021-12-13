@@ -27,7 +27,7 @@ class Command(BaseCommand):
         fake = Faker(["tl_PH"])
         fake.add_provider(Provider)
         # {"storage": 5000000}
-
+        # pictures
         Plan.objects.create(
             name="Classroom Basic", description="Free One Time Subscription Plan For Classroom.", type="classroom"
         )
@@ -42,7 +42,7 @@ class Command(BaseCommand):
             description="Extend 5GB to your Classroom Storage",
             price=50.00,
             type="classroom",
-            limitations={"storage": 10000000000},
+            limitations=10000000000,
         )
         Plan.objects.create(
             name="Institution Basic", description="Free One Time Subscription Plan For Institution.", type="institution"
@@ -58,7 +58,7 @@ class Command(BaseCommand):
             description="Extend 5GB to your Institution Storage",
             price=50.00,
             type="institution",
-            limitations={"storage": 10000000000},
+            limitations=10000000000,
         )
 
         # for _ in range(5):

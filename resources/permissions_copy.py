@@ -40,7 +40,7 @@ class ClassroomResourceStorageLimit(BasePermission):
 
         if request.method in SAFE_METHODS:
             return True
-        breakpoint()
+
         classroomLimit = ClassroomResourceFolder.objects.get(
             id=request.data.get("folder")
         ).resource.classroom.storage_Limit
@@ -48,6 +48,7 @@ class ClassroomResourceStorageLimit(BasePermission):
             id=request.data.get("folder")
         ).resource.classroom.storage_used
         # Department.objects.get(id = 12).institution.storage_used
+
         size = int(request.data["size"])
         if classroomUsage + size >= classroomLimit:
             return False
