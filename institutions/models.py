@@ -56,8 +56,9 @@ class Institution(Product):
     def storage_Limit(self):
         # returns all storage bought through subscription
         limit = InstitutionSubscription.objects.filter(institution=self.id).aggregate(
-            storage_limit=Sum("plan__limitations")["storage_limit"]
-        )
+            storage_limit=Sum("plan__limitations")
+        )["storage_limit"]
+
         if limit == None:
             limit = 0
         return limit
