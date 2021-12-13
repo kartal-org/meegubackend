@@ -50,8 +50,10 @@ class ArticleListCreate(generics.ListCreateAPIView):
     serializer_class = PublicationSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["^title", "department__id", "department__institution__name", "category__name"]
-    ratings = Rating.objects.filter(publication=OuterRef("pk"))
-    queryset = Publication.objects.annotate(rating_you=Subquery(ratings.values("rate"))).order_by("-rating_you")
+    # ratings = Rating.objects.filter(publication=OuterRef("pk"))
+    # queryset = Publication.objects.annotate(rating_you=Subquery(ratings.values("rate"))).order_by("-rating_you")
+    queryset = Publication.objects.all()
+
     # .annotate(num_authors=Count('authors')).order_by('num_authors')
 
     def perform_create(self, serializer):
