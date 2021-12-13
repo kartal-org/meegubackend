@@ -75,11 +75,9 @@ class Classroom(Product):
     @property
     def storage_left(self):
         # returns all storage bought through subscription
-        classroom = (
-            ClassroomSubscription.objects.filter(classroom=self.id)
-            .annotate(storage_limit=Cast("plan__limitations", IntegerField()))
-            .aggregate(Sum("storage_limit"))["storage_limit__sum"]
-        )
+        classroom = ClassroomSubscription.objects.filter(classroom=self.id).aggregate(
+            storage_limit=Sum("plan__limitations")
+        )["storage_limit"]
         if classroom == None:
             classroom = 0
         institution = 0

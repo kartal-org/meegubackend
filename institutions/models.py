@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 from django.core.exceptions import ObjectDoesNotExist, EmptyResultSet
 from subscriptions.models import InstitutionSubscription
 from django.db.models.functions import Cast
-from django.db.models import Sum, IntegerField
+from django.db.models import Sum, IntegerField, BigIntegerField
 from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
@@ -55,10 +55,8 @@ class Institution(Product):
     @property
     def storage_Limit(self):
         # returns all storage bought through subscription
-        limit = (
-            InstitutionSubscription.objects.filter(institution=self.id)
-            .annotate(storage_limit=Cast("plan__limitations", IntegerField()))
-            .aggregate(Sum("storage_limit"))["storage_limit__sum"]
+        limit = InstitutionSubscription.objects.filter(institution=self.id).aggregate(
+            storage_limit=Sum("plan__limitations")["storage_limit"]
         )
         if limit == None:
             limit = 0
