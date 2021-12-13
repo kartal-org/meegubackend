@@ -31,7 +31,7 @@ class ResourceListRelevant(generics.ListAPIView):
     serializer_class = ClasssroomResourceSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = [
-        "classroom__creator",
+        "classroom__creator__id",
     ]
     queryset = ClassroomResource.objects.all()
 
@@ -193,12 +193,15 @@ class ImportResourceDepartment(generics.GenericAPIView):
         # breakpoint()
 
         # Step 1 get relevant classroom resources for the user
+        # Step 1 render resources in department staff
 
         for x in files:
+            folder = ClassroomResourceFolder.objects.get_or_create(
+                name="Resources", resource=ClassroomResource.objects.get(id=request.data.get("classresource"))
+            )
+
             hello = ClassroomResourceFile.objects.create(
-                folder=ClassroomResourceFolder.objects.get_or_create(
-                    name="Resources", resource__id=request.data.get("classresource")
-                ),
+                folder=folder[0],
                 # resource=request.data.get("to_resource"),
                 name=x.name,
                 tags=x.tags,

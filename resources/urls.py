@@ -6,6 +6,7 @@ from .views import *
 urlpatterns = [
     # classroom
     path("classroom", ResourceListCreateView.as_view()),
+    path("classroom/relevant", ResourceListRelevant.as_view()),
     path("classroom/change/<int:pk>", ResourceDetailView.as_view()),
     path("classroom/folder", ResourceFolderList.as_view()),
     path("classroom/folder/change/<int:pk>", ResourceFolderDetail.as_view()),
@@ -21,4 +22,5 @@ urlpatterns = [
     # Department
     # path("institution/department", InstitutionDepartmentResourceListCreateView.as_view()),
     path("import-classroom", ImportResourceClass.as_view(), name="import_classroom_resource"),
+    path("import-department", ImportResourceDepartment.as_view(), name="import_classroom_resource"),
 ]
