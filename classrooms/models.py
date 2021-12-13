@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 from django_currentuser.middleware import get_current_authenticated_user
 from django.db.models.functions import Cast
-from django.db.models import Sum, IntegerField
+from django.db.models import Sum, IntegerField, BigIntegerField
 from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from subscriptions.models import ClassroomSubscription, InstitutionSubscription
 from resources.models import ClassroomResourceFile
@@ -48,11 +48,9 @@ class Classroom(Product):
         institutionStorageLeft = 0
         if self.institution:
             institutionStorageLeft = self.institution.storage_left
-        classroom = (
-            ClassroomSubscription.objects.filter(classroom=self.id)
-            .annotate(storage_limit=Cast("plan__limitations", IntegerField()))
-            .aggregate(Sum("storage_limit"))["storage_limit__sum"]
-        )
+        classroom = ClassroomSubscription.objects.filter(classroom=self.id).aggregate(Sum("plan__limitations"))[
+            "plan__limitations__sum"
+        ]
         if not classroom:
             classroom = 0
         return classroom + institutionStorageLeft

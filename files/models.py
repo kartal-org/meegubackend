@@ -21,7 +21,7 @@ class File(models.Model):
     assignee = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateUpdated = models.DateTimeField(auto_now=True)
-    size = models.PositiveIntegerField(default=0)
+    size = models.BigIntegerField(default=0)
     file = models.FileField(upload_to=upload_to, null=True, blank=True)
     content = models.TextField(null=True, blank=True)
 
