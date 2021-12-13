@@ -169,3 +169,32 @@ class ImportResourceClass(generics.GenericAPIView):
             print(hello.name)
 
         return response.Response(status=status.HTTP_200_OK)
+
+
+class ImportResourceDepartment(generics.GenericAPIView):
+
+    """provide"""
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        # breakpoint()
+        files = InstitutionResourceFile.objects.filter(folder__resource=request.data.get("resource"))
+        # breakpoint()
+
+        for x in files:
+            hello = ClassroomResourceFile.objects.create(
+                folder=ClassroomResourceFolder.objects.get_or_create(
+                    name="Resources", resource__id=request.data.get("classresource")
+                ),
+                # resource=request.data.get("to_resource"),
+                name=x.name,
+                tags=x.tags,
+                file=x.file,
+                content=x.content,
+                size=x.size,
+            )
+            hello.save()
+            print(hello.name)
+
+        return response.Response(status=status.HTTP_200_OK)

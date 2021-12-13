@@ -24,6 +24,7 @@ class File(models.Model):
     size = models.BigIntegerField(default=0)
     file = models.FileField(upload_to=upload_to, null=True, blank=True)
     content = models.TextField(null=True, blank=True)
+    hint = models.TextField(null=True, blank=True)
 
     class Meta:
         abstract = True
