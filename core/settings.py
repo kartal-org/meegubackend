@@ -29,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -128,8 +128,16 @@ DATABASES = {
         "HOST": "ec2-54-74-35-87.eu-west-1.compute.amazonaws.com",
         "PORT": "5432",
     },
+    "backup": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "dc4csbaod78312",
+        "USER": "phxxruahktnjbu",
+        "PASSWORD": "24f1fcac8e37e672e10ab221f261a078faaefd5b141e75f303681f8542ea59d4",
+        "HOST": "ec2-52-208-221-89.eu-west-1.compute.amazonaws.com",
+        "PORT": "5432",
+    },
 }
-DATABASES["default"] = DATABASES["dev" if DEBUG else "production"]
+DATABASES["default"] = DATABASES["backup" if DEBUG else "production"]
 
 
 # import dj_database_url
