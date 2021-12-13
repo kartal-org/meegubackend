@@ -1,8 +1,12 @@
-from django.forms import ModelForm
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User 
+from django.forms import ModelForm 
+import datetime
+from .models import *
+from users.models import *
+from subscriptions.models import *
+from classrooms.models import *
+from institutions.models import Institution, Department, StaffType, Staff, InstitutionVerification
 
-class CreateUserForm(UserCreationForm):
+class InstitutionVerifyForm(ModelForm):
 	class Meta:
-		model = User
-		fields = ['username', 'email', 'password1', 'password2']
+		model = InstitutionVerification
+		fields = ['status']

@@ -29,4 +29,4 @@ class Command(BaseCommand):
             Submission.objects.create(
                 title=title, description=description, file=file,
             )
-            print(title)  
+            print(title, file)  

@@ -22,7 +22,7 @@ class Command(BaseCommand):
         fake = Faker(["en_US"])  
         fake.add_provider(Provider)
 
-        for _ in range(5): 
+        for _ in WORKSPACE: 
 
             name = fake.unique.bs()   
             workspace = fake.workspace()
@@ -30,4 +30,4 @@ class Command(BaseCommand):
             WorkspaceFolder.objects.create(
                 name=name, workspace=workspace
             )
-            print(name)  
+            print(name, workspace)  

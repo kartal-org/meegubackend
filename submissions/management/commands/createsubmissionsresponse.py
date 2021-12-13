@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        fake = Faker(["tl_PH"]) 
+        fake = Faker(["en_US"]) 
         fake.add_provider(Provider) 
         
         for _ in SUBMISSIONFILE: 
@@ -38,4 +38,4 @@ class Command(BaseCommand):
             SubmissionResponse.objects.create(
                 responseStatus=responseStatus, comment=comment, submission=file
             )
-            print(responseStatus)  
+            print(responseStatus, file)  

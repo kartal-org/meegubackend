@@ -57,8 +57,8 @@ class Command(BaseCommand):
             classroom = Classroom.objects.get(name=name)   
 
             ClassroomMember.objects.create(
-                user=user, classroom=name, role="adviser"
+                user=user, classroom=classroom, role="adviser"
             ) 
 
-            print(member, classroom)  
+            print(user, classroom)  
          

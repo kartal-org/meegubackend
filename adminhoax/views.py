@@ -5,6 +5,7 @@ from users.models import *
 from subscriptions.models import *
 from classrooms.models import *
 from institutions.models import *
+from .forms import InstitutionVerifyForm
 
 # Create your views here.
 def home(request):
@@ -55,6 +56,18 @@ def home(request):
 
 def institutionVerify(request, pk_instv):
     institutionVerification = InstitutionVerification.objects.get(id=pk_instv)
+    institution = Institution.objects.get(name=institutionVerification)
+    form = InstitutionVerifyForm(instance=institutionVerification)
 
-    contain = {'data':institutionVerification, }
+    if request.method == 'POST': 
+        form = InstitutionVerifyForm(request.POST, instance=institutionVerification)
+        if form.is_valid():
+            form.save()
+            #return redirect('dashboard/')
+
+    contain = {'institutionVerification':institutionVerification, 
+                'institution':institution,
+                'form':form,
+            }
+
     return render(request, "adminhoax/verifyPage.html", contain)
