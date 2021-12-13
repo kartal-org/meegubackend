@@ -87,8 +87,8 @@ class WorkspaceFile(File):
         related_query_name="%(app_label)s_%(class)ss",
     )
 
-    class Meta:
-        unique_together = ["name", "folder"]
+    # class Meta:
+    #     unique_together = ["name", "folder"]
 
 
 @receiver(post_save, sender=Workspace)
