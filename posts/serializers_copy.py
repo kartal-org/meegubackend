@@ -15,6 +15,8 @@ class CategorySerializer(serializers.RelatedField):
 
 
 class SubmissionFieldSerializer(serializers.ModelSerializer):
+    file = serializers.FileField(source="file.file")
+
     class Meta:
         model = Submission
         fields = "__all__"
@@ -63,6 +65,11 @@ class PublicationSerializer(serializers.ModelSerializer):
         response["category"] = CategorySerializer(instance.category).data
         return response
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["submission"] = SubmissionFieldSerializer(instance.submission).data
+        return response
+
 
 class PublicationDetailSerializer(serializers.ModelSerializer):
     # authors = serializers.SerializerMethodField()
@@ -94,6 +101,11 @@ class PublicationDetailSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         response = super().to_representation(instance)
         response["category"] = CategorySerializer(instance.category).data
+        return response
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["submission"] = SubmissionFieldSerializer(instance.submission).data
         return response
 
 
