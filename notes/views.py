@@ -14,7 +14,7 @@ class NotesListCreateView(generics.ListCreateAPIView):
     queryset = Note.objects.all()
     serializer_class = NotesSerializer
     filter_backends = [SearchFilter]
-    search_fields = ["owner", "workspace", "institutionResource", "classroomResource"]
+    search_fields = ["owner__id"]
 
 
 class NotesRetrieve(generics.RetrieveUpdateDestroyAPIView):
